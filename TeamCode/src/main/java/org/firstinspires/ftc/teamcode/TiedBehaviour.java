@@ -4,13 +4,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Modules.Claw;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
-import org.firstinspires.ftc.teamcode.Utils.StickyGamepad;
+import org.firstinspires.ftc.teamcode.Utils.StickyGamepadGenerator;
 
 public class TiedBehaviour {
     RobotModules robot;
     DriveTrain driveTrain;
+    StickyGamepadGenerator sGGamepad1, sGGamepad2;
     Gamepad gamepad1, gamepad2;
-    StickyGamepad sGamepad1, sGamepad2;
+    Gamepad sGamepad1, sGamepad2;
     private final boolean auto;
 
     public TiedBehaviour(Gamepad gamepad1, Gamepad gamepad2, RobotModules robot, DriveTrain driveTrain){
@@ -27,10 +28,8 @@ public class TiedBehaviour {
     }
 
     private void updateStickyGamepads(){
-        sGamepad1 = (StickyGamepad) gamepad1;
-        sGamepad2 = (StickyGamepad) gamepad2;
-        sGamepad1.update(gamepad1);
-        sGamepad2.update(gamepad2);
+        sGamepad1 = sGGamepad1.update(gamepad1);
+        sGamepad2 = sGGamepad2.update(gamepad2);
     }
 
     private void clawGamepadControl(){
