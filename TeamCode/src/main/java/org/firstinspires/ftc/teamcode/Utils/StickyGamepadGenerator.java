@@ -15,7 +15,7 @@ public class StickyGamepadGenerator{
         byte[] lastStateByteArray = uGamepad.toByteArray();
         byte[] stickyButtonsByteArray = uGamepadByteArray;
 
-        for(int i = startIndex;i<startIndex + byteNo;i++) stickyButtonsByteArray[i] = (byte) (uGamepadByteArray[i] & (lastStateByteArray[i] ^ (1<<4)));
+        for(int i = startIndex;i<startIndex + byteNo;i++) stickyButtonsByteArray[i] = (byte) (uGamepadByteArray[i] & (~lastStateByteArray[i]));
 
         Gamepad aux = new Gamepad();
         aux.fromByteArray(stickyButtonsByteArray);
