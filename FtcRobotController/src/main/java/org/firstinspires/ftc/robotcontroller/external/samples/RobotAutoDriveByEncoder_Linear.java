@@ -182,7 +182,7 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
             leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            sleep(250);   // optional pause after each move.
+//            sleep(250);   // optional pause after each move.
         }
     }
 }

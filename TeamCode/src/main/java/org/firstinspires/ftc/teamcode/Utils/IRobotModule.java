@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Utils;
 
 public interface IRobotModule {
     public static boolean ENABLE_MODULE = false;
-    default void atStart() {}
+    void atStart();
     void loop();
     default void emergencyStop() {};
     default boolean isActive(){

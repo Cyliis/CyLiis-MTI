@@ -8,30 +8,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
 @Config
-public class Claw implements IRobotModule {
+public class UtaUta implements IRobotModule {
 
     public static boolean ENABLE_MODULE = true;
 
-    public static String CLAW_SERVO_NAME = "claw";
+    public static String UTAUTA_SERVO_NAME = "uta";
     public static boolean reversed = false;
 
     HardwareMap hm;
     NanoClock nanoClock;
 
-    Servo claw;
+    Servo uta;
 
-    public static double openedClawPosition = 0.54, closedClawPosition = 0.69;
-    public static double openingTime = 0.2, closingTime = 0.2;
+    public static double levelPosition = 0.53, angledPosition = 0.34;
+    public static double levelingTime = 0.25, anglingTime = 0.25;
 
     public enum State{
-        OPENED(openedClawPosition),
-        CLOSED(closedClawPosition),
-        MOPENED(openedClawPosition),
-        MCLOSED(closedClawPosition),
-        OPENING(openedClawPosition),
-        CLOSING(closedClawPosition),
-        MOPENING(openedClawPosition),
-        MCLOSING(closedClawPosition);
+        LEVEL(levelPosition), ANGLED(angledPosition),
+        LEVELING(levelPosition), ANGLING(angledPosition);
 
         final double pos;
         State(double pos){
@@ -41,14 +35,15 @@ public class Claw implements IRobotModule {
 
     public State state;
 
-    public Claw(HardwareMap hm){
+    public UtaUta(HardwareMap hm){
         this.hm = hm;
         init();
     }
 
     private void init(){
-        claw = hm.get(Servo.class, CLAW_SERVO_NAME);
-        if(reversed) claw.setDirection(Servo.Direction.REVERSE);
+        uta = hm.get(Servo.class, UTAUTA_SERVO_NAME);
+        if(reversed) uta.setDirection(Servo.Direction.REVERSE);
+        state = State.LEVELING;
         nanoClock = NanoClock.system();
     }
 
@@ -66,28 +61,22 @@ public class Claw implements IRobotModule {
 
     private void updateState(){
         switch (state){
-            case OPENING:
-                if(elapsedTime(timeOfLastStateChange) >= openingTime) setState(State.OPENED);
+            case LEVELING:
+                if(elapsedTime(timeOfLastStateChange) >= levelingTime) setState(State.LEVEL);
                 break;
-            case MOPENING:
-                if(elapsedTime(timeOfLastStateChange) >= openingTime) setState(State.MOPENED);
-                break;
-            case CLOSING:
-                if(elapsedTime(timeOfLastStateChange) >= closingTime) setState(State.CLOSED);
-                break;
-            case MCLOSING:
-                if(elapsedTime(timeOfLastStateChange) >= closingTime) setState(State.MCLOSED);
+            case ANGLING:
+                if(elapsedTime(timeOfLastStateChange) >= anglingTime) setState(State.ANGLED);
                 break;
         }
     }
 
     private void updateTargetPosition(){
-        claw.setPosition(state.pos);
+        uta.setPosition(state.pos);
     }
 
     @Override
     public void atStart(){
-        setState(State.OPENED);
+        setState(State.LEVELING);
     }
 
     @Override
@@ -95,5 +84,4 @@ public class Claw implements IRobotModule {
         updateState();
         updateTargetPosition();
     }
-
 }

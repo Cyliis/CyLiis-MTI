@@ -3,14 +3,20 @@ package org.firstinspires.ftc.teamcode.OpMode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.GamepadControl;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
 import org.firstinspires.ftc.teamcode.RobotModules;
 import org.firstinspires.ftc.teamcode.TiedBehaviour;
+
 import java.util.List;
+
+import javax.xml.parsers.FactoryConfigurationError;
 
 
 @TeleOp(name="OpMode👉👌")
@@ -18,11 +24,15 @@ public class OpMode extends LinearOpMode {
     List<LynxModule> hubs;
     FtcDashboard dash;
     NanoClock nanoClock;
+
     DriveTrain driveTrain;
     RobotModules robotModules;
+    GamepadControl gamepadControl;
     TiedBehaviour tiedBehaviour;
 
     public void initialize(){
+        PhotonCore.enable();
+
         dash = FtcDashboard.getInstance();
 
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
@@ -30,9 +40,10 @@ public class OpMode extends LinearOpMode {
         for(LynxModule hub:hubs)
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 
-        driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS);
+        if(DriveTrain.ENABLE_MODULE)driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS);
         robotModules = new RobotModules(hardwareMap);
-        tiedBehaviour = new TiedBehaviour(gamepad1, gamepad2, robotModules, driveTrain);
+        gamepadControl = new GamepadControl(gamepad1, gamepad2, robotModules);
+        tiedBehaviour = new TiedBehaviour(robotModules, driveTrain);
 
         nanoClock = NanoClock.system();
     }
@@ -52,11 +63,15 @@ public class OpMode extends LinearOpMode {
 
             for(LynxModule hub:hubs)
                 hub.clearBulkCache();
-            driveTrain.loop();
+
+            gamepadControl.loop();
+            if(DriveTrain.ENABLE_MODULE)driveTrain.loop();
             robotModules.loop();
             tiedBehaviour.loop();
 
-            telemetry.addData("Loop time:" , (int)(nanoClock.seconds()*1000 - timeMs));
+            telemetry.addData("Loops/sec" , (int)(1000)/(nanoClock.seconds()*1000 - timeMs));
+            telemetry.addData("Virtual last pos", robotModules.virtual.lastPos);
+            robotModules.telemetry(telemetry);
 
             telemetry.update();
         }

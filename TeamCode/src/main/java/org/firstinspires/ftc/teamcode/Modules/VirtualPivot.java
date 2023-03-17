@@ -8,30 +8,26 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
 @Config
-public class Claw implements IRobotModule {
+public class VirtualPivot implements IRobotModule {
 
     public static boolean ENABLE_MODULE = true;
 
-    public static String CLAW_SERVO_NAME = "claw";
+    public static String VIRTUAL_PIVOT_SERVO_NAME = "pivot";
     public static boolean reversed = false;
 
     HardwareMap hm;
     NanoClock nanoClock;
 
-    Servo claw;
+    Servo pivot;
 
-    public static double openedClawPosition = 0.54, closedClawPosition = 0.69;
-    public static double openingTime = 0.2, closingTime = 0.2;
+    public static double frontPivotPosition = 0.78, backPivotPosition = 0.11;
+    public static double frontRotationTime = 0.1, backRotationTime = 0.1;
+
+    public static int debugCounter = 0;
 
     public enum State{
-        OPENED(openedClawPosition),
-        CLOSED(closedClawPosition),
-        MOPENED(openedClawPosition),
-        MCLOSED(closedClawPosition),
-        OPENING(openedClawPosition),
-        CLOSING(closedClawPosition),
-        MOPENING(openedClawPosition),
-        MCLOSING(closedClawPosition);
+        FRONT(frontPivotPosition), BACK(backPivotPosition),
+        RFRONT(frontPivotPosition), RBACK(backPivotPosition);
 
         final double pos;
         State(double pos){
@@ -41,14 +37,14 @@ public class Claw implements IRobotModule {
 
     public State state;
 
-    public Claw(HardwareMap hm){
+    public VirtualPivot(HardwareMap hm){
         this.hm = hm;
         init();
     }
 
     private void init(){
-        claw = hm.get(Servo.class, CLAW_SERVO_NAME);
-        if(reversed) claw.setDirection(Servo.Direction.REVERSE);
+        pivot = hm.get(Servo.class, VIRTUAL_PIVOT_SERVO_NAME);
+        if(reversed) pivot.setDirection(Servo.Direction.REVERSE);
         nanoClock = NanoClock.system();
     }
 
@@ -59,6 +55,7 @@ public class Claw implements IRobotModule {
     double timeOfLastStateChange;
 
     public void setState(State state){
+        debugCounter++;
         if(state == this.state) return;
         timeOfLastStateChange = nanoClock.seconds();
         this.state = state;
@@ -66,28 +63,22 @@ public class Claw implements IRobotModule {
 
     private void updateState(){
         switch (state){
-            case OPENING:
-                if(elapsedTime(timeOfLastStateChange) >= openingTime) setState(State.OPENED);
+            case RFRONT:
+                if(elapsedTime(timeOfLastStateChange) >= frontRotationTime) setState(State.FRONT);
                 break;
-            case MOPENING:
-                if(elapsedTime(timeOfLastStateChange) >= openingTime) setState(State.MOPENED);
-                break;
-            case CLOSING:
-                if(elapsedTime(timeOfLastStateChange) >= closingTime) setState(State.CLOSED);
-                break;
-            case MCLOSING:
-                if(elapsedTime(timeOfLastStateChange) >= closingTime) setState(State.MCLOSED);
+            case RBACK:
+                if(elapsedTime(timeOfLastStateChange) >= backRotationTime) setState(State.BACK);
                 break;
         }
     }
 
     private void updateTargetPosition(){
-        claw.setPosition(state.pos);
+        pivot.setPosition(state.pos);
     }
 
     @Override
     public void atStart(){
-        setState(State.OPENED);
+        setState(State.FRONT);
     }
 
     @Override
@@ -95,5 +86,4 @@ public class Claw implements IRobotModule {
         updateState();
         updateTargetPosition();
     }
-
 }

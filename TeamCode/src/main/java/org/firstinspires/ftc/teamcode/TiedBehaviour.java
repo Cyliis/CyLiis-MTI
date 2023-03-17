@@ -1,23 +1,22 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Modules.Claw;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
-import org.firstinspires.ftc.teamcode.Utils.StickyGamepadGenerator;
+import org.firstinspires.ftc.teamcode.Modules.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Outtake;
+import org.firstinspires.ftc.teamcode.Modules.Virtual;
 
+@Config
 public class TiedBehaviour {
     RobotModules robot;
     DriveTrain driveTrain;
-    StickyGamepadGenerator sGGamepad1, sGGamepad2;
-    Gamepad gamepad1, gamepad2;
-    Gamepad sGamepad1, sGamepad2;
     private final boolean auto;
 
-    public TiedBehaviour(Gamepad gamepad1, Gamepad gamepad2, RobotModules robot, DriveTrain driveTrain){
+    public TiedBehaviour(RobotModules robot, DriveTrain driveTrain){
         auto = false;
-        this.gamepad1 = gamepad1;
-        this.gamepad2 = gamepad2;
         this.robot = robot;
         this.driveTrain = driveTrain;
     }
@@ -27,29 +26,27 @@ public class TiedBehaviour {
         this.robot = robot;
     }
 
-    private void updateStickyGamepads(){
-        sGamepad1 = sGGamepad1.update(gamepad1);
-        sGamepad2 = sGGamepad2.update(gamepad2);
+    private void hoverCone(){
+        if(robot.intake.state == Intake.State.CLOSED && robot.virtual.state != Virtual.State.HOVER && robot.virtual.state!= Virtual.State.GOING_HOVER) robot.intake.setState(Intake.State.HOVERING);
+        if(robot.intake.state == Intake.State.MCLOSED && robot.virtual.state != Virtual.State.HOVER && robot.virtual.state!= Virtual.State.GOING_HOVER) robot.intake.setState(Intake.State.MHOVERING);
     }
 
-    private void clawGamepadControl(){
-        if(!robot.claw.isActive()) return;
-        if(sGamepad1.x){
-            if(robot.claw.state == Claw.State.CLOSED || robot.claw.state == Claw.State.CLOSING || robot.claw.state == Claw.State.MCLOSED) robot.claw.setState(Claw.State.OPENING);
-            else if(robot.claw.state == Claw.State.OPENED || robot.claw.state == Claw.State.OPENING || robot.claw.state == Claw.State.MOPENED) robot.claw.setState(Claw.State.CLOSING);
+    private void autoClose(){
+        if(robot.intake.state == Intake.State.OPENED && robot.distanceSensor.value < 37){
+            robot.intake.setState(Intake.State.CLOSING);
         }
     }
 
     public void loop(){
-        if(auto) {
+        if(auto) { 
             loopAuto();
             return;
         }
-        updateStickyGamepads();
-        clawGamepadControl();
+        autoClose();
+        hoverCone();
     }
 
     private void loopAuto(){
-
+        hoverCone();
     }
 }

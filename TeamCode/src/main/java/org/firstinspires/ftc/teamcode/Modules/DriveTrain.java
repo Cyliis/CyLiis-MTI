@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
 
+@Config
 public class DriveTrain implements IRobotModule {
 
     public static boolean ENABLE_MODULE = true;
@@ -46,11 +48,20 @@ public class DriveTrain implements IRobotModule {
 
     private boolean imuInitialised;
 
+    private double imuValue = 0;
+
+    Thread thread = new Thread(()->{
+        while (true){
+            imuValue = imu.getAngularOrientation().firstAngle;
+        }
+    });
+
     public DriveTrain(HardwareMap hm, Gamepad gamepad, DriveMode mode){
         this.hm = hm;
         this.gamepad = gamepad;
         DRIVE_MODE = mode;
         init();
+        thread.start();
     }
 
     private void init(){
@@ -73,12 +84,14 @@ public class DriveTrain implements IRobotModule {
     }
 
     private void reset_imu(){
+
         imu = hm.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imuInitialised = imu.initialize(parameters);
 
         angleAtReset = LAST_ANGLE_READ;
+
     }
 
     void boost(){
@@ -115,12 +128,15 @@ public class DriveTrain implements IRobotModule {
 
         this.rotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
 
-        double angle = imuInitialised ? imu.getAngularOrientation().firstAngle : 0;
+        double angle = imuInitialised ? imuValue : 0;
 
         LAST_ANGLE_READ = angle;
         angle += angleAtReset;
 
         movementVector.set_angle_offset(Math.PI*2.0-angle);
+
+        this.right = movementVector.cx;
+        this.forward = movementVector.cy;
     }
 
     void driveForValues(double forward, double right, double rotateClockwise){
@@ -134,6 +150,11 @@ public class DriveTrain implements IRobotModule {
         frontRight.setPower(((forward - right - rotateClockwise) / denomiantor) * multiplier);
         backLeft.setPower(((forward - right + rotateClockwise) / denomiantor) * multiplier);
         backRight.setPower(((forward + right - rotateClockwise) / denomiantor) * multiplier);
+    }
+
+    @Override
+    public void atStart() {
+
     }
 
     @Override

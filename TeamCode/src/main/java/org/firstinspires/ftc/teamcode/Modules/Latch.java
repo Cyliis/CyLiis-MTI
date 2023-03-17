@@ -8,30 +8,30 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
 @Config
-public class Claw implements IRobotModule {
+public class Latch implements IRobotModule {
 
     public static boolean ENABLE_MODULE = true;
 
-    public static String CLAW_SERVO_NAME = "claw";
+    public static String LATCH_SERVO_NAME = "latch";
     public static boolean reversed = false;
 
     HardwareMap hm;
     NanoClock nanoClock;
 
-    Servo claw;
+    Servo latch;
 
-    public static double openedClawPosition = 0.54, closedClawPosition = 0.69;
+    public static double openedlatchPosition = 0.15, closedlatchPosition = 0.65;
     public static double openingTime = 0.2, closingTime = 0.2;
 
     public enum State{
-        OPENED(openedClawPosition),
-        CLOSED(closedClawPosition),
-        MOPENED(openedClawPosition),
-        MCLOSED(closedClawPosition),
-        OPENING(openedClawPosition),
-        CLOSING(closedClawPosition),
-        MOPENING(openedClawPosition),
-        MCLOSING(closedClawPosition);
+        OPENED(openedlatchPosition),
+        CLOSED(closedlatchPosition),
+        MOPENED(openedlatchPosition),
+        MCLOSED(closedlatchPosition),
+        OPENING(openedlatchPosition),
+        CLOSING(closedlatchPosition),
+        MOPENING(openedlatchPosition),
+        MCLOSING(closedlatchPosition);
 
         final double pos;
         State(double pos){
@@ -41,14 +41,14 @@ public class Claw implements IRobotModule {
 
     public State state;
 
-    public Claw(HardwareMap hm){
+    public Latch(HardwareMap hm){
         this.hm = hm;
         init();
     }
 
     private void init(){
-        claw = hm.get(Servo.class, CLAW_SERVO_NAME);
-        if(reversed) claw.setDirection(Servo.Direction.REVERSE);
+        latch = hm.get(Servo.class, LATCH_SERVO_NAME);
+        if(reversed) latch.setDirection(Servo.Direction.REVERSE);
         nanoClock = NanoClock.system();
     }
 
@@ -82,12 +82,12 @@ public class Claw implements IRobotModule {
     }
 
     private void updateTargetPosition(){
-        claw.setPosition(state.pos);
+        latch.setPosition(state.pos);
     }
 
     @Override
     public void atStart(){
-        setState(State.OPENED);
+        setState(State.CLOSING);
     }
 
     @Override
