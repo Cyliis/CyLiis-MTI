@@ -18,14 +18,15 @@ public class Lift implements IRobotModule {
     public static String LIFT1_NAME = "lift1";
     public static String LIFT2_NAME = "lift2";
     public static boolean reversed1 = true, reversed2 = false;
-    public static boolean resetEncoders = true;
+    public static boolean resetEncoders;
+    public int ground;
 
     HardwareMap hm;
     NanoClock nanoClock;
 
     DcMotorEx lift1, lift2;
 
-    public static int downPosition = 0, lowPosition = 0, midPosition = 540, highPosition=910;
+    public static int downPosition = 0, lowPosition = 0, midPosition = 540, highPosition=932;
     public static double liftPower = 1;
 
     public enum State{
@@ -44,12 +45,12 @@ public class Lift implements IRobotModule {
 
     public State state;
 
-    public Lift(HardwareMap hm){
+    public Lift(HardwareMap hm, boolean resetEncoders){
         this.hm = hm;
-        init();
+        init(resetEncoders);
     }
 
-    void init(){
+    void init(boolean resetEncoders){
         lift1 = hm.get(DcMotorEx.class, LIFT1_NAME);
         lift2 = hm.get(DcMotorEx.class, LIFT2_NAME);
         if(resetEncoders)resetEncoders();
@@ -103,8 +104,8 @@ public class Lift implements IRobotModule {
     }
 
     void updateTargetPositions(){
-        lift1.setTargetPosition(state.pos);
-        lift2.setTargetPosition(state.pos);
+        lift1.setTargetPosition(state.pos + ground);
+        lift2.setTargetPosition(state.pos + ground);
     }
 
     @Override

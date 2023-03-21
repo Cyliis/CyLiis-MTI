@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -48,20 +49,15 @@ public class DriveTrain implements IRobotModule {
 
     private boolean imuInitialised;
 
-    private double imuValue = 0;
+    public double imuValue = 0;
 
-    Thread thread = new Thread(()->{
-        while (true){
-            imuValue = imu.getAngularOrientation().firstAngle;
-        }
-    });
 
     public DriveTrain(HardwareMap hm, Gamepad gamepad, DriveMode mode){
         this.hm = hm;
         this.gamepad = gamepad;
         DRIVE_MODE = mode;
         init();
-        thread.start();
+//        thread.start();
     }
 
     private void init(){
@@ -85,10 +81,10 @@ public class DriveTrain implements IRobotModule {
 
     private void reset_imu(){
 
-        imu = hm.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imuInitialised = imu.initialize(parameters);
+            imu = hm.get(BNO055IMU.class, "imu");
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+            imuInitialised = imu.initialize(parameters);
 
         angleAtReset = LAST_ANGLE_READ;
 
@@ -159,9 +155,11 @@ public class DriveTrain implements IRobotModule {
 
     @Override
     public void loop() {
-        reset();
         change();
         boost();
+        reset();
+
+        imuValue = imu.getAngularOrientation().firstAngle;
 
         if(DRIVE_MODE == DriveMode.HEADLESS) driveHeadlessly();
         else driveNormaly();

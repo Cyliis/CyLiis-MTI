@@ -32,21 +32,34 @@ public class TiedBehaviour {
     }
 
     private void autoClose(){
-        if(robot.intake.state == Intake.State.OPENED && robot.distanceSensor.value < 37){
+        if(robot.intake.state == Intake.State.OPENED && robot.distanceSensor.value < 35 && Virtual.stackIndex == 0){
             robot.intake.setState(Intake.State.CLOSING);
         }
     }
 
+    private void stack(){
+        Virtual.State.DOWN.pos =  Virtual.stack[Virtual.stackIndex];
+        Virtual.State.GOING_DOWN.pos = Virtual.stack[Virtual.stackIndex];
+        if(Virtual.stackIndex != 0){
+            Virtual.State.HOVER.pos = Virtual.lowPosition;
+            Virtual.State.GOING_HOVER.pos = Virtual.lowPosition;
+        }
+        else{
+            Virtual.State.HOVER.pos = Virtual.hoverPosition;
+            Virtual.State.GOING_HOVER.pos = Virtual.hoverPosition;
+        }
+    }
+
     public void loop(){
+        hoverCone();
+        stack();
         if(auto) { 
             loopAuto();
             return;
         }
         autoClose();
-        hoverCone();
     }
 
     private void loopAuto(){
-        hoverCone();
     }
 }

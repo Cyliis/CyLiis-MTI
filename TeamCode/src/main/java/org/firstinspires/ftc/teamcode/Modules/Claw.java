@@ -20,7 +20,7 @@ public class Claw implements IRobotModule {
 
     Servo claw;
 
-    public static double openedClawPosition = 0.54, closedClawPosition = 0.69;
+    public static double openedClawPosition = 0.44, closedClawPosition = 0.63;
     public static double openingTime = 0.2, closingTime = 0.2;
 
     public enum State{
@@ -58,6 +58,8 @@ public class Claw implements IRobotModule {
 
     double timeOfLastStateChange;
 
+    public double debugCount = 0;
+
     public void setState(State state){
         if(state == this.state) return;
         timeOfLastStateChange = nanoClock.seconds();
@@ -92,6 +94,7 @@ public class Claw implements IRobotModule {
 
     @Override
     public void loop() {
+        debugCount = claw.getPosition();
         updateState();
         updateTargetPosition();
     }

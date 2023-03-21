@@ -62,6 +62,8 @@ public class GamepadControl {
 
     private void outtakeGamepadControl(){
         if(!Outtake.ENABLE_MODULE)return;
+        if(robot.intake.state== Intake.State.GOING_LOW || robot.intake.state == Intake.State.LOW
+                || robot.intake.state== Intake.State.RELEASED_LOW || robot.intake.state== Intake.State.GOING_DOWN_FROM_LOW)return;
         if(robot.intake.transferState != Intake.TransferState.END && robot.intake.transferState != Intake.TransferState.OPEN_CLAW && robot.intake.transferState != Intake.TransferState.VIRTUAL_DOWN) return;
         if(stickyGamepad2.dpad_right || stickyGamepad2.dpad_left) robot.outtake.setState(Outtake.State.GOING_MID);
         if(stickyGamepad2.dpad_up) robot.outtake.setState(Outtake.State.GOING_HIGH);
@@ -83,10 +85,11 @@ public class GamepadControl {
         if(stickyGamepad1.right_bumper){
             if(Virtual.stackIndex < 4) Virtual.stackIndex++;
         }
-        Virtual.State.DOWN.pos =  Virtual.stack[Virtual.stackIndex];
-        Virtual.State.GOING_DOWN.pos = Virtual.stack[Virtual.stackIndex];
-        Virtual.State.HOVER.pos = Virtual.lowPosition;
-        Virtual.State.GOING_HOVER.pos = Virtual.lowPosition;
+    }
+
+    private void manualCalibration(){
+        if(gamepad2.y) robot.outtake.lift.ground++;
+        if(gamepad2.b) robot.outtake.lift.ground--;
     }
 
     public void loop(){
@@ -94,6 +97,9 @@ public class GamepadControl {
         outtakeGamepadControl();
         sensor();
         stackControl();
+        manualCalibration();
+
+
         updateStickyGamepads();
     }
     

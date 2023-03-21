@@ -22,10 +22,10 @@ public class Virtual implements IRobotModule {
 
     Servo virtual1, virtual2;
 
-    public static double stack1 = 0.8, stack2 = 0.76, stack3 = 0.72, stack4 = 0.68, stack5 = 0.64;
+    public static double stack1 = 0.78, stack2 = 0.72, stack3 = 0.68, stack4 = 0.64, stack5 = 0.6;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
     public static int stackIndex = 0;
-    public static double downPosition = stack[stackIndex], hoverPosition=0.75, lowPosition = 0.425, rotatePosition=0.24, transferPosition=0.17;
+    public static double downPosition = stack[stackIndex], hoverPosition=0.74, lowPosition = 0.39, rotatePosition=0.21, transferPosition=0.13;
     public static double servoSpeed = 1;
     public double lastPos;
     public static double debugCounter;

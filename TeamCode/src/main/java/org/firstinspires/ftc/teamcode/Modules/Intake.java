@@ -48,21 +48,26 @@ public class Intake implements IRobotModule {
                 transferState = TransferState.START;
                 break;
             case OPENING:
+                if(uta.state!= UtaUta.State.LEVEL && uta.state != UtaUta.State.LEVELING) uta.setState(UtaUta.State.LEVELING);
                 virtual.setState(Virtual.State.GOING_DOWN);
                 claw.setState(Claw.State.OPENING);
                 break;
             case MOPENING:
+                if(uta.state!= UtaUta.State.LEVEL && uta.state != UtaUta.State.LEVELING) uta.setState(UtaUta.State.LEVELING);
                 virtual.setState(Virtual.State.GOING_DOWN);
                 claw.setState(Claw.State.MOPENING);
                 break;
             case CLOSING:
+                if(uta.state!= UtaUta.State.LEVEL && uta.state != UtaUta.State.LEVELING) uta.setState(UtaUta.State.LEVELING);
                 claw.setState(Claw.State.CLOSING);
                 break;
             case MCLOSING:
+                if(uta.state!= UtaUta.State.LEVEL && uta.state != UtaUta.State.LEVELING) uta.setState(UtaUta.State.LEVELING);
                 claw.setState(Claw.State.MCLOSING);
                 break;
             case HOVERING:
             case MHOVERING:
+                if(uta.state!= UtaUta.State.LEVEL && uta.state != UtaUta.State.LEVELING) uta.setState(UtaUta.State.LEVELING);
                 virtual.setState(Virtual.State.GOING_HOVER);
                 break;
             case GOING_LOW:
@@ -84,18 +89,18 @@ public class Intake implements IRobotModule {
     void updateState(){
         switch (state){
             case OPENING:
-                if(claw.state == Claw.State.OPENED) setState(State.OPENED);
+                if(uta.state == UtaUta.State.LEVEL && claw.state == Claw.State.OPENED) setState(State.OPENED);
                 break;
             case MOPENING:
-                if(claw.state == Claw.State.MOPENED) setState(State.MOPENED);
+                if(uta.state == UtaUta.State.LEVEL && claw.state == Claw.State.MOPENED) setState(State.MOPENED);
                 break;
             case CLOSING:
-                if(claw.state == Claw.State.CLOSED) {
+                if(uta.state == UtaUta.State.LEVEL && claw.state == Claw.State.CLOSED) {
                     setState(State.CLOSED);
                 }
                 break;
             case MCLOSING:
-                if(claw.state == Claw.State.MCLOSED)  {
+                if(uta.state == UtaUta.State.LEVEL && claw.state == Claw.State.MCLOSED)  {
                     setState(State.MCLOSED);
                 }
                 break;
@@ -103,10 +108,10 @@ public class Intake implements IRobotModule {
                 if(transferState == TransferState.END) setState(State.OPENED);
                 break;
             case HOVERING:
-                if(virtual.state == Virtual.State.HOVER) setState(State.CLOSED);
+                if(uta.state == UtaUta.State.LEVEL && virtual.state == Virtual.State.HOVER) setState(State.CLOSED);
                 break;
             case MHOVERING:
-                if(virtual.state == Virtual.State.HOVER) setState(State.MCLOSED);
+                if(uta.state == UtaUta.State.LEVEL && virtual.state == Virtual.State.HOVER) setState(State.MCLOSED);
                 break;
             case GOING_LOW:
                 if(virtual.state == Virtual.State.LOW && uta.state == UtaUta.State.ANGLED)

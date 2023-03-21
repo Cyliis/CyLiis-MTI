@@ -19,8 +19,8 @@ import java.util.List;
 import javax.xml.parsers.FactoryConfigurationError;
 
 
-@TeleOp(name="OpMode👉👌")
-public class OpMode extends LinearOpMode {
+@TeleOp(name="DP👉👌")
+public class DriverPractice extends LinearOpMode {
     List<LynxModule> hubs;
     FtcDashboard dash;
     NanoClock nanoClock;
@@ -41,7 +41,7 @@ public class OpMode extends LinearOpMode {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 
         if(DriveTrain.ENABLE_MODULE)driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS);
-        robotModules = new RobotModules(hardwareMap, false);
+        robotModules = new RobotModules(hardwareMap, true);
         gamepadControl = new GamepadControl(gamepad1, gamepad2, robotModules);
         tiedBehaviour = new TiedBehaviour(robotModules, driveTrain);
 
@@ -59,7 +59,7 @@ public class OpMode extends LinearOpMode {
 
         robotModules.atStart();
 
-        while(opModeIsActive()) {
+        while(opModeIsActive() && !isStopRequested()) {
             double timeMs = nanoClock.seconds()*1000;
 
             for(LynxModule hub:hubs)
