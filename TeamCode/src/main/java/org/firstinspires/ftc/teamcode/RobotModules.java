@@ -31,7 +31,7 @@ public class RobotModules {
     public RobotModules(HardwareMap hm, boolean resetEncoders){
         if(Latch.ENABLE_MODULE)this.latch = new Latch(hm);
         if(Claw.ENABLE_MODULE)this.claw = new Claw(hm);
-        if(Virtual.ENABLE_MODULE)this.virtual = new Virtual(hm);
+        if(Virtual.ENABLE_MODULE)this.virtual = new Virtual(hm, resetEncoders);
         if(Intake.ENABLE_MODULE)this.intake = new Intake(hm, latch, virtual, claw);
         if(Outtake.ENABLE_MODULE)this.outtake = new Outtake(hm, latch, virtual, claw, resetEncoders);
         distanceSensor = new DistanceSensor(hm);
@@ -48,7 +48,6 @@ public class RobotModules {
         tele.addData("Uta state", intake.uta.state);
         tele.addData("Virtual state", virtual.state);
         tele.addData("Pivot state", intake.pivot.state);
-        tele.addData("Virtual state changes", virtual.debugCounter);
         tele.addData("Guide distance", distanceSensor.value);
         tele.addData("Stack index", Virtual.stackIndex);
     }

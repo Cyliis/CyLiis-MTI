@@ -134,15 +134,10 @@ public class Intake implements IRobotModule {
     public enum TransferState{
         START,
         CLOSE_CLAW,
-        OPEN_LATCH_AND_LIFT_VIRTUAL_TO_ROTATE_BACK,
-        ROTATE_BACK,
-        VIRTUAL_TO_TRANSFER,
+        LATCH_OPEN_PIVOT_BACK_VIRTUAL_TO_TRANSFER,
         CLOSE_LATCH,
-        OPEN_CLAW_TRANSFER,
-        VIRTUAL_TO_ROTATE_FRONT,
-        CLOSE_CLAW_TRANSFER,
-        ROTATE_FRONT,
-        VIRTUAL_DOWN,
+        MOPEN_CLAW,
+        VIRTUAL_DOWN_PIVOT_FRONT,
         OPEN_CLAW,
         END
     }
@@ -158,70 +153,38 @@ public class Intake implements IRobotModule {
                 transferState = TransferState.CLOSE_CLAW;
                 break;
             case CLOSE_CLAW:
-                if(claw.state == Claw.State.CLOSED || claw.state == Claw.State.MCLOSED){
-                    latch.setState(Latch.State.OPENING);
-                    virtual.setState(Virtual.State.GOING_ROTATE);
-                    transferState = TransferState.OPEN_LATCH_AND_LIFT_VIRTUAL_TO_ROTATE_BACK;
-                }
-                break;
-            case OPEN_LATCH_AND_LIFT_VIRTUAL_TO_ROTATE_BACK:
-                if(latch.state == Latch.State.OPENED && virtual.state== Virtual.State.ROTATE){
-                    pivot.setState(VirtualPivot.State.RBACK);
-                    transferState = TransferState.ROTATE_BACK;
-                }
-                break;
-            case ROTATE_BACK:
-                if(pivot.state == VirtualPivot.State.BACK){
+                if(claw.state == Claw.State.MCLOSED || claw.state == Claw.State.CLOSED){
                     virtual.setState(Virtual.State.GOING_TRANSFER);
-                    transferState = TransferState.VIRTUAL_TO_TRANSFER;
+                    pivot.setState(VirtualPivot.State.RBACK);
+                    latch.setState(Latch.State.OPENING);
+                    transferState = TransferState.LATCH_OPEN_PIVOT_BACK_VIRTUAL_TO_TRANSFER;
                 }
                 break;
-            case VIRTUAL_TO_TRANSFER:
-                if(virtual.state == Virtual.State.TRANSFER){
+            case LATCH_OPEN_PIVOT_BACK_VIRTUAL_TO_TRANSFER:
+                if(virtual.state == Virtual.State.TRANSFER && pivot.state == VirtualPivot.State.BACK && latch.state == Latch.State.OPENED){
                     latch.setState(Latch.State.CLOSING);
                     transferState = TransferState.CLOSE_LATCH;
                 }
                 break;
-            case CLOSE_LATCH:
+            case MOPEN_CLAW:
                 if(latch.state == Latch.State.CLOSED){
                     claw.setState(Claw.State.MOPENING);
-                    transferState = TransferState.OPEN_CLAW_TRANSFER;
+                    transferState = TransferState.VIRTUAL_DOWN_PIVOT_FRONT;
                 }
                 break;
-            case OPEN_CLAW_TRANSFER:
+            case VIRTUAL_DOWN_PIVOT_FRONT:
                 if(claw.state == Claw.State.MOPENED){
-                    virtual.setState(Virtual.State.GOING_ROTATE);
-                    transferState = TransferState.VIRTUAL_TO_ROTATE_FRONT;
-                }
-                break;
-            case VIRTUAL_TO_ROTATE_FRONT:
-                if(virtual.state == Virtual.State.ROTATE){
-                    claw.setState(Claw.State.MCLOSING);
-                    transferState = TransferState.CLOSE_CLAW_TRANSFER;
-                }
-                break;
-            case CLOSE_CLAW_TRANSFER:
-                if(claw.state == Claw.State.MCLOSED){
-                    pivot.setState(VirtualPivot.State.RFRONT);
-                    transferState = TransferState.ROTATE_FRONT;
-                }
-                break;
-            case ROTATE_FRONT:
-                if(pivot.state == VirtualPivot.State.FRONT){
                     virtual.setState(Virtual.State.GOING_DOWN);
-                    transferState = TransferState.VIRTUAL_DOWN;
-                }
-            case VIRTUAL_DOWN:
-                if(virtual.state == Virtual.State.DOWN){
-                    claw.setState(Claw.State.MOPENING);
+                    pivot.setState(VirtualPivot.State.RFRONT);
                     transferState = TransferState.OPEN_CLAW;
                 }
                 break;
             case OPEN_CLAW:
-                if(claw.state == Claw.State.MOPENED){
-                    claw.state = Claw.State.OPENED;
+                if(virtual.state == Virtual.State.DOWN && pivot.state == VirtualPivot.State.FRONT){
+                    claw.setState(Claw.State.OPENED);
                     transferState = TransferState.END;
                 }
+                break;
         }
     }
 

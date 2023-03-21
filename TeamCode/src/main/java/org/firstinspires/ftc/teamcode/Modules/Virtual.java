@@ -2,122 +2,122 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
-import org.opencv.core.Mat;
 
 @Config
 public class Virtual implements IRobotModule {
 
     public static boolean ENABLE_MODULE = true;
 
-    public static String VIRTUAL1_SERVO_NAME = "virtual1";
-    public static String VIRTUAL2_SERVO_NAME = "virtual2";
-    public static boolean reversed1 = false, reversed2 = true;
+
+    public static String VIRTUAL_NAME = "virtual";
+    public static boolean reversed = false;
+    public int ground;
 
     HardwareMap hm;
     NanoClock nanoClock;
 
-    Servo virtual1, virtual2;
+    DcMotorEx virtual;
 
-    public static double stack1 = 0.78, stack2 = 0.72, stack3 = 0.68, stack4 = 0.64, stack5 = 0.6;
-    public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
+    public static int stack1 = 0, stack2 = 0, stack3 = 0, stack4 = 0, stack5 = 0;
+    public static int[] stack = {stack1, stack2, stack3, stack4, stack5};
     public static int stackIndex = 0;
-    public static double downPosition = stack[stackIndex], hoverPosition=0.74, lowPosition = 0.39, rotatePosition=0.21, transferPosition=0.13;
-    public static double servoSpeed = 1;
-    public double lastPos;
-    public static double debugCounter;
+    public static int downPosition = stack[stackIndex], hoverPosition = 0, lowPosition = 0, transferPosition = 0;
+    public double target = downPosition;
 
-    public enum State {
-        DOWN(downPosition), HOVER(hoverPosition), LOW(lowPosition), ROTATE(rotatePosition), TRANSFER(transferPosition),
-        GOING_DOWN(downPosition), GOING_HOVER(hoverPosition), GOING_LOW(lowPosition), GOING_ROTATE(rotatePosition), GOING_TRANSFER(transferPosition);
+    public static double p,i,d;
 
-        public double pos;
+    PIDController pid = new PIDController(p,i,d);
 
-        State(double pos) {
-            this.pos = pos;
-        }
+    public enum State{
+        GOING_DOWN(downPosition),
+        DOWN(downPosition),
+        GOING_HOVER(hoverPosition),
+        HOVER(hoverPosition),
+        GOING_LOW(lowPosition),
+        LOW(lowPosition),
+        GOING_TRANSFER(transferPosition),
+        TRANSFER(transferPosition);
+
+        public int pos;
+        State(int pos){this.pos = pos;}
     }
 
     public State state;
 
-    public Virtual(HardwareMap hm) {
+    public Virtual(HardwareMap hm, boolean resetEncoders){
         this.hm = hm;
-        init();
+        init(resetEncoders);
     }
 
-    private void init() {
+    void init(boolean resetEncoders){
+        virtual = hm.get(DcMotorEx.class, VIRTUAL_NAME);
+        if(resetEncoders)resetEncoders();
+        if(reversed) virtual.setDirection(DcMotorSimple.Direction.REVERSE);
+        virtual.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        state = State.GOING_DOWN;
         nanoClock = NanoClock.system();
-        virtual1 = hm.get(Servo.class, VIRTUAL1_SERVO_NAME);
-        virtual2 = hm.get(Servo.class, VIRTUAL2_SERVO_NAME);
-        if(reversed1) virtual1.setDirection(Servo.Direction.REVERSE);
-        if(reversed2) virtual2.setDirection(Servo.Direction.REVERSE);
     }
 
-    private double elapsedTime(double timeStamp) {
-        return nanoClock.seconds() - timeStamp;
+    void resetEncoders(){
+        virtual.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     double timeOfLastStateChange;
 
-    public void setState(State state) {
-        if (state == this.state) return;
-        debugCounter++;
+    void setState(State state){
+        if(state == this.state) return;
         timeOfLastStateChange = nanoClock.seconds();
         this.state = state;
     }
 
-    private void updateState() {
-        switch (state) {
+    public static int virtualTolerance = 4;
+
+    private void updateState(){
+        switch (state){
             case GOING_DOWN:
-            case GOING_HOVER:
-            case GOING_LOW:
-            case GOING_ROTATE:
-            case GOING_TRANSFER:
-                if(elapsedTime(timeOfLastStateChange)*servoSpeed >= Math.abs(lastPos - state.pos))
-                    switch (state){
-                        case GOING_DOWN:
-                            setState(State.DOWN);
-                            break;
-                        case GOING_HOVER:
-                            setState(State.HOVER);
-                            break;
-                        case GOING_LOW:
-                            setState(State.LOW);
-                            break;
-                        case GOING_ROTATE:
-                            setState(State.ROTATE);
-                            break;
-                        case GOING_TRANSFER:
-                            setState(State.TRANSFER);
-                            break;
-                    }
+                if(Math.abs(virtual.getCurrentPosition() - downPosition) <= virtualTolerance)
+                    setState(State.DOWN);
                 break;
-            case DOWN:
-            case HOVER:
-            case LOW:
-            case ROTATE:
-            case TRANSFER:
-                lastPos = state.pos;
+            case GOING_HOVER:
+                if(Math.abs(virtual.getCurrentPosition() - hoverPosition) <= virtualTolerance)
+                    setState(State.HOVER);
+                break;
+            case GOING_LOW:
+                if(Math.abs(virtual.getCurrentPosition() - lowPosition) <= virtualTolerance)
+                    setState(State.LOW);
+                break;
+            case GOING_TRANSFER:
+                if(Math.abs(virtual.getCurrentPosition() - transferPosition) <= virtualTolerance)
+                    setState(State.TRANSFER);
+                break;
         }
     }
 
-    private void updateTargetPosition() {
-        virtual1.setPosition(state.pos);
-        virtual2.setPosition(state.pos);
+    void updateMotors(){
+        target = state.pos + ground;
+
+        pid.setPID(p,i,d);
+
+        double power = pid.calculate(virtual.getCurrentPosition(), target);
+
+        virtual.setPower(power);
     }
 
     @Override
-    public void atStart() {
-        setState(State.DOWN);
+    public void atStart(){
+        setState(State.GOING_DOWN);
     }
 
     @Override
     public void loop() {
         updateState();
-        updateTargetPosition();
+        updateMotors();
     }
 }
-
