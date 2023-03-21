@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -18,7 +19,6 @@ public class Lift implements IRobotModule {
     public static String LIFT1_NAME = "lift1";
     public static String LIFT2_NAME = "lift2";
     public static boolean reversed1 = true, reversed2 = false;
-    public static boolean resetEncoders;
     public int ground;
 
     HardwareMap hm;
@@ -27,7 +27,11 @@ public class Lift implements IRobotModule {
     DcMotorEx lift1, lift2;
 
     public static int downPosition = 0, lowPosition = 0, midPosition = 540, highPosition=932;
-    public static double liftPower = 1;
+    public double target = downPosition;
+
+    public static double p,i,d;
+
+    PIDController pid = new PIDController(p,i,d);
 
     public enum State{
         DOWN(downPosition),
@@ -55,14 +59,9 @@ public class Lift implements IRobotModule {
         lift2 = hm.get(DcMotorEx.class, LIFT2_NAME);
         if(resetEncoders)resetEncoders();
         if(reversed1) lift1.setDirection(DcMotorSimple.Direction.REVERSE);
-        lift1.setPower(liftPower);
-        lift1.setTargetPosition(lift1.getCurrentPosition());
-        lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if(reversed2) lift2.setDirection(DcMotorSimple.Direction.REVERSE);
-        lift2.setPower(liftPower);
-        lift2.setTargetPosition(lift2.getCurrentPosition());
-        lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         state = State.GOING_DOWN;
         nanoClock = NanoClock.system();
     }
@@ -103,9 +102,15 @@ public class Lift implements IRobotModule {
         }
     }
 
-    void updateTargetPositions(){
-        lift1.setTargetPosition(state.pos + ground);
-        lift2.setTargetPosition(state.pos + ground);
+    void updateMotors(){
+        target = state.pos + ground;
+
+        pid.setPID(p,i,d);
+
+        double power = pid.calculate(lift1.getCurrentPosition(), target);
+
+        lift1.setPower(power);
+        lift2.setPower(power);
     }
 
     @Override
@@ -116,6 +121,6 @@ public class Lift implements IRobotModule {
     @Override
     public void loop() {
         updateState();
-        updateTargetPositions();
+        updateMotors();
     }
 }
