@@ -159,7 +159,7 @@ public class Intake implements IRobotModule {
                 }
                 break;
             case LATCH_OPEN_PIVOT_BACK_VIRTUAL_TO_TRANSFER:
-                if(virtual.virtualEncoder.getCurrentPosition() >= Virtual.rotatePositionFront && !rotated){
+                if(virtual.virtualEncoder.getCurrentPosition() >= Virtual.rotatePositionFromFrontE && !rotated){
                     rotated = true;
                     pivot.setState(VirtualPivot.State.RBACK);
                 }
@@ -182,7 +182,7 @@ public class Intake implements IRobotModule {
                 }
                 break;
             case VIRTUAL_DOWN_PIVOT_FRONT:
-                if(virtual.virtualEncoder.getCurrentPosition() <= Virtual.rotatePositionBack && !rotated){
+                if(virtual.virtualEncoder.getCurrentPosition() <= Virtual.rotatePositionFromBackE && !rotated){
                     pivot.setState(VirtualPivot.State.RFRONT);
                     rotated = true;
                 }

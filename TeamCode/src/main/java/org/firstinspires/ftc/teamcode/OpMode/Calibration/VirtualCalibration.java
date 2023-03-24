@@ -20,16 +20,10 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 @TeleOp(group = "Calibration", name = "virtual")
 public class VirtualCalibration extends LinearOpMode {
 
-    DcMotorEx virtual;
+    Servo virtual1, virtual2;
     DcMotorEx encoder;
 
-    public static double TICKS_PER_REV = 8192;
-    public static int offset = -1100;
-
-    int pos = 0;
-    int tpos = 0;
-
-    public static double p = 0.002,i = 0,d = 0.00005,f=0.125;
+    double pos = 0.5;
 
     FtcDashboard dash;
 
@@ -39,41 +33,36 @@ public class VirtualCalibration extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
 
-        encoder = hardwareMap.get(DcMotorEx.class, "encoder");
-        virtual = hardwareMap.get(DcMotorEx.class, "virtual");
-        virtual.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        virtual.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        virtual.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        encoder = hardwareMap.get(DcMotorEx.class, Virtual.VIRTUAL_ENCODER_NAME);
+        encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         encoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        virtual.setDirection(DcMotorSimple.Direction.REVERSE);
-        encoder.setDirection(DcMotorSimple.Direction.REVERSE);
-//        virtual.setPower(Virtual.virtualPower);
-//        virtual.setTargetPosition(0);
-//        virtual.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(Virtual.reversedEnc) encoder.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        PIDController pid = new PIDController(p,i,d);
+        virtual1 = hardwareMap.get(Servo.class, Virtual.VIRTUAL_LEFT_NAME);
+        virtual2 = hardwareMap.get(Servo.class, Virtual.VIRTUAL_RIGHT_NAME);
+        if(Virtual.reversed1) virtual1.setDirection(Servo.Direction.REVERSE);
+        if(Virtual.reversed2) virtual2.setDirection(Servo.Direction.REVERSE);
+
+        virtual1.setPosition(pos);
+        virtual2.setPosition(pos);
 
         waitForStart();
 
         while(opModeIsActive()){
-//            double power = 0;
-            if(gamepad1.dpad_up)pos+=10;
-            if(gamepad1.dpad_down)pos-=10;
+            if(gamepad1.dpad_up)pos+=0.0001;
+            if(gamepad1.dpad_down)pos-=0.0001;
 
-            if(gamepad1.y) tpos = pos;
-
-            pid.setPID(p,i,d);
-//            pid.setTolerance(64);
-            double power = pid.calculate(encoder.getCurrentPosition(), tpos);
-            power += f*Math.cos((encoder.getCurrentPosition() + offset)/TICKS_PER_REV * 2*Math.PI);
-
-            virtual.setPower((double)((int)(power*1000))/1000.0);
-//            virtual.setTargetPosition(pos);
+            virtual1.setPosition(pos);
+            virtual2.setPosition(pos);
 
             telemetry.addData("pos", pos);
-            telemetry.addData("current pos", encoder.getCurrentPosition());
-            telemetry.addData("power", (double)((int)(power*1000))/1000.0);
-            telemetry.addData("feedforward", f*Math.cos((encoder.getCurrentPosition() + offset)/TICKS_PER_REV * 2*Math.PI));
+            telemetry.addData("current encoder pos", encoder.getCurrentPosition());
+
+
+            telemetry.addLine("PRIMA LINIE E POZITIA SERVOULUI SI A DOUA A ENCODERULUI, INLOCUIESTE IN COD PT CE POZITIE VREI SA FIE");
+            telemetry.addLine("PUNE Virtual.rotatePositionFromFrontE SI Virtual.rotatePositionFromBackE PE LA MIJLOC INTRE DOWN SI TRANSFER SI CALIBREZ EU MAI BINE MAINE DACA NU E NEVOIE");
+            telemetry.addLine("AI VARIABILE BOOLEAN DE REVERSE DACA E NEVOIE FOLOSESTELE");
+
             telemetry.update();
         }
     }
