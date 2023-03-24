@@ -19,17 +19,20 @@ public class Lift implements IRobotModule {
     public static String LIFT1_NAME = "lift1";
     public static String LIFT2_NAME = "lift2";
     public static boolean reversed1 = true, reversed2 = false;
-    public int ground;
+    public int ground = 0;
 
     HardwareMap hm;
     NanoClock nanoClock;
 
-    DcMotorEx lift1, lift2;
+    public DcMotorEx lift1, lift2;
 
-    public static int downPosition = 0, lowPosition = 0, midPosition = 540, highPosition=932;
-    public double target = downPosition;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 540, highPosition=925;
+    public int target = downPosition;
+    public static double liftPower = 1;
 
-    public static double p,i,d;
+    public static double p = 0.000028,i = 0.001,d = 0.000028;
+    public static double f = 0;
+
 
     PIDController pid = new PIDController(p,i,d);
 
@@ -43,7 +46,7 @@ public class Lift implements IRobotModule {
         GOING_MID(midPosition),
         GOING_HIGH(highPosition);
 
-        int pos;
+        public int pos;
         State(int pos){this.pos = pos;}
     }
 
@@ -59,9 +62,16 @@ public class Lift implements IRobotModule {
         lift2 = hm.get(DcMotorEx.class, LIFT2_NAME);
         if(resetEncoders)resetEncoders();
         if(reversed1) lift1.setDirection(DcMotorSimple.Direction.REVERSE);
-        lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift1.setPower(liftPower);
+        lift1.setTargetPosition(downPosition);
+        lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift1.setTargetPositionTolerance(10);
         if(reversed2) lift2.setDirection(DcMotorSimple.Direction.REVERSE);
-        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift2.setPower(liftPower);
+        lift2.setTargetPosition(downPosition);
+        lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift2.setTargetPositionTolerance(10);
+
         state = State.GOING_DOWN;
         nanoClock = NanoClock.system();
     }
@@ -84,19 +94,19 @@ public class Lift implements IRobotModule {
     private void updateState(){
         switch (state){
             case GOING_DOWN:
-                if(Math.abs(lift1.getCurrentPosition() - downPosition) <= liftTolerance && Math.abs(lift2.getCurrentPosition() - downPosition) <= liftTolerance)
+                if(Math.abs(lift1.getCurrentPosition() - state.pos) <= liftTolerance && Math.abs(lift2.getCurrentPosition() - state.pos) <= liftTolerance)
                     setState(State.DOWN);
                 break;
             case GOING_LOW:
-                if(Math.abs(lift1.getCurrentPosition() - lowPosition) <= liftTolerance && Math.abs(lift2.getCurrentPosition() - lowPosition) <= liftTolerance)
+                if(Math.abs(lift1.getCurrentPosition() - state.pos) <= liftTolerance && Math.abs(lift2.getCurrentPosition() - state.pos) <= liftTolerance)
                     setState(State.LOW);
                 break;
             case GOING_MID:
-                if(Math.abs(lift1.getCurrentPosition() - midPosition) <= liftTolerance && Math.abs(lift2.getCurrentPosition() - midPosition) <= liftTolerance)
+                if(Math.abs(lift1.getCurrentPosition() - state.pos) <= liftTolerance && Math.abs(lift2.getCurrentPosition() - state.pos) <= liftTolerance)
                     setState(State.MID);
                 break;
             case GOING_HIGH:
-                if(Math.abs(lift1.getCurrentPosition() - highPosition) <= liftTolerance && Math.abs(lift2.getCurrentPosition() - highPosition) <= liftTolerance)
+                if(Math.abs(lift1.getCurrentPosition() - state.pos) <= liftTolerance && Math.abs(lift2.getCurrentPosition() - state.pos) <= liftTolerance)
                     setState(State.HIGH);
                 break;
         }
@@ -109,8 +119,11 @@ public class Lift implements IRobotModule {
 
         double power = pid.calculate(lift1.getCurrentPosition(), target);
 
-        lift1.setPower(power);
-        lift2.setPower(power);
+//        lift1.setPower(f +power);
+//        lift2.setPower(f + power);
+
+        lift1.setTargetPosition(target);
+        lift2.setTargetPosition(target);
     }
 
     @Override

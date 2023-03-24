@@ -50,6 +50,9 @@ public class RobotModules {
         tele.addData("Pivot state", intake.pivot.state);
         tele.addData("Guide distance", distanceSensor.value);
         tele.addData("Stack index", Virtual.stackIndex);
+        tele.addData("Lift current position", outtake.lift.lift1.getCurrentPosition());
+        tele.addData("Lift target position", outtake.lift.state.pos + outtake.lift.ground);
+        tele.addData("Lift ground position", outtake.lift.ground);
     }
 
     public void buildList(){

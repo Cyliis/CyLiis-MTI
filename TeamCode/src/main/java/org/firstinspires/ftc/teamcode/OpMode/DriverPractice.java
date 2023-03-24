@@ -71,7 +71,6 @@ public class DriverPractice extends LinearOpMode {
             tiedBehaviour.loop();
 
             telemetry.addData("Loops/sec" , (int)(1000)/(nanoClock.seconds()*1000 - timeMs));
-            telemetry.addData("Virtual last pos", robotModules.virtual.lastPos);
             telemetry.addData("Imu value", driveTrain.imuValue);
             telemetry.addData("Claw debug", robotModules.claw.debugCount);
             robotModules.telemetry(telemetry);

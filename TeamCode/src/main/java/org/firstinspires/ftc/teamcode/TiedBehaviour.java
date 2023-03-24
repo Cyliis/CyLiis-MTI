@@ -32,7 +32,7 @@ public class TiedBehaviour {
     }
 
     private void autoClose(){
-        if(robot.intake.state == Intake.State.OPENED && robot.distanceSensor.value < 35 && Virtual.stackIndex == 0){
+        if(robot.intake.state == Intake.State.OPENED && robot.distanceSensor.value < 36 && Virtual.stackIndex == 0){
             robot.intake.setState(Intake.State.CLOSING);
         }
     }

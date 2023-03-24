@@ -64,7 +64,7 @@ public class GamepadControl {
         if(!Outtake.ENABLE_MODULE)return;
         if(robot.intake.state== Intake.State.GOING_LOW || robot.intake.state == Intake.State.LOW
                 || robot.intake.state== Intake.State.RELEASED_LOW || robot.intake.state== Intake.State.GOING_DOWN_FROM_LOW)return;
-        if(robot.intake.transferState != Intake.TransferState.END && robot.intake.transferState != Intake.TransferState.OPEN_CLAW && robot.intake.transferState != Intake.TransferState.VIRTUAL_DOWN) return;
+        if(robot.intake.transferState != Intake.TransferState.END && robot.intake.transferState != Intake.TransferState.OPEN_CLAW && robot.intake.transferState != Intake.TransferState.VIRTUAL_DOWN_PIVOT_FRONT) return;
         if(stickyGamepad2.dpad_right || stickyGamepad2.dpad_left) robot.outtake.setState(Outtake.State.GOING_MID);
         if(stickyGamepad2.dpad_up) robot.outtake.setState(Outtake.State.GOING_HIGH);
         if(stickyGamepad2.x) robot.outtake.setState(Outtake.State.GOING_DOWN);

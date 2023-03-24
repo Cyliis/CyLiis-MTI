@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.OpMode.Calibration;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,8 +13,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Modules.Lift;
 import org.firstinspires.ftc.teamcode.Utils.StickyGamepad;
 
+@Config
 @TeleOp(group = "Calibration", name = "lift")
 public class LiftCalibration extends LinearOpMode {
+
+    FtcDashboard dash;
 
     DcMotorEx lift1, lift2;
 
@@ -21,13 +27,23 @@ public class LiftCalibration extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        dash = FtcDashboard.getInstance();
+
+        telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
+
         lift1 = hardwareMap.get(DcMotorEx.class, "lift1");
         lift2 = hardwareMap.get(DcMotorEx.class, "lift2");
         lift2.setDirection(DcMotorEx.Direction.REVERSE);
         lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        lift1.setPower(Lift.liftPower);
+        lift2.setPower(Lift.liftPower);
+
+        lift1.setTargetPosition(pos);
+        lift2.setTargetPosition(pos);
 
         PIDController pid = new PIDController(p,i,d);
 
@@ -40,8 +56,11 @@ public class LiftCalibration extends LinearOpMode {
             pid.setPID(p,i,d);
             double power = pid.calculate(lift1.getCurrentPosition(), pos);
 
-            lift1.setPower(power);
-            lift2.setPower(power);
+//            lift1.setPower(power);
+//            lift2.setPower(power);
+
+            lift1.setTargetPosition(pos);
+            lift2.setTargetPosition(pos);
 
             telemetry.addData("pos", pos);
             telemetry.addData("current pos", lift1.getCurrentPosition());

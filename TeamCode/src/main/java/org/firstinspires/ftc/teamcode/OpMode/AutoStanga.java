@@ -227,7 +227,6 @@ public class AutoStanga extends LinearOpMode {
             tiedBehaviour.loop();
 
             telemetry.addData("Loops/sec" , (int)(1000)/(nanoClock.seconds()*1000 - timeMs));
-            telemetry.addData("Virtual last pos", robotModules.virtual.lastPos);
             telemetry.addData("Detectie", result);
             robotModules.telemetry(telemetry);
 
