@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Modules.Claw;
 import org.firstinspires.ftc.teamcode.Modules.DistanceSensor;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
@@ -53,6 +54,8 @@ public class RobotModules {
         tele.addData("Lift current position", outtake.lift.lift1.getCurrentPosition());
         tele.addData("Lift target position", outtake.lift.state.pos + outtake.lift.ground);
         tele.addData("Lift ground position", outtake.lift.ground);
+        tele.addData("Lift1 power draw", outtake.lift.lift1.getCurrent(CurrentUnit.AMPS));
+        tele.addData("Lift2 power draw", outtake.lift.lift2.getCurrent(CurrentUnit.AMPS));
     }
 
     public void buildList(){

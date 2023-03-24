@@ -61,11 +61,13 @@ public class Lift implements IRobotModule {
         lift1 = hm.get(DcMotorEx.class, LIFT1_NAME);
         lift2 = hm.get(DcMotorEx.class, LIFT2_NAME);
         if(resetEncoders)resetEncoders();
+
         if(reversed1) lift1.setDirection(DcMotorSimple.Direction.REVERSE);
         lift1.setPower(liftPower);
         lift1.setTargetPosition(downPosition);
         lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift1.setTargetPositionTolerance(10);
+
         if(reversed2) lift2.setDirection(DcMotorSimple.Direction.REVERSE);
         lift2.setPower(liftPower);
         lift2.setTargetPosition(downPosition);

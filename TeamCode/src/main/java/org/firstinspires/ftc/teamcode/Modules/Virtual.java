@@ -28,13 +28,13 @@ public class Virtual implements IRobotModule {
     Servo virtual1 , virtual2;
     DcMotorEx virtualEncoder;
 
-    public static int stack1 = 0, stack2 = 0, stack3 = 0, stack4 = 0, stack5 = 0;
-    public static int stack1E = 0, stack2E = 0, stack3E = 0, stack4E = 0, stack5E = 0;
-    public static int[] stack = {stack1, stack2, stack3, stack4, stack5};
-    public static int[] stackE = {stack1E, stack2E, stack3E, stack4E, stack5E};
+    public static double stack1 = 0, stack2 = 0, stack3 = 0, stack4 = 0, stack5 = 0;
+    public static double stack1E = 0, stack2E = 0, stack3E = 0, stack4E = 0, stack5E = 0;
+    public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
+    public static double[] stackE = {stack1E, stack2E, stack3E, stack4E, stack5E};
     public static int stackIndex = 0;
-    public static int downPosition = stack[stackIndex], hoverPosition = 0, lowPosition = 0, transferPosition = 0;
-    public static int downPositionE = stackE[stackIndex], hoverPositionE = 0, lowPositionE = 0, transferPositionE = 0, rotatePositionFromFrontE = 0, rotatePositionFromBackE = 0;
+    public static double downPosition = stack[stackIndex], hoverPosition = 0, lowPosition = 0, transferPosition = 0;
+    public static double downPositionE = stackE[stackIndex], hoverPositionE = 0, lowPositionE = 0, transferPositionE = 0, rotatePositionFromFrontE = 0, rotatePositionFromBackE = 0;
 
     public enum State{
         GOING_DOWN(downPosition, downPositionE),
@@ -46,8 +46,8 @@ public class Virtual implements IRobotModule {
         GOING_TRANSFER(transferPosition, transferPositionE),
         TRANSFER(transferPosition, transferPositionE);
 
-        public int pos, encPos;
-        State(int pos, int encPos){
+        public double pos, encPos;
+        State(double pos, double encPos){
             this.pos = pos;
             this.encPos = encPos;
         }
