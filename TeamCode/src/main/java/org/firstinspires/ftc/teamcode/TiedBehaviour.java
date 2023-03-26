@@ -40,6 +40,8 @@ public class TiedBehaviour {
     private void stack(){
         Virtual.State.DOWN.pos =  Virtual.stack[Virtual.stackIndex];
         Virtual.State.GOING_DOWN.pos = Virtual.stack[Virtual.stackIndex];
+        Virtual.State.DOWN.encPos =  Virtual.stackE[Virtual.stackIndex];
+        Virtual.State.GOING_DOWN.encPos = Virtual.stackE[Virtual.stackIndex];
         if(Virtual.stackIndex != 0){
             Virtual.State.HOVER.pos = Virtual.lowPosition;
             Virtual.State.GOING_HOVER.pos = Virtual.lowPosition;

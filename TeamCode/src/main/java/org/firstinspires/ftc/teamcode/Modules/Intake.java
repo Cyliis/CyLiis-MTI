@@ -53,6 +53,9 @@ public class Intake implements IRobotModule {
                 claw.setState(Claw.State.OPENING);
                 break;
             case GOING_DOWN_FROM_LOW:
+                if(uta.state!= UtaUta.State.LEVEL && uta.state != UtaUta.State.LEVELING) uta.setState(UtaUta.State.LEVELING);
+                virtual.setState(Virtual.State.GOING_DOWN);
+                break;
             case MOPENING:
                 if(uta.state!= UtaUta.State.LEVEL && uta.state != UtaUta.State.LEVELING) uta.setState(UtaUta.State.LEVELING);
                 virtual.setState(Virtual.State.GOING_DOWN);
@@ -119,8 +122,7 @@ public class Intake implements IRobotModule {
                 }
                 break;
             case GOING_DOWN_FROM_LOW:
-                if(virtual.state == Virtual.State.DOWN && claw.state == Claw.State.MOPENED){
-                    claw.setState(Claw.State.OPENED);
+                if(virtual.state == Virtual.State.DOWN){
                     setState(State.OPENED);
                 }
                 break;

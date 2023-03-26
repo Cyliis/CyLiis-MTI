@@ -30,9 +30,7 @@ public class GamepadControl {
 
     private void intakeGamepadControl(){
         if(!Intake.ENABLE_MODULE) return;
-        if(stickyGamepad2.a && robot.intake.transferState == Intake.TransferState.END && robot.outtake.state == Outtake.State.DOWN
-                && robot.intake.state!= Intake.State.GOING_LOW && robot.intake.state != Intake.State.LOW
-        && robot.intake.state!= Intake.State.RELEASED_LOW && robot.intake.state!= Intake.State.GOING_DOWN_FROM_LOW) robot.intake.setState(Intake.State.TRANSFERING);
+        if(stickyGamepad1.x && (robot.intake.virtual.state == Virtual.State.DOWN || robot.virtual.state == Virtual.State.HOVER || robot.virtual.state == Virtual.State.GOING_HOVER)) robot.intake.setState(Intake.State.TRANSFERING);
         if(stickyGamepad1.a){
             switch (robot.intake.state){
                 case CLOSED:

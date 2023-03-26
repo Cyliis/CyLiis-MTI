@@ -18,7 +18,7 @@ public class Virtual implements IRobotModule {
 
     public static String VIRTUAL_LEFT_NAME = "virtual1";
     public static String VIRTUAL_RIGHT_NAME = "virtual2";
-    public static String VIRTUAL_ENCODER_NAME = "encoder";
+    public static String VIRTUAL_ENCODER_NAME = "mfr";
     public static boolean reversed1 = false , reversed2 = true, reversedEnc = true;
     public static double TICKS_PER_REV = 8192;
 
@@ -28,13 +28,13 @@ public class Virtual implements IRobotModule {
     Servo virtual1 , virtual2;
     DcMotorEx virtualEncoder;
 
-    public static double stack1 = 0, stack2 = 0, stack3 = 0, stack4 = 0, stack5 = 0;
-    public static double stack1E = 0, stack2E = 0, stack3E = 0, stack4E = 0, stack5E = 0;
+    public static double stack1 = 0.2, stack2 = 0.235, stack3 = 0.27, stack4 = 0.32, stack5 = 0.36;
+    public static double stack1E = 80, stack2E = 380, stack3E = 584, stack4E = 860, stack5E = 1087;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
     public static double[] stackE = {stack1E, stack2E, stack3E, stack4E, stack5E};
     public static int stackIndex = 0;
-    public static double downPosition = stack[stackIndex], hoverPosition = 0, lowPosition = 0, transferPosition = 0;
-    public static double downPositionE = stackE[stackIndex], hoverPositionE = 0, lowPositionE = 0, transferPositionE = 0, rotatePositionFromFrontE = 0, rotatePositionFromBackE = 0;
+    public static double downPosition = stack[stackIndex], hoverPosition = 0.27, lowPosition = 0.53, transferPosition = 0.85;
+    public static double downPositionE = stackE[stackIndex], hoverPositionE = 460, lowPositionE = 2170, transferPositionE = 4260, rotatePositionFromFrontE = 1900, rotatePositionFromBackE = 3000;
 
     public enum State{
         GOING_DOWN(downPosition, downPositionE),

@@ -66,13 +66,14 @@ public class Lift implements IRobotModule {
         lift1.setPower(liftPower);
         lift1.setTargetPosition(downPosition);
         lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift1.setTargetPositionTolerance(10);
+//        lift1.setTargetPositionTolerance(10);
 
         if(reversed2) lift2.setDirection(DcMotorSimple.Direction.REVERSE);
         lift2.setPower(liftPower);
         lift2.setTargetPosition(downPosition);
         lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift2.setTargetPositionTolerance(10);
+        lift2.setTargetPositionTolerance(20);
+//        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         state = State.GOING_DOWN;
         nanoClock = NanoClock.system();
@@ -126,6 +127,7 @@ public class Lift implements IRobotModule {
 
         lift1.setTargetPosition(target);
         lift2.setTargetPosition(target);
+//        lift2.setVelocity(lift1.getVelocity());
     }
 
     @Override

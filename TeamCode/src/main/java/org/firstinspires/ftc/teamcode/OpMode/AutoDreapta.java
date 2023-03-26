@@ -38,7 +38,7 @@ public class AutoDreapta extends LinearOpMode {
     RobotModules robotModules;
     TiedBehaviour tiedBehaviour;
 
-    AprilTagDetector detector;
+//    AprilTagDetector detector;
 
     public void initialize(){
         PhotonCore.enable();
@@ -54,7 +54,7 @@ public class AutoDreapta extends LinearOpMode {
         robotModules = new RobotModules(hardwareMap, true);
         tiedBehaviour = new TiedBehaviour(robotModules);
 
-        detector = new AprilTagDetector(hardwareMap, telemetry);
+//        detector = new AprilTagDetector(hardwareMap, telemetry);
 
         nanoClock = NanoClock.system();
 
@@ -80,92 +80,7 @@ public class AutoDreapta extends LinearOpMode {
 
     TrajectorySequence mainTrajectory(){
         return driveTrain.trajectorySequenceBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(27, 6.5, 0))
-                .lineToLinearHeading(coneRelease[0])
-                .UNSTABLE_addTemporalMarkerOffset(-1.5,()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_HIGH);
-                })
-                .addTemporalMarker(()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_DOWN);
-                    Virtual.stackIndex = 4;
-                })
-                .back(5)
-                .lineToLinearHeading(conePickup[0])
-                .addTemporalMarker(()->{
-                    robotModules.intake.setState(Intake.State.MCLOSING);
-                })
-                .waitSeconds(0.1)
-                .forward(5)
-                .addTemporalMarker(()->{
-                    robotModules.intake.setState(Intake.State.TRANSFERING);
-                })
-                .waitSeconds(0.9)
-                .lineToLinearHeading(coneRelease[1])
-                .UNSTABLE_addTemporalMarkerOffset(-1.2,()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_HIGH);
-                })
-                .waitSeconds(0.3)
-                .addTemporalMarker(()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_DOWN);
-                    Virtual.stackIndex = 3;
-                })
-                .back(5)
-                .lineToLinearHeading(conePickup[1])
-                .addTemporalMarker(()->{
-                    robotModules.intake.setState(Intake.State.MCLOSING);
-                })
-                .waitSeconds(0.1)
-                .forward(5)
-                .addTemporalMarker(()->{
-                    robotModules.intake.setState(Intake.State.TRANSFERING);
-                })
-                .waitSeconds(0.9)
-                .lineToLinearHeading(coneRelease[2])
-                .UNSTABLE_addTemporalMarkerOffset(-1.2,()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_HIGH);
-                })
-                .addTemporalMarker(()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_DOWN);
-                    Virtual.stackIndex = 2;
-                })
-                .back(5)
-                .lineToLinearHeading(conePickup[2])
-                .addTemporalMarker(()->{
-                    robotModules.intake.setState(Intake.State.MCLOSING);
-                })
-                .waitSeconds(0.1)
-                .forward(5)
-                .addTemporalMarker(()->{
-                    robotModules.intake.setState(Intake.State.TRANSFERING);
-                })
-                .waitSeconds(0.9)
-                .lineToLinearHeading(coneRelease[3])
-                .UNSTABLE_addTemporalMarkerOffset(-1.2,()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_HIGH);
-                })
-                .addTemporalMarker(()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_DOWN);
-                    Virtual.stackIndex = 1;
-                })
-                .back(5)
-                .lineToLinearHeading(conePickup[3])
-                .addTemporalMarker(()->{
-                    robotModules.intake.setState(Intake.State.MCLOSING);
-                })
-                .forward(12)
-                .addTemporalMarker(()->{
-                    robotModules.intake.setState(Intake.State.TRANSFERING);
-                })
-                .waitSeconds(0.9)
-                .lineToLinearHeading(coneRelease[4])
-                .UNSTABLE_addTemporalMarkerOffset(-1.2,()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_HIGH);
-                })
-                .addTemporalMarker(()->{
-                    robotModules.outtake.setState(Outtake.State.GOING_DOWN);
-                    Virtual.stackIndex = 0;
-                })
-                .back(5)
+                .lineToLinearHeading(new Pose2d(16, 6.5, 0))
                 .build();
     }
 
@@ -195,14 +110,14 @@ public class AutoDreapta extends LinearOpMode {
     public void runOpMode()  {
         initialize();
         while(!opModeIsActive() && !isStopRequested()){
-            detector.loop();
-            if(detector.getResult() != AprilTagDetector.DetectionResult.UNKNOWN && detector.getResult() != null) result = detector.getResult();
+//            detector.loop();
+//            if(detector.getResult() != AprilTagDetector.DetectionResult.UNKNOWN && detector.getResult() != null) result = detector.getResult();
             telemetry.update();
         }
 
         waitForStart();
 
-        detector.closeCamera();
+//        detector.closeCamera();
 
         for(LynxModule hub:hubs)
             hub.clearBulkCache();
