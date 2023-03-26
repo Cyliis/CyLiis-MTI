@@ -40,7 +40,7 @@ public class OpMode extends LinearOpMode {
         for(LynxModule hub:hubs)
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 
-        if(DriveTrain.ENABLE_MODULE)driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS);
+        if(DriveTrain.ENABLE_MODULE)driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS, this);
         robotModules = new RobotModules(hardwareMap, false);
         gamepadControl = new GamepadControl(gamepad1, gamepad2, robotModules);
         tiedBehaviour = new TiedBehaviour(robotModules, driveTrain);
@@ -71,7 +71,7 @@ public class OpMode extends LinearOpMode {
             tiedBehaviour.loop();
 
             telemetry.addData("Loops/sec" , (int)(1000)/(nanoClock.seconds()*1000 - timeMs));
-            telemetry.addData("Imu value", driveTrain.imuValue);
+            telemetry.addData("Imu value", driveTrain.imu.getHeading());
             telemetry.addData("Claw debug", robotModules.claw.debugCount);
             robotModules.telemetry(telemetry);
 

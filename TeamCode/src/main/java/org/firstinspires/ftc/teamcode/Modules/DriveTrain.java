@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Utils.DumbIMU;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
 
@@ -41,23 +42,21 @@ public class DriveTrain implements IRobotModule {
     double forward= 0, right = 0, rotateClockwise = 0;
     double angleAtReset = 0;
 
-    private BNO055IMU imu = null;
+    public DumbIMU imu;
 
     final private HardwareMap hm;
 
     final private Gamepad gamepad;
 
-    private boolean imuInitialised;
+    private final LinearOpMode op;
 
-    public double imuValue = 0;
-
-
-    public DriveTrain(HardwareMap hm, Gamepad gamepad, DriveMode mode){
+    public DriveTrain(HardwareMap hm, Gamepad gamepad, DriveMode mode, LinearOpMode op){
         this.hm = hm;
         this.gamepad = gamepad;
         DRIVE_MODE = mode;
+        this.op = op;
         init();
-//        thread.start();
+        imu = new DumbIMU(hm, op);
     }
 
     private void init(){
@@ -75,19 +74,10 @@ public class DriveTrain implements IRobotModule {
 //        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        reset_imu();
     }
 
-    private void reset_imu(){
-
-            imu = hm.get(BNO055IMU.class, "imu");
-            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-            imuInitialised = imu.initialize(parameters);
-
-        angleAtReset = LAST_ANGLE_READ;
-
+    private void reset_imu(LinearOpMode op){
+        imu.init(op);
     }
 
     void boost(){
@@ -106,11 +96,15 @@ public class DriveTrain implements IRobotModule {
         else if(!gamepad.y) changeNotPressed = true;
     }
 
+    boolean np2 = true;
+
     void reset(){
-        if(gamepad.left_bumper && gamepad.right_bumper) {
+        if(gamepad.back && np2) {
+            np2 = false;
             LAST_ANGLE_READ = 0;
-            reset_imu();
+            reset_imu(op);
         }
+        if(!gamepad.back) np2 = false;
     }
 
     private void driveNormaly(){
@@ -124,7 +118,7 @@ public class DriveTrain implements IRobotModule {
 
         this.rotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
 
-        double angle = imuInitialised ? imuValue : 0;
+        double angle = imu.getHeading();
 
         LAST_ANGLE_READ = angle;
         angle += angleAtReset;
@@ -158,8 +152,6 @@ public class DriveTrain implements IRobotModule {
         change();
         boost();
         reset();
-
-        imuValue = imu.getAngularOrientation().firstAngle;
 
         if(DRIVE_MODE == DriveMode.HEADLESS) driveHeadlessly();
         else driveNormaly();
