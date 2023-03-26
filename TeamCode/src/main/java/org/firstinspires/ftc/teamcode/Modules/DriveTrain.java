@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Utils.DumbIMU;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
 
@@ -41,7 +42,7 @@ public class DriveTrain implements IRobotModule {
     double forward= 0, right = 0, rotateClockwise = 0;
     double angleAtReset = 0;
 
-    private BNO055IMU imu = null;
+    private DumbIMU imu = null;
 
     final private HardwareMap hm;
 
@@ -80,14 +81,9 @@ public class DriveTrain implements IRobotModule {
     }
 
     private void reset_imu(){
-
-            imu = hm.get(BNO055IMU.class, "imu");
-            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-            parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-            imuInitialised = imu.initialize(parameters);
-
+        if(imu == null) imu = new DumbIMU(hm);
+        imu.init();
         angleAtReset = LAST_ANGLE_READ;
-
     }
 
     void boost(){
@@ -155,11 +151,12 @@ public class DriveTrain implements IRobotModule {
 
     @Override
     public void loop() {
+        imu.loop();
         change();
         boost();
         reset();
 
-        imuValue = imu.getAngularOrientation().firstAngle;
+        imuValue = imu.heading;
 
         if(DRIVE_MODE == DriveMode.HEADLESS) driveHeadlessly();
         else driveNormaly();
