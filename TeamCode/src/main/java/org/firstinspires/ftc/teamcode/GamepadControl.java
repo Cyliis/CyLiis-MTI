@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Modules.Claw;
 import org.firstinspires.ftc.teamcode.Modules.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Latch;
 import org.firstinspires.ftc.teamcode.Modules.Outtake;
 import org.firstinspires.ftc.teamcode.Modules.Virtual;
 import org.firstinspires.ftc.teamcode.Utils.StickyGamepad;
@@ -37,6 +38,8 @@ public class GamepadControl {
                 case CLOSING:
                 case MCLOSED:
                 case MCLOSING:
+                case MHOVERING:
+                case HOVERING:
                     robot.intake.setState(Intake.State.MOPENING);
                     break;
                 case OPENED:
@@ -46,6 +49,10 @@ public class GamepadControl {
                     robot.intake.setState(Intake.State.MCLOSING);
                     break;
             }
+        }
+        if(stickyGamepad1.dpad_down){
+            robot.intake.transferState = Intake.TransferState.CLOSE_LATCH;
+            robot.intake.latch.setState(Latch.State.CLOSING);
         }
         if(stickyGamepad2.a){
             if(robot.intake.state == Intake.State.LOW) robot.intake.setState(Intake.State.REALEASING_LOW);
@@ -77,10 +84,10 @@ public class GamepadControl {
     }
 
     private void stackControl(){
-        if(stickyGamepad1.left_bumper){
+        if(stickyGamepad2.left_bumper){
             if(Virtual.stackIndex > 0) Virtual.stackIndex--;
         }
-        if(stickyGamepad1.right_bumper){
+        if(stickyGamepad2.right_bumper){
             if(Virtual.stackIndex < 4) Virtual.stackIndex++;
         }
     }

@@ -10,22 +10,25 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class DumbIMU implements IRobotModule
 {
-    IMU imu;
+    public IMU imu;
 
     RevHubOrientationOnRobot orientationOnRobot;
 
     public double heading;
 
+    HardwareMap hm;
 
     public DumbIMU(HardwareMap hm){
+        this.hm = hm;
+        init();
+    }
+
+    public void init(){
         imu = hm.get(IMU.class, "imu");
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
         RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
         this.orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
-    }
-
-    public void init(){
         imu.initialize(new IMU.Parameters(orientationOnRobot));
     }
 

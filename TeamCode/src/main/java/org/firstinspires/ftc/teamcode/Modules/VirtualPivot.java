@@ -20,7 +20,7 @@ public class VirtualPivot implements IRobotModule {
 
     Servo pivot;
 
-    public static double frontPivotPosition = 0.31, backPivotPosition = 1;
+    public static double frontPivotPosition = 0.33, backPivotPosition = 1;
     public static double frontRotationTime = 0.1, backRotationTime = 0.1;
 
     public static int debugCounter = 0;

@@ -41,6 +41,7 @@ public class DriveTrain implements IRobotModule {
 
     double forward= 0, right = 0, rotateClockwise = 0;
     double angleAtReset = 0;
+    public double numerOfResets = 0;
 
     private DumbIMU imu = null;
 
@@ -48,7 +49,7 @@ public class DriveTrain implements IRobotModule {
 
     final private Gamepad gamepad;
 
-    private boolean imuInitialised;
+    private boolean imuInitialised = true;
 
     public double imuValue = 0;
 
@@ -82,7 +83,8 @@ public class DriveTrain implements IRobotModule {
 
     private void reset_imu(){
         if(imu == null) imu = new DumbIMU(hm);
-        imu.init();
+        else imu.init();
+        numerOfResets++;
         angleAtReset = LAST_ANGLE_READ;
     }
 

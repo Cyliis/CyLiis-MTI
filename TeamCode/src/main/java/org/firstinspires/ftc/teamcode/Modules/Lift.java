@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
@@ -66,7 +67,10 @@ public class Lift implements IRobotModule {
         lift1.setPower(liftPower);
         lift1.setTargetPosition(downPosition);
         lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        lift1.setTargetPositionTolerance(10);
+        lift1.setTargetPositionTolerance(20);
+        MotorConfigurationType motorConfigurationType = lift1.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        lift1.setMotorType(motorConfigurationType);
 
         if(reversed2) lift2.setDirection(DcMotorSimple.Direction.REVERSE);
         lift2.setPower(liftPower);
@@ -74,6 +78,11 @@ public class Lift implements IRobotModule {
         lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift2.setTargetPositionTolerance(20);
 //        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorConfigurationType = lift2.getMotorType().clone();
+        motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+        lift2.setMotorType(motorConfigurationType);
+
+
 
         state = State.GOING_DOWN;
         nanoClock = NanoClock.system();

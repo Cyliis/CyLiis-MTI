@@ -18,7 +18,7 @@ public class Virtual implements IRobotModule {
 
     public static String VIRTUAL_LEFT_NAME = "virtual1";
     public static String VIRTUAL_RIGHT_NAME = "virtual2";
-    public static String VIRTUAL_ENCODER_NAME = "mfr";
+    public static String VIRTUAL_ENCODER_NAME = "virtualEncoder";
     public static boolean reversed1 = false , reversed2 = true, reversedEnc = true;
     public static double TICKS_PER_REV = 8192;
 
@@ -26,15 +26,15 @@ public class Virtual implements IRobotModule {
     NanoClock nanoClock;
 
     Servo virtual1 , virtual2;
-    DcMotorEx virtualEncoder;
+    public DcMotorEx virtualEncoder;
 
-    public static double stack1 = 0.2, stack2 = 0.235, stack3 = 0.27, stack4 = 0.32, stack5 = 0.36;
+    public static double stack1 = 0.22, stack2 = 0.28, stack3 = 0.32, stack4 = 0.355, stack5 = 0.4;
     public static double stack1E = 80, stack2E = 380, stack3E = 584, stack4E = 860, stack5E = 1087;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
     public static double[] stackE = {stack1E, stack2E, stack3E, stack4E, stack5E};
     public static int stackIndex = 0;
-    public static double downPosition = stack[stackIndex], hoverPosition = 0.27, lowPosition = 0.53, transferPosition = 0.85;
-    public static double downPositionE = stackE[stackIndex], hoverPositionE = 460, lowPositionE = 2170, transferPositionE = 4260, rotatePositionFromFrontE = 1900, rotatePositionFromBackE = 3000;
+    public static double downPosition = stack[stackIndex], hoverPosition = 0.295, lowPosition = 0.58, transferPosition = 0.87;
+    public static double downPositionE = stackE[stackIndex], hoverPositionE = 460, lowPositionE = 2150, transferPositionE = 4150, rotatePositionFromFrontE = 1600, rotatePositionFromBackE = 3000;
 
     public enum State{
         GOING_DOWN(downPosition, downPositionE),

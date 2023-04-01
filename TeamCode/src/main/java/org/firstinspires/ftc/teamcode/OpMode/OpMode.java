@@ -3,12 +3,13 @@ package org.firstinspires.ftc.teamcode.OpMode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
 import org.firstinspires.ftc.teamcode.GamepadControl;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
 import org.firstinspires.ftc.teamcode.RobotModules;
@@ -30,8 +31,9 @@ public class OpMode extends LinearOpMode {
     GamepadControl gamepadControl;
     TiedBehaviour tiedBehaviour;
 
+    Servo odo;
+
     public void initialize(){
-        PhotonCore.enable();
 
         dash = FtcDashboard.getInstance();
 
@@ -45,6 +47,8 @@ public class OpMode extends LinearOpMode {
         gamepadControl = new GamepadControl(gamepad1, gamepad2, robotModules);
         tiedBehaviour = new TiedBehaviour(robotModules, driveTrain);
 
+        odo = hardwareMap.get(Servo.class, "odo");
+        odo.setPosition(0.8);
 
         nanoClock = NanoClock.system();
     }

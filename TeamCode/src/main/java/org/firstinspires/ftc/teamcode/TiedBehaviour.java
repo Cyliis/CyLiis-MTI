@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Modules.Claw;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake;
 import org.firstinspires.ftc.teamcode.Modules.Outtake;
+import org.firstinspires.ftc.teamcode.Modules.UtaUta;
 import org.firstinspires.ftc.teamcode.Modules.Virtual;
 
 @Config
@@ -32,9 +33,9 @@ public class TiedBehaviour {
     }
 
     private void autoClose(){
-        if(robot.intake.state == Intake.State.OPENED && robot.distanceSensor.value < 36 && Virtual.stackIndex == 0){
-            robot.intake.setState(Intake.State.CLOSING);
-        }
+//        if(robot.intake.state == Intake.State.OPENED && robot.distanceSensor.value < 36 && Virtual.stackIndex == 0){
+//            robot.intake.setState(Intake.State.CLOSING);
+//        }
     }
 
     private void stack(){
@@ -52,14 +53,27 @@ public class TiedBehaviour {
         }
     }
 
+    private void tiltToHover(){
+        if(robot.virtual.virtualEncoder.getCurrentPosition() > Virtual.downPositionE + 50 && robot.virtual.virtualEncoder.getCurrentPosition() < Virtual.hoverPositionE - 50)
+        {
+            UtaUta.State.LEVEL.pos = UtaUta.hoverPosition;
+            UtaUta.State.LEVELING.pos = UtaUta.hoverPosition;
+        }
+        else {
+            UtaUta.State.LEVEL.pos = UtaUta.levelPosition;
+            UtaUta.State.LEVELING.pos = UtaUta.levelPosition;
+        }
+    }
+
     public void loop(){
         hoverCone();
         stack();
+//        tiltToHover();
         if(auto) { 
             loopAuto();
             return;
         }
-        autoClose();
+//        autoClose();
     }
 
     private void loopAuto(){
