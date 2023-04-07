@@ -31,7 +31,9 @@ public class GamepadControl {
 
     private void intakeGamepadControl(){
         if(!Intake.ENABLE_MODULE) return;
-        if(stickyGamepad1.x && (robot.intake.virtual.state == Virtual.State.DOWN || robot.virtual.state == Virtual.State.HOVER || robot.virtual.state == Virtual.State.GOING_HOVER)) robot.intake.setState(Intake.State.TRANSFERING);
+        if(stickyGamepad1.x &&
+                (robot.intake.virtual.state == Virtual.State.DOWN || robot.virtual.state == Virtual.State.HOVER || robot.virtual.state == Virtual.State.GOING_HOVER)
+        && robot.outtake.state == Outtake.State.DOWN) robot.intake.setState(Intake.State.TRANSFERING);
         if(stickyGamepad1.a){
             switch (robot.intake.state){
                 case CLOSED:
@@ -51,8 +53,7 @@ public class GamepadControl {
             }
         }
         if(stickyGamepad1.dpad_down){
-            robot.intake.transferState = Intake.TransferState.CLOSE_LATCH;
-            robot.intake.latch.setState(Latch.State.CLOSING);
+            robot.intake.transferState = Intake.TransferState.ABORT;
         }
         if(stickyGamepad2.a){
             if(robot.intake.state == Intake.State.LOW) robot.intake.setState(Intake.State.REALEASING_LOW);
@@ -70,9 +71,10 @@ public class GamepadControl {
         if(robot.intake.state== Intake.State.GOING_LOW || robot.intake.state == Intake.State.LOW
                 || robot.intake.state== Intake.State.RELEASED_LOW || robot.intake.state== Intake.State.GOING_DOWN_FROM_LOW)return;
         if(robot.intake.transferState != Intake.TransferState.END && robot.intake.transferState != Intake.TransferState.OPEN_CLAW && robot.intake.transferState != Intake.TransferState.VIRTUAL_DOWN_PIVOT_FRONT) return;
-        if(stickyGamepad2.dpad_right || stickyGamepad2.dpad_left) robot.outtake.setState(Outtake.State.GOING_MID);
-        if(stickyGamepad2.dpad_up) robot.outtake.setState(Outtake.State.GOING_HIGH);
         if(stickyGamepad2.x) robot.outtake.setState(Outtake.State.GOING_DOWN);
+        if(stickyGamepad2.dpad_left) robot.outtake.setState(Outtake.State.GOING_DOWN_NO_LATCH);
+        if(stickyGamepad2.dpad_right) robot.outtake.setState(Outtake.State.GOING_MID);
+        if(stickyGamepad2.dpad_up) robot.outtake.setState(Outtake.State.GOING_HIGH);
     }
 
     private void sensor(){

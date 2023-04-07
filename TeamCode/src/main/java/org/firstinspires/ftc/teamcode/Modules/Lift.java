@@ -93,7 +93,7 @@ public class Lift implements IRobotModule {
         lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    double timeOfLastStateChange;
+    public double timeOfLastStateChange;
 
     void setState(State state){
         if(state == this.state) return;

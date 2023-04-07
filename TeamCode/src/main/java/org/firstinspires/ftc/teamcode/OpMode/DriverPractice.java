@@ -75,7 +75,6 @@ public class DriverPractice extends LinearOpMode {
 
             telemetry.addData("Loops/sec" , (int)(1000)/(nanoClock.seconds()*1000 - timeMs));
             telemetry.addData("Imu value", driveTrain.imuValue);
-            telemetry.addData("Numer of resets", driveTrain.numerOfResets);
             robotModules.telemetry(telemetry);
 
             telemetry.update();

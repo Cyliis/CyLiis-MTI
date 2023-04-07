@@ -38,7 +38,7 @@ public class Intake implements IRobotModule {
 
     public State state;
 
-    double timeOfLastStateChange;
+    public double timeOfLastStateChange;
 
     public void setState(State state){
         if(state==this.state) return;
@@ -137,7 +137,8 @@ public class Intake implements IRobotModule {
         MOPEN_CLAW,
         VIRTUAL_DOWN_PIVOT_FRONT,
         OPEN_CLAW,
-        END
+        END,
+        ABORT
     }
 
     public TransferState transferState;
@@ -197,6 +198,13 @@ public class Intake implements IRobotModule {
                 if(claw.state == Claw.State.OPENED){
                     transferState = TransferState.END;
                 }
+                break;
+            case ABORT:
+                if(claw.state != Claw.State.OPENED && claw.state != Claw.State.OPENING
+                && claw.state != Claw.State.MOPENED && claw.state != Claw.State.MOPENING) claw.setState(Claw.State.OPENING);
+                if(virtual.state != Virtual.State.DOWN && virtual.state != Virtual.State.GOING_DOWN) virtual.setState(Virtual.State.GOING_DOWN);
+                if(pivot.state != VirtualPivot.State.RFRONT && pivot.state != VirtualPivot.State.FRONT) pivot.setState(VirtualPivot.State.RFRONT);
+                if(virtual.state == Virtual.State.DOWN && pivot.state == VirtualPivot.State.FRONT && (claw.state == Claw.State.OPENED || claw.state == Claw.State.MOPENED)) transferState = TransferState.END;
                 break;
         }
     }

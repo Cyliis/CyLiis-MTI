@@ -44,7 +44,6 @@ public class Outtake implements IRobotModule {
                 lift.setState(Lift.State.GOING_DOWN);
                 break;
             case GOING_DOWN_NO_LATCH:
-                virtual.setState(Virtual.State.GOING_DOWN);
                 lift.setState(Lift.State.GOING_DOWN);
                 break;
             case MID:

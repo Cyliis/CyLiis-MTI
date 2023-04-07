@@ -79,7 +79,7 @@ public class Virtual implements IRobotModule {
 
     double timeOfLastStateChange;
 
-    void setState(State state){
+    public void setState(State state){
         if(state == this.state) return;
         timeOfLastStateChange = nanoClock.seconds();
         this.state = state;

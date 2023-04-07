@@ -17,8 +17,6 @@ public class DriveTrain implements IRobotModule {
 
     public static boolean ENABLE_MODULE = true;
 
-    public static double LAST_ANGLE_READ;
-
     public double multiplier = 0.5;
 
     private final String MOTOR_FRONT_LEFT_NAME = "mfl";
@@ -40,8 +38,6 @@ public class DriveTrain implements IRobotModule {
     Vector movementVector = new Vector(0,0);
 
     double forward= 0, right = 0, rotateClockwise = 0;
-    double angleAtReset = 0;
-    public double numerOfResets = 0;
 
     private DumbIMU imu = null;
 
@@ -49,10 +45,9 @@ public class DriveTrain implements IRobotModule {
 
     final private Gamepad gamepad;
 
-    private boolean imuInitialised = true;
-
     public double imuValue = 0;
 
+    private double headingDelta = 0;
 
     public DriveTrain(HardwareMap hm, Gamepad gamepad, DriveMode mode){
         this.hm = hm;
@@ -78,14 +73,9 @@ public class DriveTrain implements IRobotModule {
 //        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        reset_imu();
-    }
-
-    private void reset_imu(){
-        if(imu == null) imu = new DumbIMU(hm);
-        else imu.init();
-        numerOfResets++;
-        angleAtReset = LAST_ANGLE_READ;
+        imu = new DumbIMU(hm);
+        imu.loop();
+        headingDelta = imu.heading;
     }
 
     void boost(){
@@ -106,8 +96,7 @@ public class DriveTrain implements IRobotModule {
 
     void reset(){
         if(gamepad.left_bumper && gamepad.right_bumper) {
-            LAST_ANGLE_READ = 0;
-            reset_imu();
+            headingDelta = imu.heading;
         }
     }
 
@@ -122,10 +111,7 @@ public class DriveTrain implements IRobotModule {
 
         this.rotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
 
-        double angle = imuInitialised ? imuValue : 0;
-
-        LAST_ANGLE_READ = angle;
-        angle += angleAtReset;
+        double angle = imuValue;
 
         movementVector.set_angle_offset(Math.PI*2.0-angle);
 
@@ -148,7 +134,6 @@ public class DriveTrain implements IRobotModule {
 
     @Override
     public void atStart() {
-
     }
 
     @Override
@@ -158,7 +143,7 @@ public class DriveTrain implements IRobotModule {
         boost();
         reset();
 
-        imuValue = imu.heading;
+        imuValue = imu.heading - headingDelta;
 
         if(DRIVE_MODE == DriveMode.HEADLESS) driveHeadlessly();
         else driveNormaly();

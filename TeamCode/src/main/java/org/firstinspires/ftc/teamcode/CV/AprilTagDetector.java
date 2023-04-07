@@ -138,12 +138,13 @@ public class AprilTagDetector implements IRobotModule {
     @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection)
     {
-        tele.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        tele.addLine(String.format("Translation X: %.2f m", detection.pose.x));
-        tele.addLine(String.format("Translation Y: %.2f m", detection.pose.y));
-        tele.addLine(String.format("Translation Z: %.2f m", detection.pose.z));
-        tele.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        tele.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        tele.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+//        tele.addLine(String.format("\nDetected tag ID=%d", detection.id));
+//        tele.addLine(String.format("Translation X: %.2f m", detection.pose.x));
+//        tele.addLine(String.format("Translation Y: %.2f m", detection.pose.y));
+//        tele.addLine(String.format("Translation Z: %.2f m", detection.pose.z));
+//        tele.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+//        tele.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+//        tele.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+        tele.addLine("Detected!");
     }
 }
