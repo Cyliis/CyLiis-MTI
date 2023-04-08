@@ -130,6 +130,8 @@ public class AutoStangaOk extends LinearOpMode {
 
     public static double upWaitTime = 0.15;
 
+    boolean jammed = false;
+
     @Override
     public void runOpMode()  {
         initialize();
@@ -154,7 +156,8 @@ public class AutoStangaOk extends LinearOpMode {
             for(LynxModule hub:hubs)
                 hub.clearBulkCache();
 
-            if(robotModules.intake.transferState == Intake.TransferState.ABORT){
+            if(robotModules.intake.transferState == Intake.TransferState.ABORT && !jammed){
+                jammed = true;
                 index = conesFromStack + 2;
                 robotModules.outtake.setState(Outtake.State.GOING_DOWN);
                 driveTrain.followTrajectorySequenceAsync(parkingTrajectory());

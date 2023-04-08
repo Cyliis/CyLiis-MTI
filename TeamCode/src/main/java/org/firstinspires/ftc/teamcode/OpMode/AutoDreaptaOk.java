@@ -130,6 +130,8 @@ public class AutoDreaptaOk extends LinearOpMode {
 
     public static double upWaitTime = 0.1;
 
+    boolean jammed = false;
+
     @Override
     public void runOpMode()  {
         initialize();
@@ -152,9 +154,8 @@ public class AutoDreaptaOk extends LinearOpMode {
             double timeMs = nanoClock.seconds()*1000;
 
             for(LynxModule hub:hubs)
-                hub.clearBulkCache();
-
-            if(robotModules.intake.transferState == Intake.TransferState.ABORT){
+                hub.clearBulkCache();if(robotModules.intake.transferState == Intake.TransferState.ABORT && !jammed){
+                jammed = true;
                 index = conesFromStack + 2;
                 robotModules.outtake.setState(Outtake.State.GOING_DOWN);
                 driveTrain.followTrajectorySequenceAsync(parkingTrajectory());
