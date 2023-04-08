@@ -126,8 +126,9 @@ public class AutoStangaOk extends LinearOpMode {
     }
 
     int index = 0;
+    public static int conesFromStack = 5;
 
-    public static double upWaitTime = 0.1;
+    public static double upWaitTime = 0.15;
 
     @Override
     public void runOpMode()  {
@@ -153,8 +154,14 @@ public class AutoStangaOk extends LinearOpMode {
             for(LynxModule hub:hubs)
                 hub.clearBulkCache();
 
+            if(robotModules.intake.transferState == Intake.TransferState.ABORT){
+                index = conesFromStack + 2;
+                robotModules.outtake.setState(Outtake.State.GOING_DOWN);
+                driveTrain.followTrajectorySequenceAsync(parkingTrajectory());
+            }
+
             if(!driveTrain.isBusy()){
-                if(index<=5){
+                if(index<=conesFromStack){
                     if(robotModules.outtake.state == Outtake.State.HIGH && nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
                     if(robotModules.outtake.state == Outtake.State.GOING_DOWN || robotModules.outtake.state == Outtake.State.DOWN){
                         Virtual.stackIndex = 5 - index;
@@ -162,7 +169,7 @@ public class AutoStangaOk extends LinearOpMode {
                         index ++;
                     }
                 }
-                else if(index == 6) {
+                else if(index == conesFromStack+1) {
                     if(robotModules.outtake.state == Outtake.State.HIGH && nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
                     if(robotModules.outtake.state == Outtake.State.GOING_DOWN || robotModules.outtake.state == Outtake.State.DOWN){
                         driveTrain.followTrajectorySequenceAsync(parkingTrajectory());
