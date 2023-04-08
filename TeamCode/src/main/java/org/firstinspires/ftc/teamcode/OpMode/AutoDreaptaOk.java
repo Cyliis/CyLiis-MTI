@@ -153,8 +153,11 @@ public class AutoDreaptaOk extends LinearOpMode {
         while(opModeIsActive() && !isStopRequested()) {
             double timeMs = nanoClock.seconds()*1000;
 
-            for(LynxModule hub:hubs)
-                hub.clearBulkCache();if(robotModules.intake.transferState == Intake.TransferState.ABORT && !jammed){
+            for(LynxModule hub:hubs){
+                hub.clearBulkCache();
+            }
+
+            if(robotModules.intake.transferState == Intake.TransferState.ABORT && !jammed) {
                 jammed = true;
                 index = conesFromStack + 2;
                 robotModules.outtake.setState(Outtake.State.GOING_DOWN);
