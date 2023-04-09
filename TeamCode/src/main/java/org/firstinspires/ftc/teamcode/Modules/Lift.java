@@ -101,7 +101,7 @@ public class Lift implements IRobotModule {
         this.state = state;
     }
 
-    public static int liftTolerance = 16;
+    public static int liftTolerance = 8;
 
     private void updateState(){
         switch (state){

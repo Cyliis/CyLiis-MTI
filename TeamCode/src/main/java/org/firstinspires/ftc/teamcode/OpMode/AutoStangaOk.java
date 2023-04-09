@@ -56,7 +56,7 @@ public class AutoStangaOk extends LinearOpMode {
         robotModules = new RobotModules(hardwareMap, true);
         tiedBehaviour = new TiedBehaviour(robotModules);
 
-//        detector = new AprilTagDetector(hardwareMap, telemetry);
+        detector = new AprilTagDetector(hardwareMap, telemetry);
 
         odo = hardwareMap.get(Servo.class, "odo");
         odo.setPosition(0);
@@ -128,7 +128,7 @@ public class AutoStangaOk extends LinearOpMode {
     int index = 0;
     public static int conesFromStack = 5;
 
-    public static double upWaitTime = 0.15;
+    public static double upWaitTime = .5111  ;
 
     boolean jammed = false;
 
@@ -136,14 +136,14 @@ public class AutoStangaOk extends LinearOpMode {
     public void runOpMode()  {
         initialize();
         while(!opModeIsActive() && !isStopRequested()){
-//            detector.loop();
-//            if(detector.getResult() != AprilTagDetector.DetectionResult.UNKNOWN && detector.getResult() != null) result = detector.getResult();
+            detector.loop();
+            if(detector.getResult() != AprilTagDetector.DetectionResult.UNKNOWN && detector.getResult() != null) result = detector.getResult();
             telemetry.update();
         }
 
         waitForStart();
 
-//        detector.closeCamera();
+        detector.closeCamera();
 
         for(LynxModule hub:hubs)
             hub.clearBulkCache();
@@ -165,7 +165,7 @@ public class AutoStangaOk extends LinearOpMode {
 
             if(!driveTrain.isBusy()){
                 if(index<=conesFromStack){
-                    if(robotModules.outtake.state == Outtake.State.HIGH && nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
+                    if(nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
                     if(robotModules.outtake.state == Outtake.State.GOING_DOWN || robotModules.outtake.state == Outtake.State.DOWN){
                         Virtual.stackIndex = 5 - index;
                         driveTrain.followTrajectorySequenceAsync(coneTrajectory(index));
@@ -173,7 +173,7 @@ public class AutoStangaOk extends LinearOpMode {
                     }
                 }
                 else if(index == conesFromStack+1) {
-                    if(robotModules.outtake.state == Outtake.State.HIGH && nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
+                    if(nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
                     if(robotModules.outtake.state == Outtake.State.GOING_DOWN || robotModules.outtake.state == Outtake.State.DOWN){
                         driveTrain.followTrajectorySequenceAsync(parkingTrajectory());
                         index ++;
@@ -188,7 +188,7 @@ public class AutoStangaOk extends LinearOpMode {
 
             telemetry.addData("Loops/sec" , (int)(1000)/(nanoClock.seconds()*1000 - timeMs));
             telemetry.addData("Detectie", result);
-            telemetry.addData("Trajectory index", index);
+             telemetry.addData("Trajectory index", index);
             telemetry.addData("Pose", driveTrain.getPoseEstimate());
             robotModules.telemetry(telemetry);
 

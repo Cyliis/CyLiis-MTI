@@ -138,7 +138,7 @@ public class AprilTagDetector implements IRobotModule {
     @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection)
     {
-//        tele.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        tele.addLine(String.format("\nDetected tag ID=%d", detection.id));
 //        tele.addLine(String.format("Translation X: %.2f m", detection.pose.x));
 //        tele.addLine(String.format("Translation Y: %.2f m", detection.pose.y));
 //        tele.addLine(String.format("Translation Z: %.2f m", detection.pose.z));

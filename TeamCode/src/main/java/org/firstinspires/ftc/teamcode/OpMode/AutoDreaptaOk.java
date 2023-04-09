@@ -56,7 +56,7 @@ public class AutoDreaptaOk extends LinearOpMode {
         robotModules = new RobotModules(hardwareMap, true);
         tiedBehaviour = new TiedBehaviour(robotModules);
 
-//        detector = new AprilTagDetector(hardwareMap, telemetry);
+        detector = new AprilTagDetector(hardwareMap, telemetry);
 
         odo = hardwareMap.get(Servo.class, "odo");
         odo.setPosition(0);
@@ -136,14 +136,14 @@ public class AutoDreaptaOk extends LinearOpMode {
     public void runOpMode()  {
         initialize();
         while(!opModeIsActive() && !isStopRequested()){
-//            detector.loop();
-//            if(detector.getResult() != AprilTagDetector.DetectionResult.UNKNOWN && detector.getResult() != null) result = detector.getResult();
+            detector.loop();
+            if(detector.getResult() != AprilTagDetector.DetectionResult.UNKNOWN && detector.getResult() != null) result = detector.getResult();
             telemetry.update();
         }
 
         waitForStart();
 
-//        detector.closeCamera();
+        detector.closeCamera();
 
         for(LynxModule hub:hubs)
             hub.clearBulkCache();
