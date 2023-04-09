@@ -128,7 +128,7 @@ public class AutoStangaOk extends LinearOpMode {
     int index = 0;
     public static int conesFromStack = 5;
 
-    public static double upWaitTime = .5111  ;
+    public static double[] upWaitTime = {.5,.5,.5,.5,.5,.5,1};
 
     boolean jammed = false;
 
@@ -165,7 +165,7 @@ public class AutoStangaOk extends LinearOpMode {
 
             if(!driveTrain.isBusy()){
                 if(index<=conesFromStack){
-                    if(nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
+                    if(nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime[index]) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
                     if(robotModules.outtake.state == Outtake.State.GOING_DOWN || robotModules.outtake.state == Outtake.State.DOWN){
                         Virtual.stackIndex = 5 - index;
                         driveTrain.followTrajectorySequenceAsync(coneTrajectory(index));
@@ -173,7 +173,7 @@ public class AutoStangaOk extends LinearOpMode {
                     }
                 }
                 else if(index == conesFromStack+1) {
-                    if(nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
+                    if(nanoClock.seconds() - robotModules.outtake.lift.timeOfLastStateChange >= upWaitTime[index]) robotModules.outtake.setState(Outtake.State.GOING_DOWN);
                     if(robotModules.outtake.state == Outtake.State.GOING_DOWN || robotModules.outtake.state == Outtake.State.DOWN){
                         driveTrain.followTrajectorySequenceAsync(parkingTrajectory());
                         index ++;
