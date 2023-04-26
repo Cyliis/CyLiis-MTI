@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
 @Config
@@ -53,7 +54,8 @@ public class Intake implements IRobotModule {
                 claw.setState(Claw.State.OPENING);
                 break;
             case GOING_DOWN_FROM_LOW:
-                if(uta.state!= UtaUta.State.LEVEL && uta.state != UtaUta.State.LEVELING) uta.setState(UtaUta.State.LEVELING);
+                uta.setState(UtaUta.State.LEVELING);
+                pivot.setState(VirtualPivot.State.RFRONT);
                 virtual.setState(Virtual.State.GOING_DOWN);
                 break;
             case MOPENING:
@@ -78,12 +80,17 @@ public class Intake implements IRobotModule {
                 virtual.setState(Virtual.State.GOING_LOW);
                 uta.setState(UtaUta.State.ANGLING);
                 break;
+            case LOW:
+                rotatedLow = false;
+                break;
             case REALEASING_LOW:
                 claw.setState(Claw.State.MOPENING);
                 break;
         }
         timeOfLastStateChange = nanoClock.seconds();
     }
+
+    boolean rotatedLow = false;
 
     void updateState(){
         switch (state){
@@ -113,7 +120,11 @@ public class Intake implements IRobotModule {
                 if(uta.state == UtaUta.State.LEVEL && virtual.state == Virtual.State.HOVER) setState(State.MCLOSED);
                 break;
             case GOING_LOW:
-                if(virtual.state == Virtual.State.LOW && uta.state == UtaUta.State.ANGLED)
+                if(virtual.virtualEncoder.getCurrentPosition() >= Virtual.anglePosition && !rotatedLow){
+                    rotatedLow = true;
+                    pivot.setState(VirtualPivot.State.RBACK);
+                }
+                if(virtual.state == Virtual.State.LOW && uta.state == UtaUta.State.ANGLED && pivot.state == VirtualPivot.State.BACK)
                     setState(State.LOW);
                 break;
             case REALEASING_LOW:
@@ -122,8 +133,21 @@ public class Intake implements IRobotModule {
                 }
                 break;
             case GOING_DOWN_FROM_LOW:
-                if(virtual.state == Virtual.State.DOWN){
-                    setState(State.OPENED);
+                if(virtual.state == Virtual.State.DOWN && pivot.state == VirtualPivot.State.FRONT && uta.state == UtaUta.State.LEVEL){
+                    switch (claw.state){
+                        case CLOSED:
+                            setState(State.CLOSED);
+                            break;
+                        case OPENED:
+                            setState(State.OPENED);
+                            break;
+                        case MOPENED:
+                            setState(State.MOPENED);
+                            break;
+                        case MCLOSED:
+                            setState(State.MCLOSED);
+                            break;
+                    }
                 }
                 break;
         }

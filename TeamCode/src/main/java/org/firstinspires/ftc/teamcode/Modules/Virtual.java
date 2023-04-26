@@ -35,6 +35,7 @@ public class Virtual implements IRobotModule {
     public static int stackIndex = 0;
     public static double downPosition = stack[stackIndex], hoverPosition = 0.295, lowPosition = 0.58, transferPosition = 0.87;
     public static double downPositionE = stackE[stackIndex], hoverPositionE = 460, lowPositionE = 2150, transferPositionE = 4150, rotatePositionFromFrontE = 1600, rotatePositionFromBackE = 3000;
+    public static double anglePosition = 3800;
 
     public enum State{
         GOING_DOWN(downPosition, downPositionE),
