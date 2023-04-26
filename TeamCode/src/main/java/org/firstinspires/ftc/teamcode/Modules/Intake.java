@@ -225,7 +225,7 @@ public class Intake implements IRobotModule {
                 break;
             case ABORT:
                 if(claw.state != Claw.State.OPENED && claw.state != Claw.State.OPENING
-                && claw.state != Claw.State.MOPENED && claw.state != Claw.State.MOPENING) claw.setState(Claw.State.OPENING);
+                        && claw.state != Claw.State.MOPENED && claw.state != Claw.State.MOPENING) claw.setState(Claw.State.OPENING);
                 if(virtual.state != Virtual.State.DOWN && virtual.state != Virtual.State.GOING_DOWN) virtual.setState(Virtual.State.GOING_DOWN);
                 if(pivot.state != VirtualPivot.State.RFRONT && pivot.state != VirtualPivot.State.FRONT) pivot.setState(VirtualPivot.State.RFRONT);
                 if(virtual.state == Virtual.State.DOWN && pivot.state == VirtualPivot.State.FRONT && (claw.state == Claw.State.OPENED || claw.state == Claw.State.MOPENED)) transferState = TransferState.END;
