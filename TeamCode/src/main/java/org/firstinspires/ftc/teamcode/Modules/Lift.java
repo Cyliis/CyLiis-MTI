@@ -27,7 +27,7 @@ public class Lift implements IRobotModule {
 
     public DcMotorEx lift1, lift2;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 540, highPosition=925;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 540, highPosition=900;
     public int target = downPosition;
     public static double liftPower = 1;
 

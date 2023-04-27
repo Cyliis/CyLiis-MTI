@@ -33,6 +33,8 @@ public class OpMode extends LinearOpMode {
 
     Servo odo;
 
+    public boolean alex = false;
+
     public void initialize(){
 
         dash = FtcDashboard.getInstance();
@@ -41,8 +43,8 @@ public class OpMode extends LinearOpMode {
         hubs = hardwareMap.getAll(LynxModule.class);
         for(LynxModule hub:hubs)
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-
-        if(DriveTrain.ENABLE_MODULE)driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS);
+        if(gamepad1.left_stick_button)alex = true;
+        if(DriveTrain.ENABLE_MODULE)driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS,alex);
         robotModules = new RobotModules(hardwareMap, false);
         gamepadControl = new GamepadControl(gamepad1, gamepad2, robotModules);
         tiedBehaviour = new TiedBehaviour(robotModules, driveTrain);
@@ -56,6 +58,7 @@ public class OpMode extends LinearOpMode {
     @Override
     public void runOpMode()  {
         initialize();
+
         waitForStart();
 
         for(LynxModule hub:hubs)

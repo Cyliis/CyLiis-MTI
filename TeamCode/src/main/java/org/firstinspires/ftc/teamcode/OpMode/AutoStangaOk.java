@@ -109,16 +109,16 @@ public class AutoStangaOk extends LinearOpMode {
         switch (result){
             case Middle:
                 return driveTrain.trajectorySequenceBuilder(driveTrain.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(42,-3,0))
+                        .lineToLinearHeading(new Pose2d(42,0,0))
                         .build();
             case Left:
                 return driveTrain.trajectorySequenceBuilder(driveTrain.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(42,-3,0))
+                        .lineToLinearHeading(new Pose2d(42,0,0))
                         .strafeLeft(26)
                         .build();
             case Right:
                 return driveTrain.trajectorySequenceBuilder(driveTrain.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(42,-3,0))
+                        .lineToLinearHeading(new Pose2d(42,0,0))
                         .strafeRight(26)
                         .build();
         }
@@ -128,7 +128,7 @@ public class AutoStangaOk extends LinearOpMode {
     int index = 0;
     public static int conesFromStack = 5;
 
-    public static double[] upWaitTime = {.5,.5,.5,.5,.5,.5,1};
+    public static double[] upWaitTime = {.7,.7,.7,.7,.7,.7,1.2};
 
     boolean jammed = false;
 
