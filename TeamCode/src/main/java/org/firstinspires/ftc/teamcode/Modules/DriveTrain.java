@@ -48,11 +48,9 @@ public class DriveTrain implements IRobotModule {
     public double imuValue = 0;
 
     private double headingDelta = 0;
-    boolean alex;
 
-    public DriveTrain(HardwareMap hm, Gamepad gamepad, DriveMode mode, boolean alex){
+    public DriveTrain(HardwareMap hm, Gamepad gamepad, DriveMode mode){
         this.hm = hm;
-        this.alex = alex;
         this.gamepad = gamepad;
         DRIVE_MODE = mode;
         init();
@@ -68,7 +66,7 @@ public class DriveTrain implements IRobotModule {
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-//        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
 //        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -105,7 +103,6 @@ public class DriveTrain implements IRobotModule {
     private void driveNormaly(){
         this.forward = -gamepad.left_stick_y;
         this.right = gamepad.left_stick_x;
-        // this.rotateClockwise = gamepad.right_stick_x;
         this.rotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
     }
 

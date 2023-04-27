@@ -31,7 +31,6 @@ public class DriverPractice extends LinearOpMode {
     TiedBehaviour tiedBehaviour;
 
     Servo odo;
-    boolean alex = true;
 
     public void initialize(){
 
@@ -41,8 +40,8 @@ public class DriverPractice extends LinearOpMode {
         hubs = hardwareMap.getAll(LynxModule.class);
         for(LynxModule hub:hubs)
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        if(gamepad1.left_stick_button)alex = true;
-        if(DriveTrain.ENABLE_MODULE)driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS,alex);
+
+        if(DriveTrain.ENABLE_MODULE)driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS);
         robotModules = new RobotModules(hardwareMap, true);
         gamepadControl = new GamepadControl(gamepad1, gamepad2, robotModules);
         tiedBehaviour = new TiedBehaviour(robotModules, driveTrain);
