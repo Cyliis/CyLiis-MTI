@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
 @Config
@@ -120,7 +119,7 @@ public class Intake implements IRobotModule {
                 if(uta.state == UtaUta.State.LEVEL && virtual.state == Virtual.State.HOVER) setState(State.MCLOSED);
                 break;
             case GOING_LOW:
-                if(virtual.virtualEncoder.getCurrentPosition() >= Virtual.anglePosition && !rotatedLow){
+                if(virtual.virtualEncoder.getCurrentPosition() >= Virtual.lowDepositPosition && !rotatedLow){
                     rotatedLow = true;
                     pivot.setState(VirtualPivot.State.RBACK);
                 }

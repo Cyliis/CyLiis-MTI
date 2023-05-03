@@ -28,13 +28,14 @@ public class Virtual implements IRobotModule {
     Servo virtual1 , virtual2;
     public DcMotorEx virtualEncoder;
 
-    public static double stack1 = 0.93, stack2 = 0.9, stack3 = 0.84, stack4 = 0.82, stack5 = 0.788;
-    public static double stack1E = 80, stack2E = 380, stack3E = 584, stack4E = 860, stack5E = 1087;
+    public static double stack1 = 0.0725, stack2 = 0.28, stack3 = 0.32, stack4 = 0.355, stack5 = 0.4;
+    public static double stack1E = 120, stack2E = 380, stack3E = 584, stack4E = 860, stack5E = 1087;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
     public static double[] stackE = {stack1E, stack2E, stack3E, stack4E, stack5E};
     public static int stackIndex = 0;
-    public static double downPosition = stack[stackIndex], hoverPosition = .9, lowPosition = 0.59, transferPosition = 0.29;
-    public static double downPositionE = stackE[stackIndex], hoverPositionE = 460, lowPositionE = 2200, transferPositionE = 4150, rotatePositionFromFrontE = 1600, rotatePositionFromBackE = 3000;
+    public static double downPosition = stack[stackIndex], hoverPosition = 0.12, lowPosition = 0.65, transferPosition = 0.69;
+    public static double downPositionE = stackE[stackIndex], hoverPositionE = 320, lowPositionE = 3800, transferPositionE = 4100, rotatePositionFromFrontE = 1500, rotatePositionFromBackE = 3000;
+    public static double lowDepositPosition = 2000;
 
     public enum State{
         GOING_DOWN(downPosition, downPositionE),

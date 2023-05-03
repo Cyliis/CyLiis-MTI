@@ -37,7 +37,7 @@ public class DriveTrain implements IRobotModule {
 
     Vector movementVector = new Vector(0,0);
 
-    double forward= 0, right = 0, rotateClockwise = 0;
+    double finalForward= 0, finalRight = 0, finalRotateClockwise = 0;
 
     private DumbIMU imu = null;
 
@@ -101,22 +101,22 @@ public class DriveTrain implements IRobotModule {
     }
 
     private void driveNormaly(){
-        this.forward = -gamepad.left_stick_y;
-        this.right = gamepad.left_stick_x;
-        this.rotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
+        this.finalForward = -gamepad.left_stick_y;
+        this.finalRight = gamepad.left_stick_x;
+        this.finalRotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
     }
 
     private void driveHeadlessly(){
         movementVector.set_components(gamepad.left_stick_x, -gamepad.left_stick_y);
 
-        this.rotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
+        this.finalRotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
 
         double angle = imuValue;
 
         movementVector.set_angle_offset(Math.PI*2.0-angle);
 
-        this.right = movementVector.cx;
-        this.forward = movementVector.cy;
+        this.finalRight = movementVector.cx;
+        this.finalForward = movementVector.cy;
     }
 
     void driveForValues(double forward, double right, double rotateClockwise){
@@ -148,7 +148,7 @@ public class DriveTrain implements IRobotModule {
         if(DRIVE_MODE == DriveMode.HEADLESS) driveHeadlessly();
         else driveNormaly();
 
-        driveForValues(forward,right,rotateClockwise);
+        driveForValues(finalForward,finalRight,finalRotateClockwise);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class UtaUta implements IRobotModule {
 
     Servo uta;
 
-    public static double levelPosition = 0.48, angledPosition = .64, hoverPosition = 0.48;
+    public static double levelPosition = 0.49, angledPosition = 0.37, hoverPosition = 0.49;
     public static double levelingTime = 0.25, anglingTime = 0.25;
 
     public enum State{

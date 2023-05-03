@@ -16,7 +16,6 @@ public class Lift implements IRobotModule {
 
     public static boolean ENABLE_MODULE = true;
 
-
     public static String LIFT1_NAME = "lift1";
     public static String LIFT2_NAME = "lift2";
     public static boolean reversed1 = false, reversed2 = true;
@@ -27,7 +26,7 @@ public class Lift implements IRobotModule {
 
     public DcMotorEx lift1, lift2;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 380, highPosition=640;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 355, highPosition=618;
     public int target = downPosition;
     public static double liftPower = 1;
 
@@ -67,7 +66,7 @@ public class Lift implements IRobotModule {
         lift1.setPower(liftPower);
         lift1.setTargetPosition(downPosition);
         lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift1.setTargetPositionTolerance(20);
+        lift1.setTargetPositionTolerance(2);
         MotorConfigurationType motorConfigurationType = lift1.getMotorType().clone();
         motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
         lift1.setMotorType(motorConfigurationType);
@@ -76,13 +75,11 @@ public class Lift implements IRobotModule {
         lift2.setPower(liftPower);
         lift2.setTargetPosition(downPosition);
         lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift2.setTargetPositionTolerance(20);
+        lift2.setTargetPositionTolerance(2);
 //        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorConfigurationType = lift2.getMotorType().clone();
         motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
         lift2.setMotorType(motorConfigurationType);
-
-
 
         state = State.GOING_DOWN;
         nanoClock = NanoClock.system();
@@ -101,7 +98,7 @@ public class Lift implements IRobotModule {
         this.state = state;
     }
 
-    public static int liftTolerance = 8;
+    public static int liftTolerance = 16;
 
     private void updateState(){
         switch (state){
