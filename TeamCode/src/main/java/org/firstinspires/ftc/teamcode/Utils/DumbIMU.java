@@ -14,7 +14,7 @@ public class DumbIMU implements IRobotModule
 
     RevHubOrientationOnRobot orientationOnRobot;
 
-    public double heading;
+    private double heading;
 
     HardwareMap hm;
 
@@ -30,6 +30,10 @@ public class DumbIMU implements IRobotModule
 
         this.orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
         imu.initialize(new IMU.Parameters(orientationOnRobot));
+    }
+
+    public double getHeading(){
+        return heading;
     }
 
     @Override

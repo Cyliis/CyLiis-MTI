@@ -27,7 +27,6 @@ public class RobotModules {
     public Virtual virtual;
     public Intake intake;
     public Outtake outtake;
-//    public DistanceSensor distanceSensor;
 
     public RobotModules(HardwareMap hm, boolean resetEncoders){
         if(Latch.ENABLE_MODULE)this.latch = new Latch(hm);
@@ -35,7 +34,6 @@ public class RobotModules {
         if(Virtual.ENABLE_MODULE)this.virtual = new Virtual(hm, resetEncoders);
         if(Intake.ENABLE_MODULE)this.intake = new Intake(hm, latch, virtual, claw);
         if(Outtake.ENABLE_MODULE)this.outtake = new Outtake(hm, latch, virtual, claw, resetEncoders);
-//        distanceSensor = new DistanceSensor(hm);
         buildList();
     }
 
@@ -64,7 +62,6 @@ public class RobotModules {
         if(Virtual.ENABLE_MODULE) modules.add(virtual);
         if(Intake.ENABLE_MODULE) modules.add(intake);
         if(Outtake.ENABLE_MODULE) modules.add(outtake);
-//        modules.add(distanceSensor);
     }
 
     public void atStart(){

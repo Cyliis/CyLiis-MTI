@@ -1,22 +1,21 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Modules.GamepadControllers;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.Modules.Claw;
 import org.firstinspires.ftc.teamcode.Modules.Intake;
-import org.firstinspires.ftc.teamcode.Modules.Latch;
 import org.firstinspires.ftc.teamcode.Modules.Outtake;
 import org.firstinspires.ftc.teamcode.Modules.Virtual;
+import org.firstinspires.ftc.teamcode.RobotModules;
 import org.firstinspires.ftc.teamcode.Utils.StickyGamepad;
 
 @Config
-public class GamepadControl {
+public class Standard {
     Gamepad gamepad1, gamepad2;
     StickyGamepad stickyGamepad1,stickyGamepad2;
     RobotModules robot;
 
-    public GamepadControl(Gamepad gamepad1, Gamepad gamepad2, RobotModules robot){
+    public Standard(Gamepad gamepad1, Gamepad gamepad2, RobotModules robot){
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
         this.stickyGamepad1 = new StickyGamepad(gamepad1);

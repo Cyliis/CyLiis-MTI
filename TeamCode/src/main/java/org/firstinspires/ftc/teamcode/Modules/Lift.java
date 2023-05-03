@@ -26,7 +26,7 @@ public class Lift implements IRobotModule {
 
     public DcMotorEx lift1, lift2;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 355, highPosition=618;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 355, highPosition=620;
     public int target = downPosition;
     public static double liftPower = 1;
 
@@ -46,7 +46,7 @@ public class Lift implements IRobotModule {
         GOING_MID(midPosition),
         GOING_HIGH(highPosition);
 
-        public int pos;
+        public final int pos;
         State(int pos){this.pos = pos;}
     }
 

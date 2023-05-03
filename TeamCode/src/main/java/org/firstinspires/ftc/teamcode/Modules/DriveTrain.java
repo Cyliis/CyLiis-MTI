@@ -1,161 +1,155 @@
 package org.firstinspires.ftc.teamcode.Modules;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.Utils.DumbIMU;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
 
+import java.util.ArrayList;
+
 @Config
 public class DriveTrain implements IRobotModule {
-
     public static boolean ENABLE_MODULE = true;
-
-    public double multiplier = 0.5;
 
     private final String MOTOR_FRONT_LEFT_NAME = "mfl";
     private final String MOTOR_FRONT_RIGHT_NAME = "mfr";
     private final String MOTOR_BACK_LEFT_NAME = "mbl";
     private final String MOTOR_BACK_RIGHT_NAME = "mbr";
 
-    private DcMotor frontLeft = null;
-    private DcMotor frontRight = null;
-    private DcMotor backLeft = null;
-    private DcMotor backRight = null;
+    private DcMotorEx mfl;
+    private DcMotorEx mfr;
+    private DcMotorEx mbl;
+    private DcMotorEx mbr;
 
-    public enum DriveMode {
-        NORMAL, HEADLESS;
+    public enum DRIVE_MODE{
+        ROBOT_CENTRIC, FIELD_CENTRIC
     }
 
-    public static DriveMode DRIVE_MODE;
+    public DRIVE_MODE mode = DRIVE_MODE.ROBOT_CENTRIC;
 
-    Vector movementVector = new Vector(0,0);
+    public enum SPEED{
+        SLOW(0.5),FAST(1);
+        final double multiplier;
 
-    double finalForward= 0, finalRight = 0, finalRotateClockwise = 0;
-
-    private DumbIMU imu = null;
-
-    final private HardwareMap hm;
-
-    final private Gamepad gamepad;
-
-    public double imuValue = 0;
-
-    private double headingDelta = 0;
-
-    public DriveTrain(HardwareMap hm, Gamepad gamepad, DriveMode mode){
-        this.hm = hm;
-        this.gamepad = gamepad;
-        DRIVE_MODE = mode;
-        init();
-//        thread.start();
+        SPEED(double multiplier) {
+            this.multiplier = multiplier;
+        }
     }
 
-    private void init(){
-        frontLeft = hm.get(DcMotor.class, MOTOR_FRONT_LEFT_NAME);
-        frontRight = hm.get(DcMotor.class, MOTOR_FRONT_RIGHT_NAME);
-        backLeft = hm.get(DcMotor.class, MOTOR_BACK_LEFT_NAME);
-        backRight = hm.get(DcMotor.class, MOTOR_BACK_RIGHT_NAME);
+    public SPEED speed = SPEED.SLOW;
 
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-//        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+    DumbIMU imu;
+    static double imuOffset;
+    double imuValue;
 
-//        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public DriveTrain(HardwareMap hm){
+        init(hm);
+        initImu(hm);
+    }
 
+    private void init(HardwareMap hm){
+        mfl = hm.get(DcMotorEx.class, MOTOR_FRONT_LEFT_NAME);
+        mfr = hm.get(DcMotorEx.class, MOTOR_FRONT_RIGHT_NAME);
+        mbl = hm.get(DcMotorEx.class, MOTOR_BACK_LEFT_NAME);
+        mbr = hm.get(DcMotorEx.class, MOTOR_BACK_RIGHT_NAME);
+
+//        mfl.setDirection(DcMotorSimple.Direction.REVERSE);
+        mfr.setDirection(DcMotorSimple.Direction.REVERSE);
+//        mbl.setDirection(DcMotorSimple.Direction.REVERSE);
+//        mbr.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        ArrayList<DcMotorEx> motorList = new ArrayList<>();
+        motorList.add(mfl);motorList.add(mfr);
+        motorList.add(mbl);motorList.add(mbr);
+
+        for (DcMotorEx motor:motorList) {
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
+            motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
+            motor.setMotorType(motorConfigurationType);
+        }
+    }
+
+    public static class DriveParameters {
+        public double forward, right, clockwise;
+        public DriveParameters(double forward, double right, double clockwise){
+            this.forward = forward;
+            this.right = right;
+            this.clockwise = clockwise;
+        }
+        void normalize(){
+            double denominator = Math.abs(forward)+Math.abs(right)+Math.abs(clockwise);
+            denominator = Math.max(1, denominator);
+            forward/=denominator;
+            right/=denominator;
+            clockwise/=denominator;
+        }
+        void setMultiplier(double multiplier){
+            forward*=multiplier;
+            right*=multiplier;
+            clockwise*=multiplier;
+        }
+    }
+
+
+    private void initImu(HardwareMap hm){
         imu = new DumbIMU(hm);
+    }
+
+    private void updateImu(){
+        if(mode != DRIVE_MODE.FIELD_CENTRIC) return;
         imu.loop();
-        headingDelta = imu.heading;
+        imuValue = imu.getHeading() - imuOffset;
     }
 
-    void boost(){
-        if(gamepad.b)multiplier = 1;
-        else multiplier = 0.5;
+    private DriveParameters getParametersRC(DriveParameters initialDriveParameters){
+        return initialDriveParameters;
     }
 
-    boolean changeNotPressed = true;
+    private DriveParameters getParametersFC(DriveParameters initialDriveParameters){
+        Vector translational = new Vector(initialDriveParameters.right, initialDriveParameters.forward);
+        translational.set_angle_offset(-imuValue);
+        return new DriveParameters(translational.cy, translational.cx, initialDriveParameters.clockwise);
+    }
 
-    void change(){
-        if(gamepad.y && changeNotPressed){
-            changeNotPressed = false;
-            if(DRIVE_MODE == DriveMode.HEADLESS) DRIVE_MODE = DriveMode.NORMAL;
-            else DRIVE_MODE = DriveMode.HEADLESS;
+    public void drive(double forward, double right, double clockwise){
+        DriveParameters driveParameters = new DriveParameters(0,0,0);
+
+        switch (mode){
+            case FIELD_CENTRIC:
+                driveParameters = getParametersFC(new DriveParameters(forward, right, clockwise));
+                break;
+            case ROBOT_CENTRIC:
+                driveParameters = getParametersRC(new DriveParameters(forward, right, clockwise));
+                break;
         }
-        else if(!gamepad.y) changeNotPressed = true;
+
+        driveParameters.setMultiplier(speed.multiplier);
+
+        driveForValues(driveParameters);
     }
 
-    void reset(){
-        if(gamepad.left_bumper && gamepad.right_bumper) {
-            headingDelta = imu.heading;
-        }
-    }
-
-    private void driveNormaly(){
-        this.finalForward = -gamepad.left_stick_y;
-        this.finalRight = gamepad.left_stick_x;
-        this.finalRotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
-    }
-
-    private void driveHeadlessly(){
-        movementVector.set_components(gamepad.left_stick_x, -gamepad.left_stick_y);
-
-        this.finalRotateClockwise = gamepad.right_trigger - gamepad.left_trigger;
-
-        double angle = imuValue;
-
-        movementVector.set_angle_offset(Math.PI*2.0-angle);
-
-        this.finalRight = movementVector.cx;
-        this.finalForward = movementVector.cy;
-    }
-
-    void driveForValues(double forward, double right, double rotateClockwise){
-        forward = forward*forward* Math.signum(forward);
-        right = right*right*Math.signum(right);
-        rotateClockwise = rotateClockwise*rotateClockwise*Math.signum(rotateClockwise);
-
-        double denomiantor = Math.max(Math.abs(forward) + Math.abs(right) + Math.abs(rotateClockwise),1);
-
-        frontLeft.setPower(((forward + right + rotateClockwise) / denomiantor) * multiplier);
-        frontRight.setPower(((forward - right - rotateClockwise) / denomiantor) * multiplier);
-        backLeft.setPower(((forward - right + rotateClockwise) / denomiantor) * multiplier);
-        backRight.setPower(((forward + right - rotateClockwise) / denomiantor) * multiplier);
+    private void driveForValues(DriveParameters parameters){
+        parameters.normalize();
+        mfl.setPower(parameters.forward + parameters.right + parameters.clockwise);
+        mfr.setPower(parameters.forward - parameters.right - parameters.clockwise);
+        mbl.setPower(parameters.forward - parameters.right + parameters.clockwise);
+        mbr.setPower(parameters.forward + parameters.right - parameters.clockwise);
     }
 
     @Override
     public void atStart() {
+
     }
 
     @Override
     public void loop() {
-        imu.loop();
-        change();
-        boost();
-        reset();
-
-        imuValue = imu.heading - headingDelta;
-
-        if(DRIVE_MODE == DriveMode.HEADLESS) driveHeadlessly();
-        else driveNormaly();
-
-        driveForValues(finalForward,finalRight,finalRotateClockwise);
-    }
-
-    @Override
-    public void emergencyStop() {
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
+        updateImu();
     }
 }

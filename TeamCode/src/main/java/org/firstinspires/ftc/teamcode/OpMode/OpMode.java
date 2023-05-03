@@ -6,18 +6,14 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
-import org.firstinspires.ftc.teamcode.GamepadControl;
+import org.firstinspires.ftc.teamcode.Modules.GamepadControllers.Standard;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
 import org.firstinspires.ftc.teamcode.RobotModules;
 import org.firstinspires.ftc.teamcode.TiedBehaviour;
 
 import java.util.List;
-
-import javax.xml.parsers.FactoryConfigurationError;
 
 
 @TeleOp(name="OpMode👉👌")
@@ -28,7 +24,7 @@ public class OpMode extends LinearOpMode {
 
     DriveTrain driveTrain;
     RobotModules robotModules;
-    GamepadControl gamepadControl;
+    Standard gamepadControl;
     TiedBehaviour tiedBehaviour;
 
     Servo odo;
@@ -42,9 +38,8 @@ public class OpMode extends LinearOpMode {
         for(LynxModule hub:hubs)
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 
-        if(DriveTrain.ENABLE_MODULE)driveTrain = new DriveTrain(hardwareMap, gamepad1, DriveTrain.DriveMode.HEADLESS);
         robotModules = new RobotModules(hardwareMap, false);
-        gamepadControl = new GamepadControl(gamepad1, gamepad2, robotModules);
+        gamepadControl = new Standard(gamepad1, gamepad2, robotModules);
         tiedBehaviour = new TiedBehaviour(robotModules, driveTrain);
 
         odo = hardwareMap.get(Servo.class, "odo");
@@ -75,7 +70,6 @@ public class OpMode extends LinearOpMode {
             tiedBehaviour.loop();
 
             telemetry.addData("Loops/sec" , (int)(1000)/(nanoClock.seconds()*1000 - timeMs));
-            telemetry.addData("Imu value", driveTrain.imuValue);
             telemetry.addData("Claw debug", robotModules.claw.debugCount);
             robotModules.telemetry(telemetry);
 

@@ -9,11 +9,13 @@ public class StickyGamepad {
     public boolean a, b, x, y;
     public boolean left_bumper, right_bumper;
     public boolean left_stick_button, right_stick_button;
+    public boolean back;
 
     private boolean dpad_up_down, dpad_down_down, dpad_left_down, dpad_right_down;
     private boolean a_down, b_down, x_down, y_down;
     private boolean left_bumper_down, right_bumper_down;
     private boolean left_stick_button_down, right_stick_button_down;
+    private boolean back_down;
 
     public StickyGamepad(Gamepad gamepad) {
         this.gamepad = gamepad;
@@ -162,6 +164,18 @@ public class StickyGamepad {
         } else {
             right_stick_button = false;
             right_stick_button_down = false;
+        }
+
+        if (gamepad.back) {
+            if (back_down) {
+                back = false;
+            } else {
+                back_down = true;
+                back = true;
+            }
+        } else {
+            back = false;
+            back_down = false;
         }
     }
 }
