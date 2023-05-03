@@ -19,7 +19,7 @@ public class Lift implements IRobotModule {
 
     public static String LIFT1_NAME = "lift1";
     public static String LIFT2_NAME = "lift2";
-    public static boolean reversed1 = true, reversed2 = false;
+    public static boolean reversed1 = false, reversed2 = true;
     public int ground = 0;
 
     HardwareMap hm;
@@ -27,7 +27,7 @@ public class Lift implements IRobotModule {
 
     public DcMotorEx lift1, lift2;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 540, highPosition=925;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 380, highPosition=640;
     public int target = downPosition;
     public static double liftPower = 1;
 

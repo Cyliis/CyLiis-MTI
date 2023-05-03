@@ -21,10 +21,6 @@ public class LiftCalibration extends LinearOpMode {
 
     DcMotorEx lift1, lift2;
 
-    int pos = 0;
-
-    public static double p = 0,i = 0,d = 0;
-
     @Override
     public void runOpMode() throws InterruptedException {
         dash = FtcDashboard.getInstance();
@@ -36,34 +32,27 @@ public class LiftCalibration extends LinearOpMode {
         lift2.setDirection(DcMotorEx.Direction.REVERSE);
         lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        lift1.setPower(Lift.liftPower);
-        lift2.setPower(Lift.liftPower);
-
-        lift1.setTargetPosition(pos);
-        lift2.setTargetPosition(pos);
-
-        PIDController pid = new PIDController(p,i,d);
+        lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
 
         while(opModeIsActive()){
-            if(gamepad1.dpad_up)pos++;
-            if(gamepad1.dpad_down)pos--;
 
-            pid.setPID(p,i,d);
-            double power = pid.calculate(lift1.getCurrentPosition(), pos);
+            lift1.setPower(0);
+            lift2.setPower(0);
 
-//            lift1.setPower(power);
-//            lift2.setPower(power);
+            if(gamepad1.dpad_down){
+                lift1.setPower(-1);
+                lift2.setPower(-1);
+            }
+            if(gamepad1.dpad_up){
+                lift1.setPower(1);
+                lift2.setPower(1);
+            }
 
-            lift1.setTargetPosition(pos);
-            lift2.setTargetPosition(pos);
-
-            telemetry.addData("pos", pos);
-            telemetry.addData("current pos", lift1.getCurrentPosition());
+            telemetry.addData("current pos 1", lift1.getCurrentPosition());
+            telemetry.addData("current pos 2", lift2.getCurrentPosition());
             telemetry.update();
         }
     }
