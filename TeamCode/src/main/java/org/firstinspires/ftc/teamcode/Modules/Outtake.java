@@ -17,6 +17,8 @@ public class Outtake implements IRobotModule {
     public Latch latch;
     public Claw claw;
 
+    public static int latchReleasePointDiff = 10;
+
     public Outtake(HardwareMap hm, Latch latch, Virtual virtual, Claw claw, boolean resetEncoders){
         this.lift = new Lift(hm, resetEncoders);
         this.latch = latch;
@@ -40,7 +42,7 @@ public class Outtake implements IRobotModule {
         switch (state){
             case DOWN:
             case GOING_DOWN:
-                latch.setState(Latch.State.OPENING);
+//                latch.setState(Latch.State.OPENING);
                 lift.setState(Lift.State.GOING_DOWN);
                 break;
             case GOING_DOWN_NO_LATCH:
@@ -62,6 +64,10 @@ public class Outtake implements IRobotModule {
     void updateState(){
         switch (state){
             case GOING_DOWN:
+                if(latch.state == Latch.State.CLOSED || latch.state == Latch.State.CLOSING){
+                    if(lift.lift1.getCurrentPosition() <= lift.previousState.pos - latchReleasePointDiff)
+                        latch.setState(Latch.State.OPENING);
+                }
                 if(lift.state == Lift.State.DOWN)
                     state = State.DOWN;
                 break;

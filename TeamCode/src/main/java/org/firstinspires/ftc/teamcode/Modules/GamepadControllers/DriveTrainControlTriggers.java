@@ -22,11 +22,11 @@ public class DriveTrainControlTriggers {
     }
 
     private void drive(){
-        dt.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.left_trigger - gamepad1.right_trigger);
+        dt.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.left_trigger + gamepad1.right_trigger);
     }
 
     private void switchMode(){
-        if(stickyGamepad1.back) {
+        if(stickyGamepad1.y) {
             switch (dt.mode){
                 case FIELD_CENTRIC:
                     dt.mode = DriveTrain.DRIVE_MODE.ROBOT_CENTRIC;
@@ -43,9 +43,16 @@ public class DriveTrainControlTriggers {
         else dt.speed = DriveTrain.SPEED.SLOW;
     }
 
+    private void resetHeding(){
+        if(gamepad1.left_bumper && gamepad1.right_bumper) DriveTrain.imuOffset = dt.imuValue;
+    }
+
     public void loop(){
+        stickyGamepad1.update();
+        stickyGamepad2.update();
         drive();
         switchMode();
         speedControl();
+        resetHeding();
     }
 }

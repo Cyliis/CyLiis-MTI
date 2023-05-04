@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Modules.GamepadControllers.DriveTrainControlTriggers;
 import org.firstinspires.ftc.teamcode.Modules.GamepadControllers.Standard;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
 import org.firstinspires.ftc.teamcode.RobotModules;
@@ -23,6 +24,7 @@ public class DriverPractice extends LinearOpMode {
     NanoClock nanoClock;
 
     DriveTrain driveTrain;
+    DriveTrainControlTriggers dtControl;
     RobotModules robotModules;
     Standard gamepadControl;
     TiedBehaviour tiedBehaviour;
@@ -37,6 +39,9 @@ public class DriverPractice extends LinearOpMode {
         hubs = hardwareMap.getAll(LynxModule.class);
         for(LynxModule hub:hubs)
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+
+        driveTrain = new DriveTrain(hardwareMap);
+        dtControl = new DriveTrainControlTriggers(gamepad1, gamepad2, driveTrain);
 
         robotModules = new RobotModules(hardwareMap, true);
         gamepadControl = new Standard(gamepad1, gamepad2, robotModules);
@@ -64,12 +69,17 @@ public class DriverPractice extends LinearOpMode {
             for(LynxModule hub:hubs)
                 hub.clearBulkCache();
 
+            driveTrain.loop();
+            dtControl.loop();
+
             gamepadControl.loop();
             if(DriveTrain.ENABLE_MODULE)driveTrain.loop();
             robotModules.loop();
             tiedBehaviour.loop();
 
             telemetry.addData("Loops/sec" , (int)(1000)/(nanoClock.seconds()*1000 - timeMs));
+            telemetry.addData("Drive mode", driveTrain.mode);
+            telemetry.addData("Drive speed", driveTrain.speed);
             robotModules.telemetry(telemetry);
 
             telemetry.update();

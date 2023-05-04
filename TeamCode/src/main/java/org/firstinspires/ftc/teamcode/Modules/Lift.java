@@ -26,7 +26,7 @@ public class Lift implements IRobotModule {
 
     public DcMotorEx lift1, lift2;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 355, highPosition=620;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 360, highPosition=620;
     public int target = downPosition;
     public static double liftPower = 1;
 
@@ -50,7 +50,7 @@ public class Lift implements IRobotModule {
         State(int pos){this.pos = pos;}
     }
 
-    public State state;
+    public State state, previousState;
 
     public Lift(HardwareMap hm, boolean resetEncoders){
         this.hm = hm;
@@ -82,6 +82,7 @@ public class Lift implements IRobotModule {
         lift2.setMotorType(motorConfigurationType);
 
         state = State.GOING_DOWN;
+        previousState = State.DOWN;
         nanoClock = NanoClock.system();
     }
 
@@ -95,6 +96,7 @@ public class Lift implements IRobotModule {
     void setState(State state){
         if(state == this.state) return;
         timeOfLastStateChange = nanoClock.seconds();
+        this.previousState = this.state;
         this.state = state;
     }
 

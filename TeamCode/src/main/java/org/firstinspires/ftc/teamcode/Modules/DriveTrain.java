@@ -31,7 +31,7 @@ public class DriveTrain implements IRobotModule {
         ROBOT_CENTRIC, FIELD_CENTRIC
     }
 
-    public DRIVE_MODE mode = DRIVE_MODE.ROBOT_CENTRIC;
+    public DRIVE_MODE mode = DRIVE_MODE.FIELD_CENTRIC;
 
     public enum SPEED{
         SLOW(0.5),FAST(1);
@@ -44,9 +44,9 @@ public class DriveTrain implements IRobotModule {
 
     public SPEED speed = SPEED.SLOW;
 
-    DumbIMU imu;
-    static double imuOffset;
-    double imuValue;
+    public DumbIMU imu;
+    public static double imuOffset;
+    public double imuValue;
 
     public DriveTrain(HardwareMap hm){
         init(hm);
@@ -62,7 +62,7 @@ public class DriveTrain implements IRobotModule {
 //        mfl.setDirection(DcMotorSimple.Direction.REVERSE);
         mfr.setDirection(DcMotorSimple.Direction.REVERSE);
 //        mbl.setDirection(DcMotorSimple.Direction.REVERSE);
-//        mbr.setDirection(DcMotorSimple.Direction.REVERSE);
+        mbr.setDirection(DcMotorSimple.Direction.REVERSE);
 
         ArrayList<DcMotorEx> motorList = new ArrayList<>();
         motorList.add(mfl);motorList.add(mfr);
@@ -105,7 +105,7 @@ public class DriveTrain implements IRobotModule {
     private void updateImu(){
         if(mode != DRIVE_MODE.FIELD_CENTRIC) return;
         imu.loop();
-        imuValue = imu.getHeading() - imuOffset;
+        imuValue = imu.getHeading();
     }
 
     private DriveParameters getParametersRC(DriveParameters initialDriveParameters){
@@ -114,7 +114,7 @@ public class DriveTrain implements IRobotModule {
 
     private DriveParameters getParametersFC(DriveParameters initialDriveParameters){
         Vector translational = new Vector(initialDriveParameters.right, initialDriveParameters.forward);
-        translational.set_angle_offset(-imuValue);
+        translational.set_angle_offset(-(imuValue - imuOffset));
         return new DriveParameters(translational.cy, translational.cx, initialDriveParameters.clockwise);
     }
 

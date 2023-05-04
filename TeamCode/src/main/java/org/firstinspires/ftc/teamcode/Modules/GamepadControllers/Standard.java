@@ -57,7 +57,7 @@ public class Standard {
         if(stickyGamepad2.a){
             if(robot.intake.state == Intake.State.LOW) robot.intake.setState(Intake.State.REALEASING_LOW);
         }
-        if(stickyGamepad2.dpad_down){
+        if(stickyGamepad2.dpad_down && robot.outtake.state == Outtake.State.DOWN){
             if(robot.intake.state == Intake.State.LOW || robot.intake.state == Intake.State.RELEASED_LOW){
                 robot.intake.setState(Intake.State.GOING_DOWN_FROM_LOW);
             }
