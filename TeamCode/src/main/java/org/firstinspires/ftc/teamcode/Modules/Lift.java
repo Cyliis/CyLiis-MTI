@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.Modules;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
@@ -26,15 +28,15 @@ public class Lift implements IRobotModule {
 
     public DcMotorEx lift1, lift2;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 360, highPosition=620;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 390, highPosition=660;
     public int target = downPosition;
     public static double liftPower = 1;
 
-    public static double p = 0.000028,i = 0.001,d = 0.000028;
-    public static double f = 0;
+//    public static double p = 0,i = 0,d = 0;
+//    public static double f = 0;
 
-
-    PIDController pid = new PIDController(p,i,d);
+    public static PIDFCoefficients pidfCoefficients =  new PIDFCoefficients(0.01,0.28,0.0008,0);
+    PIDFController pidf = new PIDFController(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d, pidfCoefficients.f);
 
     public enum State{
         DOWN(downPosition),
@@ -46,8 +48,19 @@ public class Lift implements IRobotModule {
         GOING_MID(midPosition),
         GOING_HIGH(highPosition);
 
-        public final int pos;
+        public int pos;
         State(int pos){this.pos = pos;}
+
+        static void update(){
+            DOWN.pos = downPosition;
+            LOW.pos = lowPosition;
+            MID.pos = midPosition;
+            HIGH.pos = highPosition;
+            GOING_DOWN.pos = downPosition;
+            GOING_LOW.pos = lowPosition;
+            GOING_MID.pos = midPosition;
+            GOING_HIGH.pos = highPosition;
+        }
     }
 
     public State state, previousState;
@@ -63,20 +76,19 @@ public class Lift implements IRobotModule {
         if(resetEncoders)resetEncoders();
 
         if(reversed1) lift1.setDirection(DcMotorSimple.Direction.REVERSE);
-        lift1.setPower(liftPower);
-        lift1.setTargetPosition(downPosition);
-        lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift1.setTargetPositionTolerance(2);
+//        lift1.setPower(liftPower);
+//        lift1.setTargetPosition(downPosition);
+        lift1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        lift1.setTargetPositionTolerance(2);
         MotorConfigurationType motorConfigurationType = lift1.getMotorType().clone();
         motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
         lift1.setMotorType(motorConfigurationType);
 
         if(reversed2) lift2.setDirection(DcMotorSimple.Direction.REVERSE);
-        lift2.setPower(liftPower);
-        lift2.setTargetPosition(downPosition);
-        lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift2.setTargetPositionTolerance(2);
-//        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        lift2.setPower(liftPower);
+//        lift2.setTargetPosition(downPosition);
+        lift2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        lift2.setTargetPositionTolerance(2);
         motorConfigurationType = lift2.getMotorType().clone();
         motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
         lift2.setMotorType(motorConfigurationType);
@@ -123,19 +135,17 @@ public class Lift implements IRobotModule {
         }
     }
 
+    public static double power;
+
     void updateMotors(){
         target = state.pos + ground;
 
-        pid.setPID(p,i,d);
+        pidf.setPIDF(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d, pidfCoefficients.f);
 
-        double power = pid.calculate(lift1.getCurrentPosition(), target);
+        power = pidf.calculate(lift1.getCurrentPosition(), target);
 
-//        lift1.setPower(f +power);
-//        lift2.setPower(f + power);
-
-        lift1.setTargetPosition(target);
-        lift2.setTargetPosition(target);
-//        lift2.setVelocity(lift1.getVelocity());
+        lift1.setPower(power);
+        lift2.setPower(power);
     }
 
     @Override
@@ -145,6 +155,7 @@ public class Lift implements IRobotModule {
 
     @Override
     public void loop() {
+        State.update();
         updateState();
         updateMotors();
     }

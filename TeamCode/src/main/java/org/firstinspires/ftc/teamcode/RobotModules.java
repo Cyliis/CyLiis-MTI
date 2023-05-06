@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Modules.DistanceSensor;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake;
 import org.firstinspires.ftc.teamcode.Modules.Latch;
+import org.firstinspires.ftc.teamcode.Modules.Lift;
 import org.firstinspires.ftc.teamcode.Modules.Outtake;
 import org.firstinspires.ftc.teamcode.Modules.Virtual;
 import org.firstinspires.ftc.teamcode.Modules.VirtualPivot;
@@ -38,22 +39,23 @@ public class RobotModules {
     }
 
     public void telemetry(Telemetry tele){
-        tele.addData("Latch state",latch.state);
-        tele.addData("Intake state", intake.state);
-        tele.addData("Outtake state", outtake.state);
-        tele.addData("Transfer state", intake.transferState);
-        tele.addData("Claw state", intake.claw.state);
-        tele.addData("Lift state", outtake.lift.state);
-        tele.addData("Uta state", intake.uta.state);
-        tele.addData("Virtual state", virtual.state);
-        tele.addData("Pivot state", intake.pivot.state);
+//        tele.addData("Latch state",latch.state);
+//        tele.addData("Intake state", intake.state);
+//        tele.addData("Outtake state", outtake.state);
+//        tele.addData("Transfer state", intake.transferState);
+//        tele.addData("Claw state", intake.claw.state);
+//        tele.addData("Lift state", outtake.lift.state);
+//        tele.addData("Uta state", intake.uta.state);
+//        tele.addData("Virtual state", virtual.state);
+//        tele.addData("Pivot state", intake.pivot.state);
 //        tele.addData("Stack index", Virtual.stackIndex);
-//        tele.addData("Lift1 current position", outtake.lift.lift1.getCurrentPosition());
-//        tele.addData("Lift2 current position", outtake.lift.lift2.getCurrentPosition());
-//        tele.addData("Lift target position", outtake.lift.state.pos + outtake.lift.ground);
-//        tele.addData("Lift ground position", outtake.lift.ground);
-        tele.addData("Lift1 power draw", outtake.lift.lift1.getCurrent(CurrentUnit.AMPS));
-        tele.addData("Lift2 power draw", outtake.lift.lift2.getCurrent(CurrentUnit.AMPS));
+        tele.addData("Lift1 current position", outtake.lift.lift1.getCurrentPosition());
+        tele.addData("Lift2 current position", outtake.lift.lift2.getCurrentPosition());
+        tele.addData("Lift target position", outtake.lift.state.pos + outtake.lift.ground);
+        tele.addData("Lift ground position", outtake.lift.ground);
+        tele.addData("Lift power", Lift.power);
+//        tele.addData("Lift1 power draw", outtake.lift.lift1.getCurrent(CurrentUnit.AMPS));
+//        tele.addData("Lift2 power draw", outtake.lift.lift2.getCurrent(CurrentUnit.AMPS));
     }
 
     public void buildList(){

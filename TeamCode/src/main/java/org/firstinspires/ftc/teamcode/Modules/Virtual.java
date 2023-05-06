@@ -28,8 +28,8 @@ public class Virtual implements IRobotModule {
     Servo virtual1 , virtual2;
     public DcMotorEx virtualEncoder;
 
-    public static double stack1 = 0.0725, stack2 = 0.28, stack3 = 0.32, stack4 = 0.355, stack5 = 0.4;
-    public static double stack1E = 120, stack2E = 380, stack3E = 584, stack4E = 860, stack5E = 1087;
+    public static double stack1 = 0.0725, stack2 = 0.135, stack3 = 0.185, stack4 = 0.2, stack5 = 0.24;
+    public static double stack1E = 120, stack2E = 300, stack3E = 540, stack4E = 790, stack5E = 980;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
     public static double[] stackE = {stack1E, stack2E, stack3E, stack4E, stack5E};
     public static int stackIndex = 0;

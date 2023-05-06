@@ -128,7 +128,7 @@ public class Intake implements IRobotModule {
                 break;
             case REALEASING_LOW:
                 if(claw.state == Claw.State.MOPENED){
-                    setState(State.RELEASED_LOW);
+                    setState(State.GOING_DOWN_FROM_LOW);
                 }
                 break;
             case GOING_DOWN_FROM_LOW:
