@@ -56,6 +56,9 @@ public class DriverPractice extends LinearOpMode {
     @Override
     public void runOpMode()  {
         initialize();
+
+        driveTrain.imu.startIMUThread(this);
+
         waitForStart();
 
         for(LynxModule hub:hubs)

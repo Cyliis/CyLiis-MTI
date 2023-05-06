@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.teamcode.Utils.DumbIMU;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
+import org.firstinspires.ftc.teamcode.Utils.ImuModule;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class DriveTrain implements IRobotModule {
 
     public SPEED speed = SPEED.SLOW;
 
-    public DumbIMU imu;
+    public ImuModule imu;
     public static double imuOffset;
     public double imuValue;
 
@@ -99,12 +100,12 @@ public class DriveTrain implements IRobotModule {
 
 
     private void initImu(HardwareMap hm){
-        imu = new DumbIMU(hm);
+        imu = new ImuModule(hm);
     }
 
     private void updateImu(){
         if(mode != DRIVE_MODE.FIELD_CENTRIC) return;
-        imu.loop();
+//        imu.loop();
         imuValue = imu.getHeading();
     }
 
