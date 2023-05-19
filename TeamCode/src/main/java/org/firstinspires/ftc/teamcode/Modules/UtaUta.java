@@ -20,12 +20,12 @@ public class UtaUta implements IRobotModule {
 
     Servo uta;
 
-    public static double levelPosition = 0.49, angledPosition = 0.37, hoverPosition = 0.49;
-    public static double levelingTime = 0.25, anglingTime = 0.25;
+    public static double levelPosition = 0.585, angledPosition = 0.735, bruhPosition = 0.61, frontBruhPosition = 0.51;
+    public static double levelingTime = 0.05, anglingTime = 0.05, smolAnglingTime = 0.15;
 
     public enum State{
-        LEVEL(levelPosition), ANGLED(angledPosition),
-        LEVELING(levelPosition), ANGLING(angledPosition);
+        LEVEL(levelPosition), ANGLED(angledPosition), SMOLANGLE(bruhPosition), SMOLANGLEFRONT(frontBruhPosition),
+        LEVELING(levelPosition), ANGLING(angledPosition), SMOLANGELING(bruhPosition), SMOLAGNLINGFRONT(frontBruhPosition);
 
         public double pos;
         State(double pos){
@@ -66,6 +66,12 @@ public class UtaUta implements IRobotModule {
                 break;
             case ANGLING:
                 if(elapsedTime(timeOfLastStateChange) >= anglingTime) setState(State.ANGLED);
+                break;
+            case SMOLANGELING:
+                if(elapsedTime(timeOfLastStateChange) >= smolAnglingTime) setState(State.SMOLANGLE);
+                break;
+            case SMOLAGNLINGFRONT:
+                if(elapsedTime(timeOfLastStateChange) >= smolAnglingTime) setState(State.SMOLANGLEFRONT);
                 break;
         }
     }

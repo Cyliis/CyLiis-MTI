@@ -20,7 +20,7 @@ public class Latch implements IRobotModule {
 
     Servo latch;
 
-    public static double openedlatchPosition = 0.15, closedlatchPosition = 0.59;
+    public static double openedlatchPosition = 0, closedlatchPosition = 0.7;
     public static double openingTime = 0.1, closingTime = 0.1;
 
     public enum State{

@@ -8,26 +8,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
 @Config
-public class VirtualPivot implements IRobotModule {
+public class Popa implements IRobotModule {
 
     public static boolean ENABLE_MODULE = true;
 
-    public static String VIRTUAL_PIVOT_SERVO_NAME = "pivot";
+    public static String POPA_SERVO_NAME = "funny";
     public static boolean reversed = false;
 
     HardwareMap hm;
     NanoClock nanoClock;
 
-    Servo pivot;
+    Servo popa;
 
-    public static double frontPivotPosition = 0.2, backPivotPosition = .883;
-    public static double frontRotationTime = 0.1, backRotationTime = 0.1;
-
-    public static int debugCounter = 0;
+    public static double downPopaPosition = 1, upPopaPosition = .5;
+    public static double downTime = 0.2, upTime = 0.5;
 
     public enum State{
-        FRONT(frontPivotPosition), BACK(backPivotPosition),
-        RFRONT(frontPivotPosition), RBACK(backPivotPosition);
+        GOING_DOWN(downPopaPosition), DOWN(downPopaPosition),
+        GOING_UP(upPopaPosition), UP(upPopaPosition);
 
         final double pos;
         State(double pos){
@@ -37,14 +35,14 @@ public class VirtualPivot implements IRobotModule {
 
     public State state;
 
-    public VirtualPivot(HardwareMap hm){
+    public Popa(HardwareMap hm){
         this.hm = hm;
         init();
     }
 
     private void init(){
-        pivot = hm.get(Servo.class, VIRTUAL_PIVOT_SERVO_NAME);
-        if(reversed) pivot.setDirection(Servo.Direction.REVERSE);
+        popa = hm.get(Servo.class, POPA_SERVO_NAME);
+        if(reversed) popa.setDirection(Servo.Direction.REVERSE);
         nanoClock = NanoClock.system();
     }
 
@@ -55,7 +53,6 @@ public class VirtualPivot implements IRobotModule {
     double timeOfLastStateChange;
 
     public void setState(State state){
-        debugCounter++;
         if(state == this.state) return;
         timeOfLastStateChange = nanoClock.seconds();
         this.state = state;
@@ -63,22 +60,22 @@ public class VirtualPivot implements IRobotModule {
 
     private void updateState(){
         switch (state){
-            case RFRONT:
-                if(elapsedTime(timeOfLastStateChange) >= frontRotationTime) setState(State.FRONT);
+            case GOING_UP:
+                if(elapsedTime(timeOfLastStateChange) >= upTime) setState(State.UP);
                 break;
-            case RBACK:
-                if(elapsedTime(timeOfLastStateChange) >= backRotationTime) setState(State.BACK);
+            case GOING_DOWN:
+                if(elapsedTime(timeOfLastStateChange) >= downTime) setState(State.DOWN);
                 break;
         }
     }
 
     private void updateTargetPosition(){
-        pivot.setPosition(state.pos);
+        popa.setPosition(state.pos);
     }
 
     @Override
     public void atStart(){
-        setState(State.FRONT);
+        setState(State.UP);
     }
 
     @Override

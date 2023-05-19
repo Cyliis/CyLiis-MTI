@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Modules.Claw;
@@ -20,11 +21,19 @@ public class TiedBehaviour {
 
     NanoClock nanoClock;
 
+    DigitalChannel coneGuideSensor;
+
+    public static boolean coneSensorEnabled = false;
+
     public TiedBehaviour(RobotModules robot, DriveTrain driveTrain){
         auto = false;
         this.robot = robot;
         this.driveTrain = driveTrain;
         nanoClock = NanoClock.system();
+        if(coneSensorEnabled) {
+            coneGuideSensor = robot.hm.get(DigitalChannel.class, "coneGuide");
+            coneGuideSensor.setMode(DigitalChannel.Mode.INPUT);
+        }
     }
 
     public TiedBehaviour(RobotModules robot){
@@ -39,16 +48,16 @@ public class TiedBehaviour {
     }
 
     private void autoClose(){
-//        if(robot.intake.state == Intake.State.OPENED && robot.distanceSensor.value < 36 && Virtual.stackIndex == 0){
-//            robot.intake.setState(Intake.State.CLOSING);
-//        }
+        if(robot.intake.state == Intake.State.OPENED && coneGuideSensor.getState() && Virtual.stackIndex == 0){
+            robot.intake.setState(Intake.State.CLOSING);
+        }
     }
 
     private void stack(){
         Virtual.State.DOWN.pos =  Virtual.stack[Virtual.stackIndex];
         Virtual.State.GOING_DOWN.pos = Virtual.stack[Virtual.stackIndex];
-        Virtual.State.DOWN.encPos =  Virtual.stackE[Virtual.stackIndex];
-        Virtual.State.GOING_DOWN.encPos = Virtual.stackE[Virtual.stackIndex];
+        Virtual.State.DOWN.pos =  Virtual.stack[Virtual.stackIndex];
+        Virtual.State.GOING_DOWN.pos = Virtual.stack[Virtual.stackIndex];
         if(Virtual.stackIndex != 0){
             Virtual.State.HOVER.pos = Virtual.lowPosition;
             Virtual.State.GOING_HOVER.pos = Virtual.lowPosition;
@@ -70,18 +79,6 @@ public class TiedBehaviour {
         if(robot.intake.state != Intake.State.TRANSFERING) detectedJam = false;
     }
 
-    private void tiltToHover(){
-        if(robot.virtual.virtualEncoder.getCurrentPosition() > Virtual.downPositionE + 50 && robot.virtual.virtualEncoder.getCurrentPosition() < Virtual.hoverPositionE - 50)
-        {
-            UtaUta.State.LEVEL.pos = UtaUta.hoverPosition;
-            UtaUta.State.LEVELING.pos = UtaUta.hoverPosition;
-        }
-        else {
-            UtaUta.State.LEVEL.pos = UtaUta.levelPosition;
-            UtaUta.State.LEVELING.pos = UtaUta.levelPosition;
-        }
-    }
-
     private void autoLift(){
         if(robot.intake.state == Intake.State.TRANSFERING
         && (robot.intake.transferState == Intake.TransferState.END || robot.intake.transferState == Intake.TransferState.OPEN_CLAW
@@ -95,11 +92,11 @@ public class TiedBehaviour {
         stack();
 //        tiltToHover();
         jamDetect();
+        if(coneSensorEnabled) autoClose();
         if(auto) { 
             loopAuto();
             return;
         }
-//        autoClose();
     }
 
     private void loopAuto(){

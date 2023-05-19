@@ -28,13 +28,14 @@ public class LiftCalibration extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
 
-        lift1 = hardwareMap.get(DcMotorEx.class, "lift1");
+        lift1 = hardwareMap.get(DcMotorEx.class,
+                "lift1");
         lift2 = hardwareMap.get(DcMotorEx.class, "lift2");
-        lift2.setDirection(DcMotorEx.Direction.REVERSE);
+        lift1.setDirection(DcMotorEx.Direction.REVERSE);
         lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
 

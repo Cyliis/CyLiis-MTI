@@ -51,7 +51,7 @@ public class Standard {
                     break;
             }
         }
-        if(stickyGamepad1.dpad_down){
+        if(stickyGamepad1.dpad_right){
             robot.intake.transferState = Intake.TransferState.ABORT;
         }
         if(stickyGamepad2.a){
@@ -85,6 +85,7 @@ public class Standard {
     }
 
     private void stackControl(){
+        if(robot.virtual.state != Virtual.State.DOWN && robot.virtual.state != Virtual.State.GOING_DOWN) return;
         if(stickyGamepad2.left_bumper){
             if(Virtual.stackIndex > 0) Virtual.stackIndex--;
         }
@@ -98,13 +99,24 @@ public class Standard {
         if(gamepad2.b) robot.outtake.lift.ground--;
     }
 
+    private void popaControl(){
+        if(stickyGamepad1.dpad_down){
+            if(robot.virtual.state == Virtual.State.DOWN || robot.virtual.state == Virtual.State.GOING_DOWN){
+                robot.intake.setState(Intake.State.GOING_UP_FOR_POPA);
+            }
+            else if(robot.intake.state == Intake.State.POPA){
+                robot.intake.setState(Intake.State.POPA_GOING_UP);
+            }
+        }
+    }
+
     public void loop(){
         intakeGamepadControl();
         outtakeGamepadControl();
         sensor();
         stackControl();
-        manualCalibration();
-
+//        manualCalibration();
+        popaControl();
 
         updateStickyGamepads();
     }

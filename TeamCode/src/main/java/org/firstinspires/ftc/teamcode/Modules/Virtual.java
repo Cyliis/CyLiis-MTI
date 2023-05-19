@@ -2,12 +2,15 @@ package org.firstinspires.ftc.teamcode.Modules;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Utils.DumbEncoder;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
 @Config
@@ -15,42 +18,49 @@ public class Virtual implements IRobotModule {
 
     public static boolean ENABLE_MODULE = true;
 
-
     public static String VIRTUAL_LEFT_NAME = "virtual1";
     public static String VIRTUAL_RIGHT_NAME = "virtual2";
     public static String VIRTUAL_ENCODER_NAME = "virtualEncoder";
     public static boolean reversed1 = false , reversed2 = true, reversedEnc = true;
-    public static double TICKS_PER_REV = 8192;
+//    public static double TICKS_PER_REV = 8192;
+//    public static double ticksOffset = -1076;
+//
+//    public static PIDFCoefficients pidfCoefficients = new PIDFCoefficients(0.001,0.085,0.000075,0.255);
+//    private PIDController pid = new PIDController(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d);
 
     HardwareMap hm;
     NanoClock nanoClock;
 
     Servo virtual1 , virtual2;
-    public DcMotorEx virtualEncoder;
+    public DumbEncoder virtualEncoder;
 
-    public static double stack1 = 0.0725, stack2 = 0.135, stack3 = 0.185, stack4 = 0.2, stack5 = 0.24;
-    public static double stack1E = 120, stack2E = 300, stack3E = 540, stack4E = 790, stack5E = 980;
-    public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
-    public static double[] stackE = {stack1E, stack2E, stack3E, stack4E, stack5E};
     public static int stackIndex = 0;
-    public static double downPosition = stack[stackIndex], hoverPosition = 0.12, lowPosition = 0.65, transferPosition = 0.69;
-    public static double downPositionE = stackE[stackIndex], hoverPositionE = 320, lowPositionE = 3800, transferPositionE = 4100, rotatePositionFromFrontE = 1500, rotatePositionFromBackE = 3000;
-    public static double lowDepositPosition = 2000;
+
+    public static double stack1_s = 0.5, stack2_s = 0.5, stack3_s = 0.5, stack4_s = 0.5, stack5_s = 0.5;
+    public static double[] stack_s = {stack1_s, stack2_s, stack3_s, stack4_s, stack5_s};
+    public static double downPosition_s = stack_s[stackIndex], hoverPosition_s = 0.5, lowPosition_s = 0.5, transferPosition_s = 0.5, popaPosition_s = 0.5;
+
+    public static double stack1 = 0, stack2 = 0, stack3 = 0, stack4 = 0, stack5 = 0;
+    public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
+    public static double downPosition = stack[stackIndex], hoverPosition = 0, lowPosition = 0, transferPosition = 0, popaPosition = 0;
+    public static double rotatePositionFromFront = 0, rotatePositionFromBack = 3800, lowDepositPosition = 1000;
 
     public enum State{
-        GOING_DOWN(downPosition, downPositionE),
-        DOWN(downPosition, downPositionE),
-        GOING_HOVER(hoverPosition, hoverPositionE),
-        HOVER(hoverPosition, hoverPositionE),
-        GOING_LOW(lowPosition, lowPositionE),
-        LOW(lowPosition, lowPositionE),
-        GOING_TRANSFER(transferPosition, transferPositionE),
-        TRANSFER(transferPosition, transferPositionE);
+        GOING_DOWN(downPosition, downPosition_s),
+        DOWN(downPosition, downPosition_s),
+        GOING_HOVER(hoverPosition, hoverPosition_s),
+        HOVER(hoverPosition, hoverPosition_s),
+        GOING_LOW(lowPosition, lowPosition_s),
+        LOW(lowPosition, lowPosition_s),
+        GOING_TRANSFER(transferPosition, transferPosition_s),
+        TRANSFER(transferPosition, transferPosition_s),
+        GOING_POPA(popaPosition, popaPosition_s),
+        POPA(popaPosition, popaPosition_s);
 
-        public double pos, encPos;
-        State(double pos, double encPos){
+        public double pos, pos_s;
+        State(double pos, double pos_s){
             this.pos = pos;
-            this.encPos = encPos;
+            this.pos_s = pos_s;
         }
     }
 
@@ -67,15 +77,15 @@ public class Virtual implements IRobotModule {
         virtual2 = hm.get(Servo.class, VIRTUAL_RIGHT_NAME);
         if(reversed2) virtual2.setDirection(Servo.Direction.REVERSE);
 
-        virtualEncoder = hm.get(DcMotorEx.class, VIRTUAL_ENCODER_NAME);
+        virtualEncoder = new DumbEncoder(hm, VIRTUAL_ENCODER_NAME);
         if(resetEncoders) resetEncoders();
-        if(reversedEnc) virtualEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
+        if(reversedEnc) virtualEncoder.setReversed(true);
         state = State.GOING_DOWN;
         nanoClock = NanoClock.system();
     }
 
     void resetEncoders(){
-        virtualEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        virtualEncoder.reset();
     }
 
     double timeOfLastStateChange;
@@ -91,27 +101,41 @@ public class Virtual implements IRobotModule {
     private void updateState(){
         switch (state){
             case GOING_DOWN:
-                if(Math.abs(virtualEncoder.getCurrentPosition() - state.encPos) <= virtualTolerance)
+                if(Math.abs(virtualEncoder.getCurrentPosition() - state.pos) <= virtualTolerance)
                     setState(State.DOWN);
                 break;
             case GOING_HOVER:
-                if(Math.abs(virtualEncoder.getCurrentPosition() - state.encPos) <= virtualTolerance)
+                if(Math.abs(virtualEncoder.getCurrentPosition() - state.pos) <= virtualTolerance)
                     setState(State.HOVER);
                 break;
             case GOING_LOW:
-                if(Math.abs(virtualEncoder.getCurrentPosition() - state.encPos) <= virtualTolerance)
+                if(Math.abs(virtualEncoder.getCurrentPosition() - state.pos) <= virtualTolerance)
                     setState(State.LOW);
                 break;
             case GOING_TRANSFER:
-                if(Math.abs(virtualEncoder.getCurrentPosition() - state.encPos) <= virtualTolerance)
+                if(Math.abs(virtualEncoder.getCurrentPosition() - state.pos) <= virtualTolerance)
                     setState(State.TRANSFER);
+                break;
+            case GOING_POPA:
+                if(Math.abs(virtualEncoder.getCurrentPosition() - state.pos) <= virtualTolerance)
+                    setState(State.POPA);
                 break;
         }
     }
 
+    public double ff, power;
+
     void updateServos(){
-        virtual1.setPosition(state.pos);
-        virtual2.setPosition(state.pos);
+        //TODO: PID
+
+//        ff = Math.cos(((double)virtualEncoder.getCurrentPosition() + ticksOffset) / TICKS_PER_REV * (Math.PI * 2)) * pidfCoefficients.f;
+//        pid.setPID(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d);
+//        power = pid.calculate(virtualEncoder.getCurrentPosition(), state.pos);
+//        virtual1.setPower(ff+power);
+//        virtual2.setPower(ff+power);
+
+        virtual1.setPosition(state.pos_s);
+        virtual2.setPosition(state.pos_s);
     }
 
     @Override

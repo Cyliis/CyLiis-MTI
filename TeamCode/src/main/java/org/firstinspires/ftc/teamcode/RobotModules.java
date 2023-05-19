@@ -29,7 +29,10 @@ public class RobotModules {
     public Intake intake;
     public Outtake outtake;
 
+    public HardwareMap hm;
+
     public RobotModules(HardwareMap hm, boolean resetEncoders){
+        this.hm = hm;
         if(Latch.ENABLE_MODULE)this.latch = new Latch(hm);
         if(Claw.ENABLE_MODULE)this.claw = new Claw(hm);
         if(Virtual.ENABLE_MODULE)this.virtual = new Virtual(hm, resetEncoders);
@@ -40,22 +43,24 @@ public class RobotModules {
 
     public void telemetry(Telemetry tele){
 //        tele.addData("Latch state",latch.state);
-//        tele.addData("Intake state", intake.state);
+        tele.addData("Intake state", intake.state);
 //        tele.addData("Outtake state", outtake.state);
-//        tele.addData("Transfer state", intake.transferState);
+        tele.addData("Transfer state", intake.transferState);
 //        tele.addData("Claw state", intake.claw.state);
-//        tele.addData("Lift state", outtake.lift.state);
-//        tele.addData("Uta state", intake.uta.state);
-//        tele.addData("Virtual state", virtual.state);
+        tele.addData("Lift state", outtake.lift.state);
+        tele.addData("Uta state", intake.uta.state);
+        tele.addData("Virtual state", virtual.state);
 //        tele.addData("Pivot state", intake.pivot.state);
-//        tele.addData("Stack index", Virtual.stackIndex);
-        tele.addData("Lift1 current position", outtake.lift.lift1.getCurrentPosition());
-        tele.addData("Lift2 current position", outtake.lift.lift2.getCurrentPosition());
+        tele.addData("Stack index", Virtual.stackIndex);
+        tele.addData("Lift current position", outtake.lift.liftEncoder.getCurrentPosition());
         tele.addData("Lift target position", outtake.lift.state.pos + outtake.lift.ground);
         tele.addData("Lift ground position", outtake.lift.ground);
         tele.addData("Lift power", Lift.power);
-//        tele.addData("Lift1 power draw", outtake.lift.lift1.getCurrent(CurrentUnit.AMPS));
-//        tele.addData("Lift2 power draw", outtake.lift.lift2.getCurrent(CurrentUnit.AMPS));
+        tele.addData("Lift wtf", (double)outtake.lift.lift1.getCurrentPosition()/(double)Lift.maxPos);
+        tele.addData("Lift1 power draw", outtake.lift.lift1.getCurrent(CurrentUnit.AMPS));
+        tele.addData("Lift2 power draw", outtake.lift.lift2.getCurrent(CurrentUnit.AMPS));
+        tele.addData("Virtual target position", virtual.state.pos);
+        tele.addData("Virtual current position", virtual.virtualEncoder.getCurrentPosition());
     }
 
     public void buildList(){
