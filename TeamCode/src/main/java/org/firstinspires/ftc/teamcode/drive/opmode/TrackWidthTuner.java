@@ -44,6 +44,8 @@ public class TrackWidthTuner extends LinearOpMode {
 
         waitForStart();
 
+        SampleMecanumDrive.imu.startIMUThread(this);
+
         if (isStopRequested()) return;
 
         telemetry.clearAll();

@@ -31,7 +31,7 @@ public class LiftCalibration extends LinearOpMode {
         lift1 = hardwareMap.get(DcMotorEx.class,
                 "lift1");
         lift2 = hardwareMap.get(DcMotorEx.class, "lift2");
-        lift1.setDirection(DcMotorEx.Direction.REVERSE);
+        lift2.setDirection(DcMotorEx.Direction.REVERSE);
         lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

@@ -35,16 +35,13 @@ public class Outtake implements IRobotModule {
 
     public State state;
 
-    double timeOfLastStateChange;
+    public double timeOfLastStateChange;
 
     public void setState(State state){
         if(state==this.state) return;
         switch (state){
             case DOWN:
             case GOING_DOWN:
-//                latch.setState(Latch.State.OPENING);
-                lift.setState(Lift.State.GOING_DOWN);
-                break;
             case GOING_DOWN_NO_LATCH:
                 lift.setState(Lift.State.GOING_DOWN);
                 break;

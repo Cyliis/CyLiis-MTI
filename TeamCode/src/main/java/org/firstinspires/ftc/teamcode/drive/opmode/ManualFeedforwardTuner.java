@@ -88,6 +88,8 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
         waitForStart();
 
+        SampleMecanumDrive.imu.startIMUThread(this);
+
         if (isStopRequested()) return;
 
         boolean movingForwards = true;

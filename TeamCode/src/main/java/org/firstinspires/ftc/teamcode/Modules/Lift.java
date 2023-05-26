@@ -20,7 +20,7 @@ public class Lift implements IRobotModule {
 
     public static String LIFT1_NAME = "lift1";
     public static String LIFT2_NAME = "lift2";
-    public static boolean reversed1 = true, reversed2 =false;
+    public static boolean reversed1 = true, reversed2 =false, reversedEnc = true;
     public int ground = 0;
 
     HardwareMap hm;
@@ -29,14 +29,9 @@ public class Lift implements IRobotModule {
     public DcMotorEx lift1, lift2;
     public DumbEncoder liftEncoder;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 380, highPosition=660;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 385, highPosition=650, funnyPosition = 60;
     public static int lowerPosition = -30;
     public int target = downPosition;
-    public static double liftPower = 1;
-
-//    public static double p = 0,i = 0,d = 0;
-//    public static double f = 0;
-
     public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.16, 0.00055);
     public static double f1 = 0.11, f2 = 0.05;
     public static double maxPos = 700;
@@ -98,7 +93,7 @@ public class Lift implements IRobotModule {
         motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
         lift2.setMotorType(motorConfigurationType);
 
-        liftEncoder = new DumbEncoder(hm,"lift1", false);
+        liftEncoder = new DumbEncoder(hm,"lift1", reversedEnc);
 
         state = State.GOING_DOWN;
         previousState = State.DOWN;
@@ -124,7 +119,7 @@ public class Lift implements IRobotModule {
         }
     }
 
-    public static int liftTolerance = 100;
+    public static int liftTolerance = 40;
 
     private void updateState(){
         switch (state){
@@ -146,8 +141,8 @@ public class Lift implements IRobotModule {
                 break;
             case RESETTING:
                 if(looped){
-                    if(lift1.getVelocity() == 0){
-                        ground = lift1.getCurrentPosition();
+                    if(liftEncoder.getVelocity() == 0){
+                        ground = liftEncoder.getCurrentPosition();
                         setState(State.DOWN);
                     }
                 }
@@ -164,7 +159,9 @@ public class Lift implements IRobotModule {
 
         pid.setPID(pidCoefficients.p, pidCoefficients.i, pidCoefficients.d);
 
-        power = pid.calculate(lift1.getCurrentPosition(), target) + f1*((double)current/(double)maxPos) + f2;
+        power = pid.calculate(liftEncoder.getCurrentPosition(), target) + f1*((double)current/(double)maxPos) + f2;
+
+//        power = 0;
 
         lift1.setPower(power);
         lift2.setPower(power);

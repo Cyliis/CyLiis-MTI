@@ -44,6 +44,8 @@ public class BackAndForth extends LinearOpMode {
 
         waitForStart();
 
+        SampleMecanumDrive.imu.startIMUThread(this);
+
         while (opModeIsActive() && !isStopRequested()) {
             drive.followTrajectory(trajectoryForward);
             drive.followTrajectory(trajectoryBackward);

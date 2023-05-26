@@ -31,6 +31,8 @@ public class StraightTest extends LinearOpMode {
 
         waitForStart();
 
+        SampleMecanumDrive.imu.startIMUThread(this);
+
         if (isStopRequested()) return;
 
         drive.followTrajectory(trajectory);

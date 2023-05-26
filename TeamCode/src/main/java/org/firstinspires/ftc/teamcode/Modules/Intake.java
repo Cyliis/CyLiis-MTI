@@ -59,7 +59,6 @@ public class Intake implements IRobotModule {
                 break;
             case GOING_DOWN_FROM_LOW:
                 uta.setState(UtaUta.State.LEVELING);
-                pivot.setState(VirtualPivot.State.RFRONT);
                 virtual.setState(Virtual.State.GOING_DOWN);
                 break;
             case MOPENING:
@@ -138,7 +137,7 @@ public class Intake implements IRobotModule {
                 if(uta.state == UtaUta.State.SMOLANGLEFRONT && virtual.state == Virtual.State.HOVER) setState(State.MCLOSED);
                 break;
             case GOING_LOW:
-                if(virtual.virtualEncoder.getCurrentPosition() >= Virtual.lowDepositPosition && !rotatedLow){
+                if(virtual.virtualEncoder.getCurrentPosition() >= Virtual.lowRotateFromFrontPosition && !rotatedLow){
                     rotatedLow = true;
                     pivot.setState(VirtualPivot.State.RBACK);
                 }
@@ -151,6 +150,9 @@ public class Intake implements IRobotModule {
                 }
                 break;
             case GOING_DOWN_FROM_LOW:
+                if(pivot.state == VirtualPivot.State.BACK && virtual.virtualEncoder.getCurrentPosition() <= Virtual.rotatePositionFromBack){
+                    pivot.setState(VirtualPivot.State.RFRONT);
+                }
                 if(virtual.state == Virtual.State.DOWN && pivot.state == VirtualPivot.State.FRONT && uta.state == UtaUta.State.LEVEL){
                     switch (claw.state){
                         case CLOSED:

@@ -31,6 +31,8 @@ public class StrafeTest extends LinearOpMode {
 
         waitForStart();
 
+        SampleMecanumDrive.imu.startIMUThread(this);
+
         if (isStopRequested()) return;
 
         drive.followTrajectory(trajectory);

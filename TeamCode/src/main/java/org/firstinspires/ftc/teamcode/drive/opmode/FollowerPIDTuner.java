@@ -36,6 +36,8 @@ public class FollowerPIDTuner extends LinearOpMode {
 
         waitForStart();
 
+        SampleMecanumDrive.imu.startIMUThread(this);
+
         if (isStopRequested()) return;
 
         while (!isStopRequested()) {

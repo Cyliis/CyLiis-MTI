@@ -23,8 +23,8 @@ public class PopaCalibration extends LinearOpMode {
         popa.setPosition(pos);
         waitForStart();
         while(opModeIsActive()){
-            if(gamepad1.dpad_up) pos = pos1;
-            if(gamepad1.dpad_down) pos = pos2;
+            if(gamepad1.dpad_up) pos += 0.001;
+            if(gamepad1.dpad_down) pos -= 0.001;
             telemetry.addData("Position", pos);
             popa.setPosition(pos);
             stickyGamepad.update();

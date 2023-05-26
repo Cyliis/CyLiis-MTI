@@ -20,8 +20,8 @@ public class Popa implements IRobotModule {
 
     Servo popa;
 
-    public static double downPopaPosition = 1, upPopaPosition = .5;
-    public static double downTime = 0.2, upTime = 0.5;
+    public static double downPopaPosition = 0.23, upPopaPosition = .55;
+    public static double downTime = 0.2, upTime = 0.35;
 
     public enum State{
         GOING_DOWN(downPopaPosition), DOWN(downPopaPosition),

@@ -26,7 +26,7 @@ public class VirtualCalibration extends LinearOpMode {
     public static String VIRTUAL_LEFT_NAME = "virtual1";
     public static String VIRTUAL_RIGHT_NAME = "virtual2";
     public static String VIRTUAL_ENCODER_NAME = "virtualEncoder";
-    public static boolean reversed1 = false , reversed2 = true, reversedEnc = true;
+    public static boolean reversed1 = true , reversed2 = false, reversedEnc = true;
     public static double TICKS_PER_REV = 8192;
     public static double ticksOffset = -1076;
 

@@ -31,7 +31,7 @@ public class ImuModule {
             while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
                 synchronized (imuLock) {
                     imuAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                    imuVelocity = (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
+                    imuVelocity = (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).yRotationRate;
                 }
             }
         }).start();
@@ -39,6 +39,9 @@ public class ImuModule {
 
     public double getHeading() {
         return imuAngle;
+    }
+    public double getVelocity() {
+        return imuVelocity;
     }
 
 }

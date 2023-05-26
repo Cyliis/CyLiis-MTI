@@ -23,6 +23,11 @@ public class DumbEncoder {
         return motor.getCurrentPosition();
     }
 
+    public double getVelocity(){
+        if(reversed) return -motor.getVelocity();
+        else return motor.getVelocity();
+    }
+
     public void reset(){
         DcMotorEx.RunMode prev = motor.getMode();
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

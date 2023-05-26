@@ -36,7 +36,7 @@ public class DriveTrain implements IRobotModule {
 
     public enum SPEED{
         SLOW(0.5),FAST(1);
-        final double multiplier;
+        public final double multiplier;
 
         SPEED(double multiplier) {
             this.multiplier = multiplier;

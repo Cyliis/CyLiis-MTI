@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -20,30 +19,30 @@ public class Virtual implements IRobotModule {
 
     public static String VIRTUAL_LEFT_NAME = "virtual1";
     public static String VIRTUAL_RIGHT_NAME = "virtual2";
-    public static String VIRTUAL_ENCODER_NAME = "virtualEncoder";
-    public static boolean reversed1 = false , reversed2 = true, reversedEnc = true;
-//    public static double TICKS_PER_REV = 8192;
-//    public static double ticksOffset = -1076;
-//
-//    public static PIDFCoefficients pidfCoefficients = new PIDFCoefficients(0.001,0.085,0.000075,0.255);
-//    private PIDController pid = new PIDController(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d);
+    public static String VIRTUAL_ENCODER_NAME = "virtual1";
+    public static boolean reversed1 = true , reversed2 = false, reversedEnc = false;
+    public static double TICKS_PER_REV = 8192;
+    public static double ticksOffset = -1076;
+
+    public static PIDFCoefficients pidfCoefficients = new PIDFCoefficients(0.00125,0.065,0.00006,0.14);
+    private final PIDController pid = new PIDController(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d);
 
     HardwareMap hm;
     NanoClock nanoClock;
 
-    Servo virtual1 , virtual2;
+    DcMotorEx virtual1 , virtual2;
     public DumbEncoder virtualEncoder;
 
     public static int stackIndex = 0;
 
-    public static double stack1_s = 0.5, stack2_s = 0.5, stack3_s = 0.5, stack4_s = 0.5, stack5_s = 0.5;
+    public static double stack1_s = 0.288, stack2_s = 0.33, stack3_s = 0.362, stack4_s = 0.406, stack5_s = 0.443;
     public static double[] stack_s = {stack1_s, stack2_s, stack3_s, stack4_s, stack5_s};
-    public static double downPosition_s = stack_s[stackIndex], hoverPosition_s = 0.5, lowPosition_s = 0.5, transferPosition_s = 0.5, popaPosition_s = 0.5;
+    public static double downPosition_s = stack_s[stackIndex], hoverPosition_s = 0.334, hoverPositionStack_s = 0.539, lowPosition_s = 0.862, transferPosition_s = 0.828, popaPosition_s = 0.7;
 
-    public static double stack1 = 0, stack2 = 0, stack3 = 0, stack4 = 0, stack5 = 0;
+    public static double stack1 = 34, stack2 = 400, stack3 = 600, stack4 = 900, stack5 = 1080;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
-    public static double downPosition = stack[stackIndex], hoverPosition = 0, lowPosition = 0, transferPosition = 0, popaPosition = 0;
-    public static double rotatePositionFromFront = 0, rotatePositionFromBack = 3800, lowDepositPosition = 1000;
+    public static double downPosition = stack[stackIndex], hoverPosition = 400, hoverPositionStack = 1850, lowPosition = 4500, transferPosition = 4300, popaPosition = 3150;
+    public static double rotatePositionFromFront = 0, rotatePositionFromBack = 5000, lowRotateFromFrontPosition = 0;
 
     public enum State{
         GOING_DOWN(downPosition, downPosition_s),
@@ -72,15 +71,17 @@ public class Virtual implements IRobotModule {
     }
 
     void init(boolean resetEncoders){
-        virtual1 = hm.get(Servo.class, VIRTUAL_LEFT_NAME);
-        if(reversed1) virtual1.setDirection(Servo.Direction.REVERSE);
-        virtual2 = hm.get(Servo.class, VIRTUAL_RIGHT_NAME);
-        if(reversed2) virtual2.setDirection(Servo.Direction.REVERSE);
+        virtual1 = hm.get(DcMotorEx.class, VIRTUAL_LEFT_NAME);
+        if(reversed1) virtual1.setDirection(DcMotorEx.Direction.REVERSE);
+        virtual1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        virtual2 = hm.get(DcMotorEx.class, VIRTUAL_RIGHT_NAME);
+        if(reversed2) virtual2.setDirection(DcMotorEx.Direction.REVERSE);
+        virtual2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         virtualEncoder = new DumbEncoder(hm, VIRTUAL_ENCODER_NAME);
         if(resetEncoders) resetEncoders();
         if(reversedEnc) virtualEncoder.setReversed(true);
-        state = State.GOING_DOWN;
+        state = State.DOWN;
         nanoClock = NanoClock.system();
     }
 
@@ -93,6 +94,7 @@ public class Virtual implements IRobotModule {
     public void setState(State state){
         if(state == this.state) return;
         timeOfLastStateChange = nanoClock.seconds();
+
         this.state = state;
     }
 
@@ -125,17 +127,23 @@ public class Virtual implements IRobotModule {
 
     public double ff, power;
 
+    public static double speedLimit = 0.75;
+
     void updateServos(){
         //TODO: PID
 
-//        ff = Math.cos(((double)virtualEncoder.getCurrentPosition() + ticksOffset) / TICKS_PER_REV * (Math.PI * 2)) * pidfCoefficients.f;
-//        pid.setPID(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d);
-//        power = pid.calculate(virtualEncoder.getCurrentPosition(), state.pos);
-//        virtual1.setPower(ff+power);
-//        virtual2.setPower(ff+power);
+        ff = Math.cos(((double)virtualEncoder.getCurrentPosition() + ticksOffset) / TICKS_PER_REV * (Math.PI * 2)) * pidfCoefficients.f;
+        pid.setPID(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d);
+        power = pid.calculate(virtualEncoder.getCurrentPosition(), state.pos);
 
-        virtual1.setPosition(state.pos_s);
-        virtual2.setPosition(state.pos_s);
+        power = Math.min(speedLimit, power);
+        power = Math.max(-speedLimit, power);
+
+        virtual1.setPower(ff+power);
+        virtual2.setPower(ff+power);
+
+//        virtual1.setPosition(state.pos_s);
+//        virtual2.setPosition(state.pos_s);
     }
 
     @Override

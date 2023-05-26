@@ -32,7 +32,6 @@ public class DriverPractice extends LinearOpMode {
     Servo odo;
 
     public void initialize(){
-
         dash = FtcDashboard.getInstance();
 
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
@@ -40,12 +39,12 @@ public class DriverPractice extends LinearOpMode {
         for(LynxModule hub:hubs)
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 
-        driveTrain = new DriveTrain(hardwareMap);
-        dtControl = new DriveTrainControlTriggers(gamepad1, gamepad2, driveTrain);
-
         robotModules = new RobotModules(hardwareMap, true);
         gamepadControl = new Standard(gamepad1, gamepad2, robotModules);
         tiedBehaviour = new TiedBehaviour(robotModules, driveTrain);
+
+        driveTrain = new DriveTrain(hardwareMap);
+        dtControl = new DriveTrainControlTriggers(gamepad1, gamepad2, driveTrain, robotModules);
 
         odo = hardwareMap.get(Servo.class, "odo");
         odo.setPosition(0.8);
@@ -57,9 +56,9 @@ public class DriverPractice extends LinearOpMode {
     public void runOpMode()  {
         initialize();
 
-        driveTrain.imu.startIMUThread(this);
-
         waitForStart();
+
+//        driveTrain.imu.startIMUThread(this);
 
         for(LynxModule hub:hubs)
             hub.clearBulkCache();

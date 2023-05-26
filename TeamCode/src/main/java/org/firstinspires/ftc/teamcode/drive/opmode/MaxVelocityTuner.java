@@ -52,6 +52,8 @@ public class MaxVelocityTuner extends LinearOpMode {
 
         waitForStart();
 
+        SampleMecanumDrive.imu.startIMUThread(this);
+
         telemetry.clearAll();
         telemetry.update();
 

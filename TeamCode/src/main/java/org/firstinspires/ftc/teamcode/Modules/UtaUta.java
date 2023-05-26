@@ -20,8 +20,8 @@ public class UtaUta implements IRobotModule {
 
     Servo uta;
 
-    public static double levelPosition = 0.585, angledPosition = 0.735, bruhPosition = 0.61, frontBruhPosition = 0.51;
-    public static double levelingTime = 0.05, anglingTime = 0.05, smolAnglingTime = 0.15;
+    public static double levelPosition = 0.695, angledPosition = 0.8, bruhPosition = 0.695, frontBruhPosition = 0.62;
+    public static double levelingTime = 0.05, anglingTime = 0.05, smolAnglingTime = 0.1;
 
     public enum State{
         LEVEL(levelPosition), ANGLED(angledPosition), SMOLANGLE(bruhPosition), SMOLANGLEFRONT(frontBruhPosition),

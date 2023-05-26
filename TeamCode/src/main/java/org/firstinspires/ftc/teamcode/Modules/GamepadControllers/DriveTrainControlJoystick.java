@@ -13,7 +13,7 @@ public class DriveTrainControlJoystick {
     StickyGamepad stickyGamepad1,stickyGamepad2;
     DriveTrain dt;
 
-    public DriveTrainControlJoystick(Gamepad gamepad1, Gamepad gamepad2, DriveTrain dt){
+    public DriveTrainControlJoystick(Gamepad gamepad1, Gamepad gamepad2, DriveTrain dt, RobotModules robot){
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
         this.stickyGamepad1 = new StickyGamepad(gamepad1);

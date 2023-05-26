@@ -24,6 +24,8 @@ public class LocalizationTest extends LinearOpMode {
 
         waitForStart();
 
+        SampleMecanumDrive.imu.startIMUThread(this);
+
         while (!isStopRequested()) {
             drive.setWeightedDrivePower(
                     new Pose2d(

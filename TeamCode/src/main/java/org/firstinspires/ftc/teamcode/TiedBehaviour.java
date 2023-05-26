@@ -54,17 +54,21 @@ public class TiedBehaviour {
     }
 
     private void stack(){
-        Virtual.State.DOWN.pos =  Virtual.stack[Virtual.stackIndex];
-        Virtual.State.GOING_DOWN.pos = Virtual.stack[Virtual.stackIndex];
+        Virtual.State.DOWN.pos_s =  Virtual.stack_s[Virtual.stackIndex];
+        Virtual.State.GOING_DOWN.pos_s = Virtual.stack_s[Virtual.stackIndex];
         Virtual.State.DOWN.pos =  Virtual.stack[Virtual.stackIndex];
         Virtual.State.GOING_DOWN.pos = Virtual.stack[Virtual.stackIndex];
         if(Virtual.stackIndex != 0){
-            Virtual.State.HOVER.pos = Virtual.lowPosition;
-            Virtual.State.GOING_HOVER.pos = Virtual.lowPosition;
+            Virtual.State.HOVER.pos = Virtual.hoverPositionStack;
+            Virtual.State.GOING_HOVER.pos = Virtual.hoverPositionStack;
+            Virtual.State.HOVER.pos_s = Virtual.hoverPositionStack_s;
+            Virtual.State.GOING_HOVER.pos_s = Virtual.hoverPositionStack_s;
         }
         else{
             Virtual.State.HOVER.pos = Virtual.hoverPosition;
             Virtual.State.GOING_HOVER.pos = Virtual.hoverPosition;
+            Virtual.State.HOVER.pos_s = Virtual.hoverPosition_s;
+            Virtual.State.GOING_HOVER.pos_s = Virtual.hoverPosition_s;
         }
     }
 
