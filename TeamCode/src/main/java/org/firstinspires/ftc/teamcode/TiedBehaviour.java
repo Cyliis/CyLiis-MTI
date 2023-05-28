@@ -23,7 +23,7 @@ public class TiedBehaviour {
 
     DigitalChannel coneGuideSensor;
 
-    public static boolean coneSensorEnabled = false;
+    public static boolean coneSensorEnabled = true;
 
     public TiedBehaviour(RobotModules robot, DriveTrain driveTrain){
         auto = false;
@@ -48,7 +48,7 @@ public class TiedBehaviour {
     }
 
     private void autoClose(){
-        if(robot.intake.state == Intake.State.OPENED && coneGuideSensor.getState() && Virtual.stackIndex == 0){
+        if(robot.intake.state == Intake.State.OPENED && !coneGuideSensor.getState() && Virtual.stackIndex == 0){
             robot.intake.setState(Intake.State.CLOSING);
         }
     }

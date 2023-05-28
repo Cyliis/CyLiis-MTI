@@ -9,7 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class ImuModule {
 
-    private final Object imuLock = new Object();
+    private final Object imuLock1 = new Object();
+    private final Object imuLock2 = new Object();
     private final IMU imu;
     public static double imuAngle = 0;
     public static double imuVelocity = 0;
@@ -29,8 +30,10 @@ public class ImuModule {
     public void startIMUThread(LinearOpMode opMode) {
         new Thread(() -> {
             while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
-                synchronized (imuLock) {
+                synchronized (imuLock1) {
                     imuAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                }
+                synchronized (imuLock2){
                     imuVelocity = (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).yRotationRate;
                 }
             }

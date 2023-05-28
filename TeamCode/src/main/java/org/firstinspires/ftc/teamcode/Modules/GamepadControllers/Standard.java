@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Modules.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Lift;
 import org.firstinspires.ftc.teamcode.Modules.Outtake;
 import org.firstinspires.ftc.teamcode.Modules.Virtual;
 import org.firstinspires.ftc.teamcode.RobotModules;
@@ -112,6 +113,10 @@ public class Standard {
         }
     }
 
+    private void resetLiftGround(){
+        if(stickyGamepad1.back) robot.outtake.lift.ground = robot.outtake.lift.liftEncoder.getCurrentPosition();
+    }
+
     public void loop(){
         intakeGamepadControl();
         outtakeGamepadControl();
@@ -119,6 +124,7 @@ public class Standard {
         stackControl();
 //        manualCalibration();
         popaControl();
+        resetLiftGround();
 
         updateStickyGamepads();
     }

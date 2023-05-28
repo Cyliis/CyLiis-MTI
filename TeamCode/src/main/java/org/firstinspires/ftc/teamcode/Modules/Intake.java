@@ -156,16 +156,12 @@ public class Intake implements IRobotModule {
                 if(virtual.state == Virtual.State.DOWN && pivot.state == VirtualPivot.State.FRONT && uta.state == UtaUta.State.LEVEL){
                     switch (claw.state){
                         case CLOSED:
+                        case MCLOSED:
                             setState(State.CLOSED);
                             break;
                         case OPENED:
-                            setState(State.OPENED);
-                            break;
                         case MOPENED:
-                            setState(State.MOPENED);
-                            break;
-                        case MCLOSED:
-                            setState(State.MCLOSED);
+                            setState(State.OPENED);
                             break;
                     }
                 }

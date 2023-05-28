@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpMode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -50,6 +51,8 @@ public class DriverPractice extends LinearOpMode {
         odo.setPosition(0.8);
 
         nanoClock = NanoClock.system();
+
+        PhotonCore.disable();
     }
 
     @Override
@@ -58,7 +61,7 @@ public class DriverPractice extends LinearOpMode {
 
         waitForStart();
 
-//        driveTrain.imu.startIMUThread(this);
+        driveTrain.imu.startIMUThread(this);
 
         for(LynxModule hub:hubs)
             hub.clearBulkCache();
