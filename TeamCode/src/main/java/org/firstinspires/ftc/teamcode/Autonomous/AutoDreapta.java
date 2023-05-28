@@ -1,22 +1,21 @@
-package org.firstinspires.ftc.teamcode.OpMode;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.LynxModuleImuType;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Modules.GamepadControllers.DriveTrainControlTriggers;
 import org.firstinspires.ftc.teamcode.Modules.GamepadControllers.Standard;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
-import org.firstinspires.ftc.teamcode.Modules.Outtake;
 import org.firstinspires.ftc.teamcode.RobotModules;
 import org.firstinspires.ftc.teamcode.TiedBehaviour;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.trajectories.AutoDreaptaTrajectories;
 
 import java.util.List;
 
@@ -28,73 +27,58 @@ public class AutoDreapta extends LinearOpMode {
     NanoClock nanoClock;
 
     SampleMecanumDrive driveTrain;
-    AutoDreaptaTrajectories trajectories;
     RobotModules robotModules;
+    Standard gamepadControl;
     TiedBehaviour tiedBehaviour;
 
     Servo odo;
 
     public void initialize(){
-
         dash = FtcDashboard.getInstance();
 
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
         hubs = hardwareMap.getAll(LynxModule.class);
-        for(LynxModule hub:hubs)
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        for(LynxModule hub:hubs) {
+            if(hub.getImuType() == LynxModuleImuType.BHI260) hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            else hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
+        }
 
         robotModules = new RobotModules(hardwareMap, true);
+        gamepadControl = new Standard(gamepad1, gamepad2, robotModules);
         tiedBehaviour = new TiedBehaviour(robotModules);
 
-        odo = hardwareMap.get(Servo.class, "odo");
-        odo.setPosition(0);
-
         driveTrain = new SampleMecanumDrive(hardwareMap);
-        trajectories = new AutoDreaptaTrajectories(driveTrain, robotModules);
 
-        driveTrain.followTrajectorySequenceAsync(trajectories.preloadTrajectory());
+        odo = hardwareMap.get(Servo.class, "odo");
+        odo.setPosition(0.8);
 
         nanoClock = NanoClock.system();
-    }
 
-    int index = 0;
+        PhotonCore.enable();
+    }
 
     @Override
     public void runOpMode()  {
         initialize();
+
         waitForStart();
+
+        driveTrain.imu.startIMUThread(this);
 
         for(LynxModule hub:hubs)
             hub.clearBulkCache();
 
         robotModules.atStart();
 
-        boolean picked = false;
-
         while(opModeIsActive() && !isStopRequested()) {
             double timeMs = nanoClock.seconds()*1000;
 
             for(LynxModule hub:hubs)
                 hub.clearBulkCache();
-            if(!driveTrain.isBusy()){
-                if(index < 5){
-                    if(!picked){
-                        if(robotModules.outtake.state == Outtake.State.HIGH) {
-                            robotModules.outtake.setState(Outtake.State.GOING_DOWN);
-                            driveTrain.followTrajectorySequenceAsync(trajectories.pickupTrajectory(index));
-                            picked = true;
-                        }
-                    }
-                    else {
-                        driveTrain.followTrajectorySequenceAsync(trajectories.releaseTrajectory(index));
-                        index++;
-                        picked = false;
-                    }
-                }
-            }
 
             driveTrain.update();
 
+            gamepadControl.loop();
             robotModules.loop();
             tiedBehaviour.loop();
 
