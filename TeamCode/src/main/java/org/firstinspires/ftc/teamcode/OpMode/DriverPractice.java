@@ -7,6 +7,7 @@ import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.LynxModuleImuType;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Modules.GamepadControllers.DriveTrainControlTriggers;
@@ -37,8 +38,10 @@ public class DriverPractice extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
         hubs = hardwareMap.getAll(LynxModule.class);
-        for(LynxModule hub:hubs)
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        for(LynxModule hub:hubs) {
+            if(hub.getImuType() == LynxModuleImuType.BHI260) hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            else hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
+        }
 
         robotModules = new RobotModules(hardwareMap, true);
         gamepadControl = new Standard(gamepad1, gamepad2, robotModules);
@@ -52,7 +55,8 @@ public class DriverPractice extends LinearOpMode {
 
         nanoClock = NanoClock.system();
 
-        PhotonCore.disable();
+//        PhotonCore.experimental.setMaximumParallelCommands(8);
+        PhotonCore.enable();
     }
 
     @Override

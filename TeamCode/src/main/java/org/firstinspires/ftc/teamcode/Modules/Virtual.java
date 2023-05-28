@@ -19,8 +19,8 @@ public class Virtual implements IRobotModule {
 
     public static String VIRTUAL_LEFT_NAME = "virtual1";
     public static String VIRTUAL_RIGHT_NAME = "virtual2";
-    public static String VIRTUAL_ENCODER_NAME = "virtual1";
-    public static boolean reversed1 = true , reversed2 = false, reversedEnc = false;
+    public static String VIRTUAL_ENCODER_NAME = "mbl";
+    public static boolean reversed1 = true , reversed2 = false, reversedEnc = true;
     public static double TICKS_PER_REV = 8192;
     public static double ticksOffset = -1076;
 
@@ -41,7 +41,7 @@ public class Virtual implements IRobotModule {
 
     public static double stack1 = 34, stack2 = 400, stack3 = 600, stack4 = 900, stack5 = 1080;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
-    public static double downPosition = stack[stackIndex], hoverPosition = 400, hoverPositionStack = 1850, lowPosition = 4500, transferPosition = 4300, popaPosition = 3150;
+    public static double downPosition = stack[stackIndex], hoverPosition = 400, hoverPositionStack = 1850, lowPosition = 4500, transferPosition = 4100, popaPosition = 3150;
     public static double rotatePositionFromFront = 0, rotatePositionFromBack = 5000, lowRotateFromFrontPosition = 0;
 
     public enum State{

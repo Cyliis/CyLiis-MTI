@@ -95,7 +95,7 @@ public class Lift implements IRobotModule {
         motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
         lift2.setMotorType(motorConfigurationType);
 
-        liftEncoder = new DumbEncoder(hm,"lift1", reversedEnc);
+        liftEncoder = new DumbEncoder(hm,"mfr", reversedEnc);
 
         state = State.GOING_DOWN;
         previousState = State.DOWN;
