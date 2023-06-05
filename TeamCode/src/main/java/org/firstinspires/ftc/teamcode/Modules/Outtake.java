@@ -62,7 +62,7 @@ public class Outtake implements IRobotModule {
         switch (state){
             case GOING_DOWN:
                 if(latch.state == Latch.State.CLOSED || latch.state == Latch.State.CLOSING){
-                    if(lift.lift1.getCurrentPosition() <= lift.previousState.pos - latchReleasePointDiff)
+                    if(lift.liftEncoder.getCurrentPosition() <= lift.previousState.pos - latchReleasePointDiff)
                         latch.setState(Latch.State.OPENING);
                 }
                 if(lift.state == Lift.State.DOWN)

@@ -19,8 +19,8 @@ public class Virtual implements IRobotModule {
 
     public static String VIRTUAL_LEFT_NAME = "virtual1";
     public static String VIRTUAL_RIGHT_NAME = "virtual2";
-    public static String VIRTUAL_ENCODER_NAME = "mbl";
-    public static boolean reversed1 = true , reversed2 = false, reversedEnc = true;
+    public static String VIRTUAL_ENCODER_NAME = "lift1";
+    public static boolean reversed1 = true , reversed2 = false, reversedEnc = false;
     public static double TICKS_PER_REV = 8192;
     public static double ticksOffset = -1076;
 
@@ -38,11 +38,13 @@ public class Virtual implements IRobotModule {
     public static double stack1_s = 0.288, stack2_s = 0.33, stack3_s = 0.362, stack4_s = 0.406, stack5_s = 0.443;
     public static double[] stack_s = {stack1_s, stack2_s, stack3_s, stack4_s, stack5_s};
     public static double downPosition_s = stack_s[stackIndex], hoverPosition_s = 0.334, hoverPositionStack_s = 0.539, lowPosition_s = 0.862, transferPosition_s = 0.828, popaPosition_s = 0.7;
+    public static double manualAdd_s = 0, manualMultiplier_s;
 
     public static double stack1 = 34, stack2 = 400, stack3 = 600, stack4 = 900, stack5 = 1080;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
     public static double downPosition = stack[stackIndex], hoverPosition = 400, hoverPositionStack = 1850, lowPosition = 4500, transferPosition = 4100, popaPosition = 3150;
     public static double rotatePositionFromFront = 0, rotatePositionFromBack = 5000, lowRotateFromFrontPosition = 0;
+    public static double manualAdd = 0, manualMultiplier = 1200;
 
     public enum State{
         GOING_DOWN(downPosition, downPosition_s),
@@ -134,7 +136,7 @@ public class Virtual implements IRobotModule {
 
         ff = Math.cos(((double)virtualEncoder.getCurrentPosition() + ticksOffset) / TICKS_PER_REV * (Math.PI * 2)) * pidfCoefficients.f;
         pid.setPID(pidfCoefficients.p, pidfCoefficients.i, pidfCoefficients.d);
-        power = pid.calculate(virtualEncoder.getCurrentPosition(), state.pos);
+        power = pid.calculate(virtualEncoder.getCurrentPosition() + manualAdd, state.pos);
 
         power = Math.min(speedLimit, power);
         power = Math.max(-speedLimit, power);

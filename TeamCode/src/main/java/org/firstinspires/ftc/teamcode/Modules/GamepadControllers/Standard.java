@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Modules.Outtake;
 import org.firstinspires.ftc.teamcode.Modules.Virtual;
 import org.firstinspires.ftc.teamcode.RobotModules;
 import org.firstinspires.ftc.teamcode.Utils.StickyGamepad;
+import org.opencv.core.Mat;
 
 @Config
 public class Standard {
@@ -117,6 +118,16 @@ public class Standard {
         if(stickyGamepad1.back) robot.outtake.lift.ground = robot.outtake.lift.liftEncoder.getCurrentPosition();
     }
 
+    public static double deadZone = 0.1;
+
+    private void manualVirtual(){
+        if(robot.virtual.state == Virtual.State.DOWN || robot.virtual.state == Virtual.State.HOVER || robot.virtual.state == Virtual.State.GOING_HOVER){
+            double input = gamepad1.right_stick_y;
+            if(Math.abs(input) <= deadZone) input = 0;
+            Virtual.manualAdd = input*Virtual.manualMultiplier;
+        }
+    }
+
     public void loop(){
         intakeGamepadControl();
         outtakeGamepadControl();
@@ -125,6 +136,7 @@ public class Standard {
 //        manualCalibration();
         popaControl();
         resetLiftGround();
+        manualVirtual();
 
         updateStickyGamepads();
     }

@@ -29,14 +29,14 @@ public class Lift implements IRobotModule {
     public DcMotorEx lift1, lift2;
     public DumbEncoder liftEncoder;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 345, highPosition=585, funnyPosition = 60;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 405, highPosition=650, funnyPosition = 60;
     public static int lowerPosition = -30;
     public int target = downPosition;
     public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.16, 0.00055);
 //    public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.3, 0.00045);
     public static double f1 = 0.11, f2 = 0.05;
 //    public static double f1 = 0.1, f2 = 0.1;
-    public static double maxPos = 630;
+    public static double maxPos = 700;
     PIDController pid = new PIDController(pidCoefficients.p, pidCoefficients.i, pidCoefficients.d);
 
     public enum State{
@@ -78,19 +78,13 @@ public class Lift implements IRobotModule {
         if(resetEncoders)resetEncoders();
 
         if(reversed1) lift1.setDirection(DcMotorSimple.Direction.REVERSE);
-//        lift1.setPower(liftPower);
-//        lift1.setTargetPosition(downPosition);
         lift1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        lift1.setTargetPositionTolerance(2);
         MotorConfigurationType motorConfigurationType = lift1.getMotorType().clone();
         motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
         lift1.setMotorType(motorConfigurationType);
 
         if(reversed2) lift2.setDirection(DcMotorSimple.Direction.REVERSE);
-//        lift2.setPower(liftPower);
-//        lift2.setTargetPosition(downPosition);
         lift2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        lift2.setTargetPositionTolerance(2);
         motorConfigurationType = lift2.getMotorType().clone();
         motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
         lift2.setMotorType(motorConfigurationType);
@@ -162,8 +156,6 @@ public class Lift implements IRobotModule {
         pid.setPID(pidCoefficients.p, pidCoefficients.i, pidCoefficients.d);
 
         power = pid.calculate(liftEncoder.getCurrentPosition(), target) + f1*((double)current/(double)maxPos) + f2;
-
-//        power = 0;
 
         lift1.setPower(power);
         lift2.setPower(power);

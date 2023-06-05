@@ -96,11 +96,11 @@ public class TiedBehaviour {
         stack();
 //        tiltToHover();
         jamDetect();
-        if(coneSensorEnabled) autoClose();
         if(auto) { 
             loopAuto();
             return;
         }
+        if(coneSensorEnabled) autoClose();
     }
 
     private void loopAuto(){
