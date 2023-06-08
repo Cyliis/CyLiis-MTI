@@ -50,7 +50,6 @@ public class Intake implements IRobotModule {
         switch (state){
             case TRANSFERING:
                 transferState = TransferState.START;
-                Virtual.stackIndex = Math.max(Virtual.stackIndex - 1, 0);
                 break;
             case OPENING:
                 if(uta.state!= UtaUta.State.LEVEL && uta.state != UtaUta.State.LEVELING) uta.setState(UtaUta.State.LEVELING);
@@ -191,9 +190,9 @@ public class Intake implements IRobotModule {
 
     public enum TransferState{
         START,
-        CLOSE_CLAW,
+        LATCH_OPEN_CLOSE_CLAW,
         SMOLANGLE,
-        LATCH_OPEN_PIVOT_BACK_VIRTUAL_TO_TRANSFER,
+        PIVOT_BACK_VIRTUAL_TO_TRANSFER,
         CLOSE_LATCH,
         MOPEN_CLAW,
         VIRTUAL_DOWN_PIVOT_FRONT,
@@ -213,10 +212,13 @@ public class Intake implements IRobotModule {
             case START:
                 rotated = false;
                 if(claw.state!= Claw.State.CLOSED && claw.state!= Claw.State.MCLOSED)claw.setState(Claw.State.MCLOSING);
-                transferState = TransferState.CLOSE_CLAW;
+                transferState = TransferState.LATCH_OPEN_CLOSE_CLAW;
+                latch.setState(Latch.State.OPENING);
                 break;
-            case CLOSE_CLAW:
+            case LATCH_OPEN_CLOSE_CLAW:
                 if(claw.state == Claw.State.MCLOSED || claw.state == Claw.State.CLOSED){
+                    pivot.setState(VirtualPivot.State.RBACK);
+
                     uta.setState(UtaUta.State.SMOLAGNLINGFRONT);
                     transferState = TransferState.SMOLANGLE;
                     virtual.setState(Virtual.State.GOING_HOVER);
@@ -224,17 +226,13 @@ public class Intake implements IRobotModule {
                 break;
             case SMOLANGLE:
                 if(virtual.state == Virtual.State.HOVER && uta.state == UtaUta.State.SMOLANGLEFRONT){
+
                     virtual.setState(Virtual.State.GOING_TRANSFER);
-                    latch.setState(Latch.State.OPENING);
-                    transferState = TransferState.LATCH_OPEN_PIVOT_BACK_VIRTUAL_TO_TRANSFER;
+                    transferState = TransferState.PIVOT_BACK_VIRTUAL_TO_TRANSFER;
                     uta.setState(UtaUta.State.SMOLANGELING);
                 }
                 break;
-            case LATCH_OPEN_PIVOT_BACK_VIRTUAL_TO_TRANSFER:
-                if(virtual.virtualEncoder.getCurrentPosition() >= Virtual.rotatePositionFromFront && !rotated){
-                    rotated = true;
-                    pivot.setState(VirtualPivot.State.RBACK);
-                }
+            case PIVOT_BACK_VIRTUAL_TO_TRANSFER:
                 if(virtual.state == Virtual.State.TRANSFER && pivot.state == VirtualPivot.State.BACK && latch.state == Latch.State.OPENED && uta.state == UtaUta.State.SMOLANGLE){
                     latch.setState(Latch.State.CLOSING);
                     uta.setState(UtaUta.State.LEVELING);
@@ -278,6 +276,8 @@ public class Intake implements IRobotModule {
                 if(virtual.state == Virtual.State.DOWN && pivot.state == VirtualPivot.State.FRONT && (claw.state == Claw.State.OPENED || claw.state == Claw.State.MOPENED)&&uta.state == UtaUta.State.LEVEL) transferState = TransferState.END;
                 break;
         }
+        if(transferState == TransferState.END)
+            Virtual.stackIndex = Math.max(Virtual.stackIndex - 1, 0);
     }
 
     @Override

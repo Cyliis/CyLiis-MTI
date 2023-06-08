@@ -29,12 +29,13 @@ public class ImuModule {
 
     public void startIMUThread(LinearOpMode opMode) {
         new Thread(() -> {
+            imu.resetYaw();
             while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
                 synchronized (imuLock1) {
                     imuAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                 }
                 synchronized (imuLock2){
-                    imuVelocity = (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).yRotationRate;
+                    imuVelocity = (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
                 }
             }
         }).start();

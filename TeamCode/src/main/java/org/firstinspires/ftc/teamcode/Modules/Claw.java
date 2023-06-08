@@ -20,7 +20,7 @@ public class Claw implements IRobotModule {
 
     Servo claw;
 
-    public static double openedClawPosition = .47, closedClawPosition = .353;
+    public static double openedClawPosition = .551, closedClawPosition = .37;
     public static double openingTime = 0.2, closingTime = 0.25;
 
     public enum State{

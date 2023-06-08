@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Utils.DumbEncoder;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
@@ -42,7 +41,7 @@ public class Virtual implements IRobotModule {
 
     public static double stack1 = 34, stack2 = 400, stack3 = 600, stack4 = 900, stack5 = 1080;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
-    public static double downPosition = stack[stackIndex], hoverPosition = 400, hoverPositionStack = 1850, lowPosition = 4500, transferPosition = 4100, popaPosition = 3150;
+    public static double downPosition = stack[stackIndex], hoverPosition = 400, hoverPositionStack = 1850, lowPosition = 4500, transferPosition = 4100, verticalPosition = 3150;
     public static double rotatePositionFromFront = 0, rotatePositionFromBack = 5000, lowRotateFromFrontPosition = 0;
     public static double manualAdd = 0, manualMultiplier = 1200;
 
@@ -55,8 +54,8 @@ public class Virtual implements IRobotModule {
         LOW(lowPosition, lowPosition_s),
         GOING_TRANSFER(transferPosition, transferPosition_s),
         TRANSFER(transferPosition, transferPosition_s),
-        GOING_POPA(popaPosition, popaPosition_s),
-        POPA(popaPosition, popaPosition_s);
+        GOING_POPA(verticalPosition, popaPosition_s),
+        POPA(verticalPosition, popaPosition_s);
 
         public double pos, pos_s;
         State(double pos, double pos_s){
@@ -129,7 +128,10 @@ public class Virtual implements IRobotModule {
 
     public double ff, power;
 
-    public static double speedLimit = 0.75;
+    public static double speedLimit1 = 0.75;
+    public static double speedLimit2 = 0.6;
+
+    public double speedLimit = speedLimit1;
 
     void updateServos(){
         //TODO: PID
@@ -157,5 +159,11 @@ public class Virtual implements IRobotModule {
     public void loop() {
         updateState();
         updateServos();
+    }
+
+    @Override
+    public void emergencyStop(){
+        virtual1.setPower(0);
+        virtual2.setPower(0);
     }
 }

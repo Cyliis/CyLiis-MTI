@@ -29,14 +29,15 @@ public class Lift implements IRobotModule {
     public DcMotorEx lift1, lift2;
     public DumbEncoder liftEncoder;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 405, highPosition=650, funnyPosition = 60;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 358, highPosition=590;
+    public static int midPositionA = 358, highPositionA = 600;
     public static int lowerPosition = -30;
     public int target = downPosition;
-    public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.16, 0.00055);
+    public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.16, 0.0006);
 //    public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.3, 0.00045);
     public static double f1 = 0.11, f2 = 0.05;
 //    public static double f1 = 0.1, f2 = 0.1;
-    public static double maxPos = 700;
+    public static double maxPos = 630;
     PIDController pid = new PIDController(pidCoefficients.p, pidCoefficients.i, pidCoefficients.d);
 
     public enum State{
@@ -61,6 +62,20 @@ public class Lift implements IRobotModule {
             GOING_DOWN.pos = downPosition;
             GOING_LOW.pos = lowPosition;
             GOING_MID.pos = midPosition;
+            GOING_HIGH.pos = highPosition;
+        }
+
+        public static void auto(){
+            MID.pos = midPositionA;
+            GOING_MID.pos = midPositionA;
+            HIGH.pos = highPositionA;
+            GOING_HIGH.pos = highPositionA;
+        }
+
+        public static void tele(){
+            MID.pos = midPosition;
+            GOING_MID.pos = midPosition;
+            HIGH.pos = highPosition;
             GOING_HIGH.pos = highPosition;
         }
     }
@@ -171,5 +186,11 @@ public class Lift implements IRobotModule {
         State.update();
         updateState();
         updateMotors();
+    }
+
+    @Override
+    public void emergencyStop(){
+        lift1.setPower(0);
+        lift2.setPower(0);
     }
 }

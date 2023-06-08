@@ -3,15 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.Modules.Claw;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake;
-import org.firstinspires.ftc.teamcode.Modules.Latch;
+import org.firstinspires.ftc.teamcode.Modules.Lift;
 import org.firstinspires.ftc.teamcode.Modules.Outtake;
-import org.firstinspires.ftc.teamcode.Modules.UtaUta;
 import org.firstinspires.ftc.teamcode.Modules.Virtual;
+import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
 @Config
 public class TiedBehaviour {
@@ -72,15 +70,26 @@ public class TiedBehaviour {
         }
     }
 
-    public static double transferTime = 2;
-    boolean detectedJam = false;
+    public static double transferTime = 1.4;
+    boolean detectedJamTransfer = false;
 
-    private void jamDetect(){
-        if(robot.intake.state == Intake.State.TRANSFERING && nanoClock.seconds() - robot.intake.timeOfLastStateChange >= transferTime && !detectedJam){
+    private void jamDetectTransfer(){
+        if(robot.intake.state == Intake.State.TRANSFERING && nanoClock.seconds() - robot.intake.timeOfLastStateChange >= transferTime && !detectedJamTransfer){
             robot.intake.transferState = Intake.TransferState.ABORT;
-            detectedJam = true;
+            detectedJamTransfer = true;
         }
-        if(robot.intake.state != Intake.State.TRANSFERING) detectedJam = false;
+        if(robot.intake.state != Intake.State.TRANSFERING) detectedJamTransfer = false;
+    }
+
+    public static double lowTime = 0.7;
+    boolean detectedJamLow = false;
+
+    private void jamDetectLow(){
+        if(robot.intake.state == Intake.State.GOING_LOW && nanoClock.seconds() - robot.intake.timeOfLastStateChange >= lowTime && !detectedJamLow){
+            robot.intake.setState(Intake.State.LOW);
+            detectedJamLow = true;
+        }
+        if(robot.intake.state != Intake.State.GOING_LOW) detectedJamLow = false;
     }
 
     private void autoLift(){
@@ -91,19 +100,27 @@ public class TiedBehaviour {
 
     }
 
+    private void limitSpeedStack(){
+        if(Virtual.stackIndex != 0){
+            robot.virtual.speedLimit = Virtual.speedLimit2;
+        }
+        else robot.virtual.speedLimit = Virtual.speedLimit1;
+    }
+
     public void loop(){
-        hoverCone();
         stack();
-//        tiltToHover();
-        jamDetect();
+//        jamDetectTransfer();
+        limitSpeedStack();
         if(auto) { 
             loopAuto();
             return;
         }
         if(coneSensorEnabled) autoClose();
+        hoverCone();
+        Lift.State.tele();
     }
 
     private void loopAuto(){
-        autoLift();
+        Lift.State.auto();
     }
 }

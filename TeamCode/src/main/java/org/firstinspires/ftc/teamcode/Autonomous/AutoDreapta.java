@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import static java.lang.Math.PI;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -11,9 +13,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.LynxModuleImuType;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Modules.Claw;
 import org.firstinspires.ftc.teamcode.Modules.GamepadControllers.DriveTrainControlTriggers;
 import org.firstinspires.ftc.teamcode.Modules.GamepadControllers.Standard;
 import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
+import org.firstinspires.ftc.teamcode.Modules.Intake;
+import org.firstinspires.ftc.teamcode.Modules.Outtake;
+import org.firstinspires.ftc.teamcode.Modules.Virtual;
 import org.firstinspires.ftc.teamcode.RobotModules;
 import org.firstinspires.ftc.teamcode.TiedBehaviour;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -30,7 +36,6 @@ public class AutoDreapta extends LinearOpMode {
 
     SampleMecanumDrive driveTrain;
     RobotModules robotModules;
-    Standard gamepadControl;
     TiedBehaviour tiedBehaviour;
 
     Servo odo;
@@ -46,7 +51,6 @@ public class AutoDreapta extends LinearOpMode {
         }
 
         robotModules = new RobotModules(hardwareMap, true);
-        gamepadControl = new Standard(gamepad1, gamepad2, robotModules);
         tiedBehaviour = new TiedBehaviour(robotModules);
 
         driveTrain = new SampleMecanumDrive(hardwareMap);
@@ -63,15 +67,59 @@ public class AutoDreapta extends LinearOpMode {
     public void runOpMode()  {
         initialize();
 
+        double OFFSET = 1.7;
+        double PICK_UP_X = 48;
+        double PICK_UP_Y = 21;
+        double[] PICK_UP_Y_OFFSET = {0,-0.4,-0.6,-0.5,-0.6};
+
         TrajectorySequence bruh = driveTrain.trajectorySequenceBuilder(new Pose2d())
-                .splineToSplineHeading(new Pose2d(36.5,27.3,1.04),0.94)
-                .setReversed(true)
-                .splineToSplineHeading(new Pose2d(28.7,18.7,1.54),1.54)
+                .lineToSplineHeading(new Pose2d(15,-5.5, Math.toRadians(0)))
+                .UNSTABLE_addTemporalMarkerOffset(0.5,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+                .splineToSplineHeading(new Pose2d(52,-12,5.8),6)
+                .waitSeconds(0.1)
+                .addTemporalMarker(()->robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+                .addTemporalMarker(()-> Virtual.stackIndex=4)
+                .lineToLinearHeading(new Pose2d(PICK_UP_X - 0*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+                .lineToLinearHeading(new Pose2d(49 - 0*OFFSET, -13, 5.8))
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+                .waitSeconds(0.1)
+                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+                .lineToLinearHeading(new Pose2d(PICK_UP_X - 1*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+                .lineToLinearHeading(new Pose2d(49 - 1*OFFSET, -13, 5.8))
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+                .waitSeconds(0.1)
+               .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+                .lineToLinearHeading(new Pose2d(PICK_UP_X - 2*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+                .lineToLinearHeading(new Pose2d(49 - 2*OFFSET, -13, 5.8))
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+                .waitSeconds(0.1)
+               .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+                .lineToLinearHeading(new Pose2d(PICK_UP_X - 3*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+                .lineToLinearHeading(new Pose2d(49 - 3*OFFSET, -13, 5.8))
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+                .waitSeconds(0.1)
+               .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+                .lineToLinearHeading(new Pose2d(PICK_UP_X - 4*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+                .lineToLinearHeading(new Pose2d(49 - 4*OFFSET, -13, 5.8))
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+                .waitSeconds(0.1)
+                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+                .lineToLinearHeading(new Pose2d(40, -5, 0))
                 .build();
 
-        driveTrain.followTrajectorySequenceAsync(bruh);
-
         waitForStart();
+
+        driveTrain.followTrajectorySequenceAsync(bruh);
 
         SampleMecanumDrive.imu.startIMUThread(this);
 
@@ -88,7 +136,6 @@ public class AutoDreapta extends LinearOpMode {
 
             driveTrain.update();
 
-            gamepadControl.loop();
             robotModules.loop();
             tiedBehaviour.loop();
 
@@ -97,6 +144,8 @@ public class AutoDreapta extends LinearOpMode {
 
             telemetry.update();
         }
+
+        driveTrain.setDrivePower(new Pose2d());
 
         robotModules.emergencyStop();
     }

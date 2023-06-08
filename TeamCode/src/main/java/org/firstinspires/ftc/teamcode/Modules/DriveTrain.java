@@ -153,4 +153,12 @@ public class DriveTrain implements IRobotModule {
     public void loop() {
         updateImu();
     }
+
+    @Override
+    public void emergencyStop(){
+        mfl.setPower(0);
+        mfr.setPower(0);
+        mbl.setPower(0);
+        mbr.setPower(0);
+    }
 }
