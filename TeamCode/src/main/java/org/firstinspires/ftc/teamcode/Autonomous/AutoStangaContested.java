@@ -27,7 +27,6 @@ import java.util.List;
 
 @Autonomous(name="Auto stanga contested👉👌")
 public class AutoStangaContested extends LinearOpMode {
-    List<LynxModule> hubs;
     FtcDashboard dash;
     NanoClock nanoClock;
 
@@ -41,11 +40,6 @@ public class AutoStangaContested extends LinearOpMode {
         dash = FtcDashboard.getInstance();
 
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
-        hubs = hardwareMap.getAll(LynxModule.class);
-        for(LynxModule hub:hubs) {
-            if(hub.getImuType() == LynxModuleImuType.BHI260) hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-            else hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
-        }
 
         robotModules = new RobotModules(hardwareMap, true);
         tiedBehaviour = new TiedBehaviour(robotModules);
@@ -57,6 +51,8 @@ public class AutoStangaContested extends LinearOpMode {
 
         nanoClock = NanoClock.system();
 
+        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        PhotonCore.experimental.setMaximumParallelCommands(8);
         PhotonCore.enable();
     }
 
@@ -121,16 +117,10 @@ public class AutoStangaContested extends LinearOpMode {
 
         SampleMecanumDrive.imu.startIMUThread(this);
 
-        for(LynxModule hub:hubs)
-            hub.clearBulkCache();
-
         robotModules.atStart();
 
         while(opModeIsActive() && !isStopRequested()) {
             double timeMs = nanoClock.seconds()*1000;
-
-            for(LynxModule hub:hubs)
-                hub.clearBulkCache();
 
             driveTrain.update();
 
