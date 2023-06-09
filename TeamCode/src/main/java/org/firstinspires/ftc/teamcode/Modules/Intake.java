@@ -217,7 +217,8 @@ public class Intake implements IRobotModule {
                 break;
             case LATCH_OPEN_CLOSE_CLAW:
                 if(claw.state == Claw.State.MCLOSED || claw.state == Claw.State.CLOSED){
-                    pivot.setState(VirtualPivot.State.RBACK);
+                    if(pivot.state == VirtualPivot.State.FRONT && virtual.virtualEncoder.getCurrentPosition() >= virtual.rotatePositionFromFront)
+                        pivot.setState(VirtualPivot.State.RBACK);
 
                     uta.setState(UtaUta.State.SMOLAGNLINGFRONT);
                     transferState = TransferState.SMOLANGLE;
@@ -226,6 +227,8 @@ public class Intake implements IRobotModule {
                 break;
             case SMOLANGLE:
                 if(virtual.state == Virtual.State.HOVER && uta.state == UtaUta.State.SMOLANGLEFRONT){
+                    if(pivot.state == VirtualPivot.State.FRONT && virtual.virtualEncoder.getCurrentPosition() >= virtual.rotatePositionFromFront)
+                        pivot.setState(VirtualPivot.State.RBACK);
 
                     virtual.setState(Virtual.State.GOING_TRANSFER);
                     transferState = TransferState.PIVOT_BACK_VIRTUAL_TO_TRANSFER;

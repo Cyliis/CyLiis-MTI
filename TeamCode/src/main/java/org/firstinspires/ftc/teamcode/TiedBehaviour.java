@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Modules.DriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake;
 import org.firstinspires.ftc.teamcode.Modules.Lift;
 import org.firstinspires.ftc.teamcode.Modules.Outtake;
+import org.firstinspires.ftc.teamcode.Modules.UtaUta;
 import org.firstinspires.ftc.teamcode.Modules.Virtual;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
@@ -61,12 +62,16 @@ public class TiedBehaviour {
             Virtual.State.GOING_HOVER.pos = Virtual.hoverPositionStack;
             Virtual.State.HOVER.pos_s = Virtual.hoverPositionStack_s;
             Virtual.State.GOING_HOVER.pos_s = Virtual.hoverPositionStack_s;
+            UtaUta.State.SMOLANGLEFRONT.pos = UtaUta.levelPosition;
+            UtaUta.State.SMOLAGNLINGFRONT.pos = UtaUta.levelPosition;
         }
         else{
             Virtual.State.HOVER.pos = Virtual.hoverPosition;
             Virtual.State.GOING_HOVER.pos = Virtual.hoverPosition;
             Virtual.State.HOVER.pos_s = Virtual.hoverPosition_s;
             Virtual.State.GOING_HOVER.pos_s = Virtual.hoverPosition_s;
+            UtaUta.State.SMOLANGLEFRONT.pos = UtaUta.frontBruhPosition;
+            UtaUta.State.SMOLAGNLINGFRONT.pos = UtaUta.frontBruhPosition;
         }
     }
 
@@ -107,10 +112,18 @@ public class TiedBehaviour {
         else robot.virtual.speedLimit = Virtual.speedLimit1;
     }
 
+    private void limitRotationStack(){
+        if(Virtual.stackIndex != 0){
+            robot.virtual.rotatePositionFromFront = Virtual.rotatePositionStack;
+        }
+        else robot.virtual.rotatePositionFromFront = Virtual.rotatePositionDown;
+    }
+
     public void loop(){
         stack();
 //        jamDetectTransfer();
         limitSpeedStack();
+        limitRotationStack();
         if(auto) { 
             loopAuto();
             return;

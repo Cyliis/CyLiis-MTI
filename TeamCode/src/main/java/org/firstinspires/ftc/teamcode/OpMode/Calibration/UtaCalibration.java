@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpMode.Calibration;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -16,8 +18,13 @@ public class UtaCalibration extends LinearOpMode {
     double pos = 0.5;
     int posIndex = 0;
 
+    FtcDashboard dash;
+
     @Override
     public void runOpMode() throws InterruptedException {
+        dash = FtcDashboard.getInstance();
+
+        telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
         StickyGamepad stickyGamepad = new StickyGamepad(gamepad1);
         uta = hardwareMap.get(Servo.class, "uta");
         uta.setPosition(pos);

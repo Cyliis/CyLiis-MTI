@@ -29,13 +29,13 @@ public class Lift implements IRobotModule {
     public DcMotorEx lift1, lift2;
     public DumbEncoder liftEncoder;
 
-    public static int downPosition = 0, lowPosition = downPosition, midPosition = 358, highPosition=590;
-    public static int midPositionA = 358, highPositionA = 600;
+    public static int downPosition = 0, lowPosition = downPosition, midPosition = 360, highPosition=590;
+    public static int midPositionA = 375, highPositionA = 610;
     public static int lowerPosition = -30;
     public int target = downPosition;
-    public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.16, 0.0006);
+    public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.12, 0.0008);
 //    public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.3, 0.00045);
-    public static double f1 = 0.11, f2 = 0.05;
+    public static double f1 = 0.12, f2 = 0.06;
 //    public static double f1 = 0.1, f2 = 0.1;
     public static double maxPos = 630;
     PIDController pid = new PIDController(pidCoefficients.p, pidCoefficients.i, pidCoefficients.d);
