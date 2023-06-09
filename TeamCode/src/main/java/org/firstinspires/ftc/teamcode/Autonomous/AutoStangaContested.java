@@ -43,8 +43,7 @@ public class AutoStangaContested extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
         hubs = hardwareMap.getAll(LynxModule.class);
         for(LynxModule hub:hubs) {
-            if(hub.getImuType() == LynxModuleImuType.BHI260) hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-            else hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
         robotModules = new RobotModules(hardwareMap, true);
@@ -72,48 +71,48 @@ public class AutoStangaContested extends LinearOpMode {
 
         TrajectorySequence bruh = driveTrain.trajectorySequenceBuilder(new Pose2d())
                 .lineToSplineHeading(new Pose2d(15,-5.5, Math.toRadians(0)))
-                .UNSTABLE_addTemporalMarkerOffset(0.5,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
-                .splineToSplineHeading(new Pose2d(52,-12,5.8),6)
-                .waitSeconds(0.1)
-                .addTemporalMarker(()->robotModules.outtake.setState(Outtake.State.GOING_DOWN))
-                .addTemporalMarker(()-> Virtual.stackIndex=4)
-                .lineToLinearHeading(new Pose2d(PICK_UP_X - 0*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
-                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
-                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
-                .lineToLinearHeading(new Pose2d(49 - 0*OFFSET, -13, 5.8))
-                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
-                .waitSeconds(0.1)
-                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
-                .lineToLinearHeading(new Pose2d(PICK_UP_X - 1*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
-                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
-                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
-                .lineToLinearHeading(new Pose2d(49 - 1*OFFSET, -13, 5.8))
-                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
-                .waitSeconds(0.1)
-                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
-                .lineToLinearHeading(new Pose2d(PICK_UP_X - 2*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
-                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
-                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
-                .lineToLinearHeading(new Pose2d(49 - 2*OFFSET, -13, 5.8))
-                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
-                .waitSeconds(0.1)
-                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
-                .lineToLinearHeading(new Pose2d(PICK_UP_X - 3*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
-                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
-                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
-                .lineToLinearHeading(new Pose2d(49 - 3*OFFSET, -13, 5.8))
-                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
-                .waitSeconds(0.1)
-                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
-                .lineToLinearHeading(new Pose2d(PICK_UP_X - 4*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
-                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
-                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
-                .lineToLinearHeading(new Pose2d(49 - 4*OFFSET, -13, 5.8))
-                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
-                .waitSeconds(0.1)
-                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
-                .lineToLinearHeading(new Pose2d(17, -5, 0))
-                .lineToLinearHeading(new Pose2d(17, -29,0))
+//                .UNSTABLE_addTemporalMarkerOffset(0.5,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+//                .splineToSplineHeading(new Pose2d(52,-12,5.8),6)
+//                .waitSeconds(0.1)
+//                .addTemporalMarker(()->robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+//                .addTemporalMarker(()-> Virtual.stackIndex=4)
+//                .lineToLinearHeading(new Pose2d(PICK_UP_X - 0*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+//                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+//                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+//                .lineToLinearHeading(new Pose2d(49 - 0*OFFSET, -13, 5.8))
+//                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+//                .waitSeconds(0.1)
+//                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+//                .lineToLinearHeading(new Pose2d(PICK_UP_X - 1*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+//                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+//                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+//                .lineToLinearHeading(new Pose2d(49 - 1*OFFSET, -13, 5.8))
+//                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+//                .waitSeconds(0.1)
+//                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+//                .lineToLinearHeading(new Pose2d(PICK_UP_X - 2*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+//                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+//                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+//                .lineToLinearHeading(new Pose2d(49 - 2*OFFSET, -13, 5.8))
+//                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+//                .waitSeconds(0.1)
+//                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+//                .lineToLinearHeading(new Pose2d(PICK_UP_X - 3*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+//                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+//                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+//                .lineToLinearHeading(new Pose2d(49 - 3*OFFSET, -13, 5.8))
+//                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+//                .waitSeconds(0.1)
+//                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+//                .lineToLinearHeading(new Pose2d(PICK_UP_X - 4*OFFSET, PICK_UP_Y + PICK_UP_Y_OFFSET[Virtual.stackIndex], -PI/2))
+//                .addTemporalMarker(()->robotModules.intake.claw.setState(Claw.State.MCLOSING))
+//                .UNSTABLE_addTemporalMarkerOffset(0.1,()->robotModules.intake.setState(Intake.State.TRANSFERING))
+//                .lineToLinearHeading(new Pose2d(49 - 4*OFFSET, -13, 5.8))
+//                .UNSTABLE_addTemporalMarkerOffset(-0.4,() -> robotModules.outtake.setState(Outtake.State.GOING_HIGH))
+//                .waitSeconds(0.1)
+//                .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
+//                .lineToLinearHeading(new Pose2d(17, -5, 0))
+//                .lineToLinearHeading(new Pose2d(17, -29,0))
                 .build();
 
         waitForStart();
@@ -123,7 +122,7 @@ public class AutoStangaContested extends LinearOpMode {
         SampleMecanumDrive.imu.startIMUThread(this);
 
         for(LynxModule hub:hubs)
-            if(hub.getImuType() == LynxModuleImuType.BHI260) hub.clearBulkCache();
+            hub.clearBulkCache();
 
         robotModules.atStart();
 
@@ -131,7 +130,7 @@ public class AutoStangaContested extends LinearOpMode {
             double timeMs = nanoClock.seconds()*1000;
 
             for(LynxModule hub:hubs)
-                if(hub.getImuType() == LynxModuleImuType.BHI260) hub.clearBulkCache();
+                hub.clearBulkCache();
 
             driveTrain.update();
 

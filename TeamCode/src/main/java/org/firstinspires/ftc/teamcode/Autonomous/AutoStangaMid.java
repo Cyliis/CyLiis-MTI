@@ -46,8 +46,7 @@ public class AutoStangaMid extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
         hubs = hardwareMap.getAll(LynxModule.class);
         for(LynxModule hub:hubs) {
-            if(hub.getImuType() == LynxModuleImuType.BHI260) hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-            else hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
         }
 
         robotModules = new RobotModules(hardwareMap, true);
@@ -126,7 +125,7 @@ public class AutoStangaMid extends LinearOpMode {
         SampleMecanumDrive.imu.startIMUThread(this);
 
         for(LynxModule hub:hubs)
-            if(hub.getImuType() == LynxModuleImuType.BHI260) hub.clearBulkCache();
+            hub.clearBulkCache();
 
         robotModules.atStart();
 
@@ -134,7 +133,7 @@ public class AutoStangaMid extends LinearOpMode {
             double timeMs = nanoClock.seconds()*1000;
 
             for(LynxModule hub:hubs)
-                if(hub.getImuType() == LynxModuleImuType.BHI260) hub.clearBulkCache();
+                hub.clearBulkCache();
 
             driveTrain.update();
 

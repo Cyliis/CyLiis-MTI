@@ -39,8 +39,7 @@ public class DriverPractice extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry,dash.getTelemetry());
         hubs = hardwareMap.getAll(LynxModule.class);
         for(LynxModule hub:hubs) {
-            if(hub.getImuType() == LynxModuleImuType.BHI260) hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-            else hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
 
         robotModules = new RobotModules(hardwareMap, true);
@@ -55,7 +54,7 @@ public class DriverPractice extends LinearOpMode {
 
         nanoClock = NanoClock.system();
 
-        PhotonCore.experimental.setMaximumParallelCommands(8);
+//        PhotonCore.experimental.setMaximumParallelCommands(8);
         PhotonCore.enable();
     }
 
@@ -68,7 +67,7 @@ public class DriverPractice extends LinearOpMode {
         driveTrain.imu.startIMUThread(this);
 
         for(LynxModule hub:hubs)
-            if(hub.getImuType() == LynxModuleImuType.BHI260) hub.clearBulkCache();
+            hub.clearBulkCache();
 
         robotModules.atStart();
 
@@ -76,7 +75,7 @@ public class DriverPractice extends LinearOpMode {
             double timeMs = nanoClock.seconds()*1000;
 
             for(LynxModule hub:hubs)
-                if(hub.getImuType() == LynxModuleImuType.BHI260) hub.clearBulkCache();
+                hub.clearBulkCache();
 
             driveTrain.loop();
             dtControl.loop();
@@ -90,6 +89,7 @@ public class DriverPractice extends LinearOpMode {
             telemetry.addData("Drive mode", driveTrain.mode);
             telemetry.addData("Drive speed", driveTrain.speed);
             telemetry.addData("Imu value", driveTrain.imuValue);
+            telemetry.addData("Bruh", PhotonCore.EXPANSION_HUB.getBulkCachingMode());
             robotModules.telemetry(telemetry);
 
             telemetry.update();
