@@ -135,7 +135,7 @@ public class Virtual implements IRobotModule {
 
     public double speedLimit = speedLimit1;
 
-    void updateServos(){
+    void updateMotors(){
         //TODO: PID
 
         ff = Math.cos(((double)virtualEncoder.getCurrentPosition() + ticksOffset) / TICKS_PER_REV * (Math.PI * 2)) * pidfCoefficients.f;
@@ -160,7 +160,7 @@ public class Virtual implements IRobotModule {
     @Override
     public void loop() {
         updateState();
-        updateServos();
+        updateMotors();
     }
 
     @Override
