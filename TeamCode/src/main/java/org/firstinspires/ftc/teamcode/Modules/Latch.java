@@ -49,6 +49,7 @@ public class Latch implements IRobotModule {
     private void init(){
         latch = hm.get(Servo.class, LATCH_SERVO_NAME);
         if(reversed) latch.setDirection(Servo.Direction.REVERSE);
+        latch.setPosition(closedlatchPosition);
         nanoClock = NanoClock.system();
     }
 
@@ -87,7 +88,7 @@ public class Latch implements IRobotModule {
 
     @Override
     public void atStart(){
-        setState(State.CLOSING);
+        setState(State.CLOSED);
     }
 
     @Override

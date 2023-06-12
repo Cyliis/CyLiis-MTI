@@ -124,6 +124,7 @@ public class TiedBehaviour {
 //        jamDetectTransfer();
         limitSpeedStack();
         limitRotationStack();
+        robot.outtake.lift.setCorrectPid(auto);
         if(auto) { 
             loopAuto();
             return;

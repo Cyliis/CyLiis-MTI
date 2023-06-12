@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -32,6 +33,8 @@ public class BackAndForth extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        NanoClock nanoClock = NanoClock.system();
+
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
@@ -46,9 +49,26 @@ public class BackAndForth extends LinearOpMode {
 
         SampleMecanumDrive.imu.startIMUThread(this);
 
+        boolean forward = true;
+
+        double timestamp;
+
         while (opModeIsActive() && !isStopRequested()) {
-            drive.followTrajectory(trajectoryForward);
-            drive.followTrajectory(trajectoryBackward);
+            timestamp = nanoClock.seconds();
+
+            if(!drive.isBusy()) {
+                if(forward){
+                    drive.followTrajectoryAsync(trajectoryForward);
+                }
+                else drive.followTrajectoryAsync(trajectoryBackward);
+                forward = !forward;
+            }
+
+            drive.update();
+
+            telemetry.addData("Loop time", (nanoClock.seconds() - timestamp)*1000.0);
+            telemetry.addData("Loops/sec", 1.0/(nanoClock.seconds() - timestamp));
+            telemetry.update();
         }
     }
 }

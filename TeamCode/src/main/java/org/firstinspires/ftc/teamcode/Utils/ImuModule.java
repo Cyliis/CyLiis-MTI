@@ -31,6 +31,11 @@ public class ImuModule {
         new Thread(() -> {
             imu.resetYaw();
             while (!opMode.isStopRequested() && opMode.opModeIsActive()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 synchronized (imuLock1) {
                     imuAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                 }

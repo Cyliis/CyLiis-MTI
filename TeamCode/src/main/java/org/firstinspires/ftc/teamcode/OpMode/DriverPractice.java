@@ -33,6 +33,8 @@ public class DriverPractice extends LinearOpMode {
 
     Servo odo;
 
+    double lastTime = -1;
+
     public void initialize(){
         dash = FtcDashboard.getInstance();
 
@@ -50,7 +52,7 @@ public class DriverPractice extends LinearOpMode {
         dtControl = new DriveTrainControlTriggers(gamepad1, gamepad2, driveTrain, robotModules);
 
         odo = hardwareMap.get(Servo.class, "odo");
-        odo.setPosition(0.8);
+        odo.setPosition(0);
 
         nanoClock = NanoClock.system();
 
@@ -72,7 +74,7 @@ public class DriverPractice extends LinearOpMode {
         robotModules.atStart();
 
         while(opModeIsActive() && !isStopRequested()) {
-            double timeMs = nanoClock.seconds()*1000;
+            double timeMs = nanoClock.seconds();
 
             for(LynxModule hub:hubs)
                 hub.clearBulkCache();
@@ -85,7 +87,9 @@ public class DriverPractice extends LinearOpMode {
             robotModules.loop();
             tiedBehaviour.loop();
 
-            telemetry.addData("Loops/sec" , (int)(1000)/(nanoClock.seconds()*1000 - timeMs));
+            telemetry.addData("Loops/sec" , 1.0/(nanoClock.seconds() - timeMs));
+            telemetry.addData("Loops/sec v2" , 1.0/(nanoClock.seconds() - lastTime));
+            lastTime = nanoClock.seconds();
             telemetry.addData("Drive mode", driveTrain.mode);
             telemetry.addData("Drive speed", driveTrain.speed);
             telemetry.addData("Imu value", driveTrain.imuValue);

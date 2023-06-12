@@ -65,11 +65,11 @@ public class RobotModules {
     }
 
     public void buildList(){
-        if(Latch.ENABLE_MODULE) modules.add(latch);
         if(Claw.ENABLE_MODULE) modules.add(claw);
         if(Virtual.ENABLE_MODULE) modules.add(virtual);
         if(Intake.ENABLE_MODULE) modules.add(intake);
         if(Outtake.ENABLE_MODULE) modules.add(outtake);
+        if(Latch.ENABLE_MODULE) modules.add(latch);
     }
 
     public void atStart(){

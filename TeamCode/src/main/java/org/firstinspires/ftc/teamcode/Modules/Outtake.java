@@ -24,7 +24,7 @@ public class Outtake implements IRobotModule {
         this.latch = latch;
         this.virtual = virtual;
         this.claw = claw;
-        state = State.GOING_DOWN;
+        state = State.GOING_DOWN_NO_LATCH;
         nanoClock = NanoClock.system();
     }
 
