@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous.Sussy;
 
+import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.RobotModules;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -40,7 +41,7 @@ public class LogicNode {
         }
     }
 
-    public ArrayList <AutoIf> conditionsList;
+    public ArrayList <AutoIf> conditionsList = new ArrayList<>();
 
     public LogicNode(SampleMecanumDrive dt, RobotModules robot){
         this.dt = dt;
