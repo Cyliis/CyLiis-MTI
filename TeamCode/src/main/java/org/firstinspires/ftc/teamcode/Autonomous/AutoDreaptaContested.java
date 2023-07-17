@@ -73,8 +73,8 @@ public class AutoDreaptaContested extends LinearOpMode {
     public void runOpMode()  {
         initialize();
 
-        double OFFSET = 2.5;
-        double PICK_UP_X = 47.5;
+        double OFFSET = 2.7;
+        double PICK_UP_X = 47;
         double PICK_UP_Y = -21;
         double[] PICK_UP_Y_OFFSET = {-0.3,0.4,0.6,0.5,0.6};
 
@@ -121,7 +121,7 @@ public class AutoDreaptaContested extends LinearOpMode {
                 .waitSeconds(0.1)
                 .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
                 .back(6)
-                .lineToLinearHeading(new Pose2d(40, 5, 0))
+                .lineToLinearHeading(new Pose2d(36, 5, 0))
                 .lineToLinearHeading(new Pose2d(36, 29,0))
                 .build();
 
@@ -168,7 +168,7 @@ public class AutoDreaptaContested extends LinearOpMode {
                 .waitSeconds(0.1)
                 .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
                 .back(6)
-                .lineToLinearHeading(new Pose2d(40, 5, 0))
+                .lineToLinearHeading(new Pose2d(36, 5, 0))
                 .build();
 
         TrajectorySequence bruh3 = driveTrain.trajectorySequenceBuilder(new Pose2d())
@@ -214,12 +214,14 @@ public class AutoDreaptaContested extends LinearOpMode {
                 .waitSeconds(0.1)
                 .addTemporalMarker(() -> robotModules.outtake.setState(Outtake.State.GOING_DOWN))
                 .back(6)
-                .lineToLinearHeading(new Pose2d(40, 5, 0))
-                .lineToLinearHeading(new Pose2d(36, -17,0))
+                .lineToLinearHeading(new Pose2d(36, 5, 0))
+                .lineToLinearHeading(new Pose2d(36, -17 ,0))
                 .build();
 
         while (!opModeIsActive() && !isStopRequested()){
             detector.loop();
+            telemetry.addData("Apriltag" ,detector.getResult());
+            telemetry.update();
         }
 
         detector.closeCamera();

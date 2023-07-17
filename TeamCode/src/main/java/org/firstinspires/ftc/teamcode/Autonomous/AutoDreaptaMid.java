@@ -75,9 +75,9 @@ public class AutoDreaptaMid extends LinearOpMode {
         initialize();
 
         double OFFSET = -1.4;
-        double PICK_UP_X = 48.7;
+        double PICK_UP_X = 48.2;
         double PICK_UP_Y = -22;
-        double[] PICK_UP_Y_OFFSET = {0,0.4,0.6,0.5,0.6};
+        double[] PICK_UP_Y_OFFSET = {0.2,0.4,0.6,0.5,0.6};
 
         TrajectorySequence bruh1 = driveTrain.trajectorySequenceBuilder(new Pose2d())
                 .UNSTABLE_addTemporalMarkerOffset(0.2,() -> robotModules.outtake.setState(Outtake.State.GOING_MID))
@@ -219,6 +219,8 @@ public class AutoDreaptaMid extends LinearOpMode {
 
         while (!opModeIsActive() && !isStopRequested()){
             detector.loop();
+            telemetry.addData("Apriltag" ,detector.getResult());
+            telemetry.update();
         }
 
         detector.closeCamera();

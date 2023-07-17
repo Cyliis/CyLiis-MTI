@@ -75,7 +75,7 @@ public class AutoStangaMid extends LinearOpMode {
         initialize();
 
         double OFFSET = -2.1;
-        double PICK_UP_X = 49.5;
+        double PICK_UP_X = 49;
         double PICK_UP_Y = 22;
         double[] PICK_UP_Y_OFFSET = {0,-0.4,-0.6,-0.5,-0.6};
 
@@ -219,6 +219,8 @@ public class AutoStangaMid extends LinearOpMode {
 
         while(!opModeIsActive() && !isStopRequested()){
             detector.loop();
+            telemetry.addData("Apriltag" ,detector.getResult());
+            telemetry.update();
         }
 
         detector.closeCamera();

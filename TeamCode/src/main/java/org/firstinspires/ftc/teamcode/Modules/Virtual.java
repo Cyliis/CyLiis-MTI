@@ -39,9 +39,9 @@ public class Virtual implements IRobotModule {
     public static double downPosition_s = stack_s[stackIndex], hoverPosition_s = 0.334, hoverPositionStack_s = 0.539, lowPosition_s = 0.862, transferPosition_s = 0.828, popaPosition_s = 0.7;
     public static double manualAdd_s = 0, manualMultiplier_s;
 
-    public static double stack1 = 34, stack2 = 400, stack3 = 620, stack4 = 860, stack5 = 1080;
+    public static double stack1 = 50, stack2 = 400, stack3 = 680, stack4 = 910, stack5 = 1150;
     public static double[] stack = {stack1, stack2, stack3, stack4, stack5};
-    public static double downPosition = stack[stackIndex], hoverPosition = 400, hoverPositionStack = 1850, lowPosition = 4500, transferPosition = 4050, verticalPosition = 3150;
+    public static double downPosition = stack[stackIndex], hoverPosition = 400, hoverPositionStack = 2100, lowPosition = 4500, transferPosition = 4150, verticalPosition = 3150;
     public static double rotatePositionFromBack = 5000, lowRotateFromFrontPosition = 0;
     public double rotatePositionFromFront = 0;
     public static double rotatePositionDown = 0, rotatePositionStack = 1300;

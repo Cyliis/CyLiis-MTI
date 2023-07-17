@@ -220,6 +220,8 @@ public class AutoStangaContested extends LinearOpMode {
 
         while(!opModeIsActive() && !isStopRequested()){
             detector.loop();
+            telemetry.addData("Apriltag" ,detector.getResult());
+            telemetry.update();
         }
 
         detector.closeCamera();

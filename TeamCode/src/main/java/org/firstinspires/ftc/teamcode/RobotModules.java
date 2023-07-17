@@ -59,8 +59,8 @@ public class RobotModules {
 //        tele.addData("Lift wtf", (double)outtake.lift.lift1.getCurrentPosition()/(double)Lift.maxPos);
 //        tele.addData("Lift1 power draw", outtake.lift.lift1.getCurrent(CurrentUnit.AMPS));
 //        tele.addData("Lift2 power draw", outtake.lift.lift2.getCurrent(CurrentUnit.AMPS));
-//        tele.addData("Virtual target position", virtual.state.pos);
-//        tele.addData("Virtual current position", virtual.virtualEncoder.getCurrentPosition());
+        tele.addData("Virtual target position", virtual.state.pos);
+        tele.addData("Virtual current position", virtual.virtualEncoder.getCurrentPosition());
 //        tele.addData("Lift power", outtake.lift.lift1.getPower());
     }
 
