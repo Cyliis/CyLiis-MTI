@@ -19,7 +19,7 @@ import java.util.List;
 
 
 @TeleOp(name="OpMode👉👌")
-public class OpMode extends LinearOpMode {
+public class CompOpMode extends LinearOpMode {
     List<LynxModule> hubs;
     FtcDashboard dash;
     NanoClock nanoClock;

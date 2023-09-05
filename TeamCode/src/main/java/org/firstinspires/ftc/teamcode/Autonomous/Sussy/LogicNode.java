@@ -7,10 +7,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.util.ArrayList;
 
 public class LogicNode {
-
-    SampleMecanumDrive dt;
-    RobotModules robot;
-
     public interface AutoCondition{
         boolean autoCondition();
     }
@@ -42,11 +38,6 @@ public class LogicNode {
     }
 
     public ArrayList <AutoIf> conditionsList = new ArrayList<>();
-
-    public LogicNode(SampleMecanumDrive dt, RobotModules robot){
-        this.dt = dt;
-        this.robot = robot;
-    }
 
     private void transition(LogicNode transitionNode){
         conditionsList = transitionNode.conditionsList;

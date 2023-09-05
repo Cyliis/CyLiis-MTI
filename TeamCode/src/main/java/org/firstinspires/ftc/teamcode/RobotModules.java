@@ -49,7 +49,7 @@ public class RobotModules {
 //        tele.addData("Claw state", intake.claw.state);
         tele.addData("Lift state", outtake.lift.state);
 //        tele.addData("Uta state", intake.uta.state);
-//        tele.addData("Virtual state", virtual.state);
+        tele.addData("Virtual state", virtual.state);
 //        tele.addData("Pivot state", intake.pivot.state);
         tele.addData("Stack index", Virtual.stackIndex);
         tele.addData("Lift current position", outtake.lift.liftEncoder.getCurrentPosition());
@@ -61,6 +61,12 @@ public class RobotModules {
 //        tele.addData("Lift2 power draw", outtake.lift.lift2.getCurrent(CurrentUnit.AMPS));
         tele.addData("Virtual target position", virtual.state.pos);
         tele.addData("Virtual current position", virtual.virtualEncoder.getCurrentPosition());
+        tele.addData("Virtual Profile Position", virtual.profile.getPosition());
+        tele.addData("Virtual Profile Velocity", virtual.profile.getVelocity());
+        tele.addData("Virtual Profile Time", virtual.profile.timer.seconds());
+        tele.addData("Virtual Profile Phase", virtual.profile.getPhase());
+        tele.addData("Lift profile position", outtake.lift.profile.getPosition());
+        virtual.profile.telemetry(tele);
 //        tele.addData("Lift power", outtake.lift.lift1.getPower());
     }
 

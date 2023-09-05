@@ -222,12 +222,12 @@ public class Intake implements IRobotModule {
 
                     uta.setState(UtaUta.State.SMOLAGNLINGFRONT);
                     transferState = TransferState.SMOLANGLE;
-                    virtual.setState(Virtual.State.GOING_HOVER);
+//                    virtual.setState(Virtual.State.GOING_HOVER);
                 }
                 break;
             case SMOLANGLE:
-                if(virtual.state == Virtual.State.HOVER && uta.state == UtaUta.State.SMOLANGLEFRONT){
-                    if(pivot.state == VirtualPivot.State.FRONT && virtual.virtualEncoder.getCurrentPosition() >= virtual.rotatePositionFromFront)
+                if(uta.state == UtaUta.State.SMOLANGLEFRONT){
+                    if((pivot.state == VirtualPivot.State.FRONT || pivot.state == VirtualPivot.State.RFRONT) && virtual.profile.getPosition() >= virtual.rotatePositionFromFront)
                         pivot.setState(VirtualPivot.State.RBACK);
 
                     virtual.setState(Virtual.State.GOING_TRANSFER);
@@ -236,6 +236,8 @@ public class Intake implements IRobotModule {
                 }
                 break;
             case PIVOT_BACK_VIRTUAL_TO_TRANSFER:
+                if((pivot.state == VirtualPivot.State.FRONT || pivot.state == VirtualPivot.State.RFRONT) && virtual.profile.getPosition() >= virtual.rotatePositionFromFront)
+                    pivot.setState(VirtualPivot.State.RBACK);
                 if(virtual.state == Virtual.State.TRANSFER && pivot.state == VirtualPivot.State.BACK && latch.state == Latch.State.OPENED && uta.state == UtaUta.State.SMOLANGLE){
                     latch.setState(Latch.State.CLOSING);
                     uta.setState(UtaUta.State.LEVELING);

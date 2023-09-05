@@ -41,14 +41,14 @@ public class AutoStangaSouthNodes {
     public void initNodesAndTrajctories(){
         trajectories.initTrajectories();
 
-        start = new LogicNode(drive, robot);
-        preload = new LogicNode(drive, robot);
-        waitForLift = new LogicNode(drive, robot);
-        afterPreload = new LogicNode(drive, robot);
-        pickupStack = new LogicNode(drive, robot);
-        releaseStackCone = new LogicNode(drive, robot);
-        end = new LogicNode(drive, robot);
-        current = new LogicNode(drive, robot);
+        start = new LogicNode();
+        preload = new LogicNode();
+        waitForLift = new LogicNode();
+        afterPreload = new LogicNode();
+        pickupStack = new LogicNode();
+        releaseStackCone = new LogicNode();
+        end = new LogicNode();
+        current = new LogicNode();
 
         start.addCondition(()->true, ()->drive.followTrajectorySequenceAsync(trajectories.preloadRelease), preload);
         preload.addCondition(()->!drive.isBusy(), ()->{}, waitForLift);

@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.Utils.DumbIMU;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 import org.firstinspires.ftc.teamcode.Utils.ImuModule;
+import org.firstinspires.ftc.teamcode.Utils.CoolVector;
 import org.firstinspires.ftc.teamcode.Utils.Vector;
 
 import java.util.ArrayList;

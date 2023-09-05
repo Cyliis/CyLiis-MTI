@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.Utils.AsymmetricMotionProfile;
 import org.firstinspires.ftc.teamcode.Utils.DumbEncoder;
 import org.firstinspires.ftc.teamcode.Utils.IRobotModule;
 
@@ -30,7 +31,7 @@ public class Lift implements IRobotModule {
     public DumbEncoder liftEncoder;
 
     public static int downPosition = 0, lowPosition = downPosition, midPosition = 360, highPosition=590;
-    public static int midPositionA = 370, highPositionA = 610;
+    public static int midPositionA = 360, highPositionA = 610;
     public static int lowerPosition = -30;
     public int target = downPosition;
     public static PIDCoefficients pidCoefficients =  new PIDCoefficients(0.01,0.12, 0.0008);
@@ -42,6 +43,10 @@ public class Lift implements IRobotModule {
     PIDController pid = new PIDController(pidCoefficients.p, pidCoefficients.i, pidCoefficients.d);
 
     public boolean correctPid = false;
+
+    public static double maxVelocity = 1000000, acceleration = 8000, deceleration = 3000;
+
+    public AsymmetricMotionProfile profile = new AsymmetricMotionProfile(maxVelocity, acceleration, deceleration);
 
     public enum State{
         DOWN(downPosition),
@@ -136,6 +141,11 @@ public class Lift implements IRobotModule {
         timeOfLastStateChange = nanoClock.seconds();
         this.previousState = this.state;
         this.state = state;
+        double vel = profile.getSignedVelocity();
+        double pos = profile.getPosition();
+
+        profile = new AsymmetricMotionProfile(maxVelocity, acceleration, deceleration);
+        profile.setMotion(pos, state.pos, vel);
         if(state == State.RESETTING){
             looped = false;
         }
@@ -194,6 +204,7 @@ public class Lift implements IRobotModule {
 
     @Override
     public void loop() {
+        profile.update();
         State.update();
         updateState();
         updateMotors();

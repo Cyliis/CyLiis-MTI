@@ -27,9 +27,9 @@ public class LogicNodeDemo {
     LogicNode goPickCone;
 
     private void initNodes(SampleMecanumDrive dt, RobotModules robotModules){
-        start = new LogicNode(dt, robotModules);
+        start = new LogicNode();
         start.addCondition(()->true, ()->{dt.followTrajectorySequenceAsync(sussyTrajectory);}, goToPreload);
-        goToPreload = new LogicNode(dt, robotModules);
+        goToPreload = new LogicNode();
         goToPreload.addCondition(()->dt.getWheelVelocities().get(0) < velocityThreshold && dt.getWheelVelocities().get(1) < velocityThreshold, ()->dt.followTrajectorySequenceAsync(sussyTrajectory), goBackToRam);
         goToPreload.addCondition(()->!dt.isBusy() && robotModules.outtake.state == Outtake.State.HIGH, ()->robotModules.outtake.setState(Outtake.State.GOING_DOWN), goPickCone);
 
